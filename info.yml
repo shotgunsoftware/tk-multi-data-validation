@@ -1,0 +1,55 @@
+# Copyright (c) 2022 Autodesk, Inc.
+#
+# CONFIDENTIAL AND PROPRIETARY
+#
+# This work is provided "AS IS" and subject to the ShotGrid Pipeline Toolkit
+# Source Code License included in this distribution package. See LICENSE.
+# By accessing, using, copying or modifying this work you indicate your
+# agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
+# not expressly granted therein are reserved by Autodesk, Inc.
+
+configuration:
+
+    hook_scene_validator:
+        type: hook
+        description: "Data and functions for validating scene data."
+        default_value: "{self}/scene_validator.py"
+
+    hook_scene_operations:
+        type: hook
+        description: "Operations applied to the scene data (e.g. file save, open, etc.)."
+        default_value: "{self}/{engine_name}_scene_operations.py"
+
+    rules:
+        description: "List of validation rules for the App to enforce. Each validation item requires
+                     a unique key to identify the validation rule, and it is optional to specify
+                     validation rule properties: 'auto' or 'required'. Set 'auto' to True to
+                     automatically enforce the rule, set 'required' to True to block the user if the
+                     validation rule fails."
+        type: list
+        values:
+            type: dict
+            items:
+                key: {type: str}
+        allows_empty: True
+
+
+# The ShotGrid fields that this app needs in order to operate correctly
+requires_shotgun_fields:
+
+# More verbose description of this item
+display_name: "Scene Validation"
+description: "Tools to validate and resolve data violations in your scene."
+
+# Required minimum versions for this item to run
+requires_shotgun_version: "v8.20.0"
+requires_core_version: "v0.20.6"
+requires_engine_version:
+
+# Supported Engines
+supported_engines:
+
+# the frameworks required to run this app
+frameworks:
+    - {"name": "tk-framework-shotgunutils", "version": "v5.x.x", "minimum_version": "v5.8.2"}
+    - {"name": "tk-framework-qtwidgets", "version": "v2.x.x", "minimum_version": "v2.10.1"}
