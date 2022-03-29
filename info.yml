@@ -10,10 +10,10 @@
 
 configuration:
 
-    hook_scene_validator:
+    hook_data_validator:
         type: hook
-        description: "Data and functions for validating scene data."
-        default_value: "{self}/scene_validator.py"
+        description: "Define the rules for validating data in a DCC and functions to resolve data violations."
+        default_value: "{self}/data_validator.py"
 
     hook_scene_operations:
         type: hook
