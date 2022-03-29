@@ -15,11 +15,6 @@ configuration:
         description: "Define the rules for validating data in a DCC and functions to resolve data violations."
         default_value: "{self}/data_validator.py"
 
-    hook_scene_operations:
-        type: hook
-        description: "Operations applied to the scene data (e.g. file save, open, etc.)."
-        default_value: "{self}/{engine_name}_scene_operations.py"
-
     rules:
         description: "List of validation rules for the App to enforce. Each validation item requires
                      a unique key to identify the validation rule, and it is optional to specify
@@ -38,8 +33,8 @@ configuration:
 requires_shotgun_fields:
 
 # More verbose description of this item
-display_name: "Scene Validation"
-description: "Tools to validate and resolve data violations in your scene."
+display_name: "Data Validation"
+description: "Tools to validate and resolve data violations in your DCC."
 
 # Required minimum versions for this item to run
 requires_shotgun_version: "v8.20.0"
