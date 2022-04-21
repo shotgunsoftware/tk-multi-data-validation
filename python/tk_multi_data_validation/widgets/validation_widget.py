@@ -81,6 +81,7 @@ class ValidationWidget(SGQWidget):
         self._group_rules_by = "data_type"
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
+        # Set these callbacks to the default validate and fix methods
         self._validate_callback = self._validate_rules
         self._fix_callback = self._fix_rules
 
@@ -558,8 +559,10 @@ class ValidationWidget(SGQWidget):
         # -----------------------------------------------------
         # Details widget signals
         #
-        self._details_widget.request_validate_data.connect(self._validate_data)
-        self._details_widget.request_fix_data.connect(self._fix_data)
+        self._details_widget.request_validate_data.connect(
+            lambda rule: self._validate_rules(rule, refresh_details=True)
+        )
+        self._details_widget.request_fix_data.connect(self._fix_rules)
 
         # -----------------------------------------------------
         # Button clicked signals
@@ -818,57 +821,19 @@ class ValidationWidget(SGQWidget):
         pos = widget.mapToGlobal(pos)
         menu.exec_(pos)
 
-    def _validate_data(self, rule):
-        """
-        Validate the data by executing its check function.
-
-        :param rule: The rule to validate the data with.
-        :type rule: ValidationRule
-        """
-
-        if not rule:
-            return
-
-        # Get the rule check function, and args/kwargs to pass to it.
-        kwargs = {}
-        args = []
-        task_func = rule.exec_check
-
-        # Execute the validation rule check function
-        self.validate_rule_begin(rule)
-        task_func(*args, **kwargs)
-        self.validate_rule_finished(rule)
-
-        # Refresh the details since its data may have changed
-        self._refresh_details()
-
-    def _fix_data(self, rule):
-        """
-        Fix the data that violates the rule by executing its fix function for the rule.
-
-        Note that this does not execute any dependent rules. This simply execute the fix
-        for this individual rule.
-
-        :param rule: The rule to fix invalid data for.
-        :type rule: ValidationRule
-        """
-
-        if not rule:
-            return
-
-        self._fix_rules([rule])
-        # self.fix_rule_begin(rule)
-        # rule.exec_fix()
-        # self.fix_rule_finished(rule)
-
     @sgtk.LogManager.log_timing
-    def _validate_rules(self, rules):
+    def _validate_rules(self, rules, refresh_details=False):
         """
-        Validate the given list of rules.
+        The default validate operation that executes the validate function for each of the rules.
 
-        :param rules: The list of rules to validate.
-        :type rules: list<ValidationRule>
+        :param rules: The list of rules, or single rule, to validate.
+        :type rules: list<ValidationRule> | ValidationRule
+        :param refresh_details: Set to True to refresh the details widget after the validation.
+        :type refresh_details: bool
         """
+
+        if not isinstance(rules, list):
+            rules = [rules]
 
         for rule in rules:
             print("Validating rule", rule.name)
@@ -876,12 +841,14 @@ class ValidationWidget(SGQWidget):
             rule.exec_check()
             self.validate_rule_finished(rule, update_rule_type=False)
 
-        self.validate_all_finished()
+        if refresh_details:
+            # Refresh the details since its data may have changed
+            self._refresh_details()
 
     @sgtk.LogManager.log_timing
     def _fix_rules(self, rules):
         """
-        Fix the data according to the given list of validation rules.
+        The default fix operation that executes the fix function for each of the rules.
 
         NOTE this default fix operation does not take into account rule dependencies. Rules will be executed
         in the order as they appear in the model. Use the ValidationManager to implement rule resolution order
@@ -890,6 +857,9 @@ class ValidationWidget(SGQWidget):
         :param rules: The list of rules to validate.
         :type rules: list<ValidationRule>
         """
+
+        if not isinstance(rules, list):
+            rules = [rules]
 
         for rule in rules:
             print("Resolving rule", rule.name)
@@ -911,6 +881,7 @@ class ValidationWidget(SGQWidget):
 
         active_rules = self.get_active_rules()
         self.validate_callback(active_rules)
+        self.validate_all_finished()
 
     @wait_cursor
     def on_fix_all(self):
@@ -1166,7 +1137,7 @@ class ValidationWidget(SGQWidget):
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self._validate_data(rule)
+        self._validate_rules(rule, refresh_details=True)
 
     @wait_cursor
     def rule_fix_action_callback(self, view, index, pos):
@@ -1183,7 +1154,7 @@ class ValidationWidget(SGQWidget):
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self._fix_data(rule)
+        self._fix_rules(rule)
 
 
 #############################################################################################################
@@ -1365,10 +1336,9 @@ def get_rule_optional_data(parent, index):
         return {"visible": False}
 
     if not rule.optional:
-        # TODO ask design if we should align or not
-        # if rule.manual:
-        #     # Ensure the manual checkboxes are aligned across rows
-        #     return {"visible": True, "placeholder": True, "padding_left": 22}
+        if rule.manual:
+            # Ensure the manual checkboxes are aligned across rows
+            return {"visible": True, "placeholder": True, "padding_left": 22}
         return {"visible": False}
 
     checkbox_icon = index.data(ValidationRuleModel.CHECKBOX_ICON_ROLE)

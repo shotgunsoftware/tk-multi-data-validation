@@ -128,7 +128,7 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             """
             Override the base class method.
 
-            Set the data for the item's role. Ensure to call emitDataChanged signal if hte data has been
+            Set the data for the item's role. Ensure to call emitDataChanged signal if the data has been
             updated, to notify any listeners.
 
             :param value: The data value to set for the item's role.
