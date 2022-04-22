@@ -442,6 +442,11 @@ class ValidationWidget(SGQWidget):
             lambda checked=None: self._set_view_mode(self.VIEW_MODE_GROUPED)
         )
 
+        # Error view mode button
+        self._errors_button = SGQToolButton(self, icon=SGQIcon.RedBullet())
+        self._errors_button.setToolTip("Toggle to see only validation errors.")
+        self._errors_button.clicked.connect(lambda checked=None: self._toggle_errors())
+
         # Details button
         self._details_button = SGQToolButton(self, icon=SGQIcon.Info())
         self._details_button.setToolTip("Show/Hide Details Panel")
@@ -489,6 +494,7 @@ class ValidationWidget(SGQWidget):
                 None,
                 self._view_mode_list_button,
                 self._view_mode_grouped_button,
+                self._errors_button,
                 self._search_text_widget,
                 self._filter_menu_button,
                 self._details_button,
@@ -555,6 +561,11 @@ class ValidationWidget(SGQWidget):
         self._rules_model.rule_check_state_changed.connect(
             self._on_rule_check_state_changed
         )
+
+        # -----------------------------------------------------
+        # Rules proxy model signals
+        #
+        self._rules_proxy_model.layoutChanged.connect(self._on_rules_proxy_model_reset)
 
         # -----------------------------------------------------
         # Details widget signals
@@ -867,6 +878,24 @@ class ValidationWidget(SGQWidget):
             rule.exec_fix()
             self.fix_rule_finished(rule)
 
+    def _update_view_overlay(self):
+        """
+        Update the main rules view overlay widget.
+        """
+
+        if self._rules_model.rowCount() <= 0:
+            self._view_overlay_widget.show_message("No validation data.")
+
+        elif self._rules_proxy_model.rowCount() <= 0:
+            if self._errors_button.isChecked():
+                msg = "No validation errors found."
+            else:
+                msg = "No results. Clear filters to see validation data."
+            self._view_overlay_widget.show_message(msg)
+
+        else:
+            self._view_overlay_widget.hide()
+
     ######################################################################################################
     # Callback methods
 
@@ -952,6 +981,8 @@ class ValidationWidget(SGQWidget):
         # Emit signal that validation rules have been updated
         self._rules_model.emit_all_data_changed()
 
+        self._rules_proxy_model._update()
+
     def fix_rule_begin(self, rule):
         """
         Call this method before a validaiton rule is fix function is executed.
@@ -1010,12 +1041,16 @@ class ValidationWidget(SGQWidget):
         Callback triggered when the rules model has been reset.
         """
 
-        if self._rules_model.rowCount() <= 0:
-            self._view_overlay_widget.show_message("No validation data")
-        else:
-            self._view_overlay_widget.hide()
+        self._update_view_overlay()
 
         self._filter_menu.refresh(force=True)
+
+    def _on_rules_proxy_model_reset(self):
+        """
+        Callback triggered when the rules proxy model has been reset.
+        """
+
+        self._update_view_overlay()
 
     def _on_rules_model_item_changed(self, item):
         """
@@ -1103,6 +1138,16 @@ class ValidationWidget(SGQWidget):
 
         indexes = self._rules_view.selectionModel().selectedIndexes()
         self._set_details(indexes)
+
+    def _toggle_errors(self, show=None):
+        """
+        Callback triggered to show only the validation rules with errors.
+
+        :param show: Set to True to show only errors, False to show all, and None to toggle the current state.
+        :type show: bool
+        """
+
+        self._rules_proxy_model.turn_on_error_filter(on=None)
 
     ######################################################################################################
     # ViewItemDelegate callback functions

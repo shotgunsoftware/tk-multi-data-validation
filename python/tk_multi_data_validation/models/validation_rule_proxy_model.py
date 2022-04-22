@@ -8,6 +8,7 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
+from .validation_rule_model import ValidationRuleModel
 from ..utils.framework_qtwidgets import FilterItem, FilterItemTreeProxyModel
 
 
@@ -35,6 +36,14 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         self._text_filter = None
         self._rule_type_filter = None
         self._rule_type_filter_role = None
+
+        self._error_filter_active = False
+        self._error_filter = FilterItem(
+            None,
+            FilterItem.FilterType.BOOL,
+            FilterItem.FilterOp.IS_FALSE,
+            filter_role=ValidationRuleModel.RULE_VALID_ROLE,
+        )
 
     #########################################################################################################
     # Public methods
@@ -100,6 +109,21 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         self._rule_type_filter_role = None
         self._update()
 
+    def turn_on_error_filter(self, on=None):
+        """
+        Turn on or off the error filter.
+
+        :param on: Set to True to turn on the error filter, False to turn off, and None to toggle the current
+            filter state (if on then it will be off, and vice-versa)
+        :param on: bool
+        """
+
+        if on is None:
+            on = not self._error_filter_active
+
+        self._error_filter_active = on
+        self._update()
+
     #########################################################################################################
     # Protected methods
 
@@ -151,6 +175,10 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         # Check the proxy model specific filter items for text
         if self._text_filter:
             if not self._text_filter.accepts(src_idx):
+                return False
+
+        if self._error_filter_active:
+            if not self._error_filter.accepts(src_idx):
                 return False
 
         # All good, accepted!
