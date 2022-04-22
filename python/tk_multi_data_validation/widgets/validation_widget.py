@@ -306,7 +306,7 @@ class ValidationWidget(SGQWidget):
                 rule_types.append(rule.type)
 
         self._rule_types_model.initialize_data(rule_types)
-        self._rules_model.initialize_rules_data(validation_rules)
+        self._rules_model.initialize_data(validation_rules)
 
     def get_active_rules(self):
         """
@@ -721,7 +721,7 @@ class ValidationWidget(SGQWidget):
         else:
             assert False, "Unsupported view mode"
 
-        self._rules_model.initialize_rules_data()
+        self._rules_model.initialize_data()
 
     def _show_details(self, show=None):
         """

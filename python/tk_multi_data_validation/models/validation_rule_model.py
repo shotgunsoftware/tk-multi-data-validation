@@ -377,7 +377,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     @group_by.setter
     def group_by(self, field):
         self._group_by = field
-        self.initialize_rules_data()
+        self.initialize_data()
 
     @property
     def hierarchical(self):
@@ -412,7 +412,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         super(ValidationRuleModel, self).clear()
 
-    def initialize_rules_data(self, rules=None):
+    def initialize_data(self, rules=None):
         """
         Initialize the model with the set of rules given.
 
