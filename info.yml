@@ -25,7 +25,7 @@ configuration:
         values:
             type: dict
             items:
-                key: {type: str}
+                id: {type: str}
         allows_empty: True
 
 
