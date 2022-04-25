@@ -200,6 +200,7 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         Get the icon for the rule type status.
         """
 
+        # TODO Design icon
         return {
             cls.RULE_TYPE_STATUS_OK: SGQIcon.GreenCheckMark(),
             cls.RULE_TYPE_STATUS_INCOMPLETE: SGQIcon.Lock(),

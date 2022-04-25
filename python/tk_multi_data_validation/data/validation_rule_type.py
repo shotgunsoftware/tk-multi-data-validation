@@ -109,21 +109,21 @@ class ValidationRuleType(object):
         if type_id == cls.RULE_TYPE_NONE:
             return {
                 "name": "All",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.Info(),
             }
 
         if type_id == cls.RULE_TYPE_AUTO:
             return {
                 "name": "Automated",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.GreenCheckMark(),
             }
 
         if type_id == cls.RULE_TYPE_REQUIRED:
             return {
                 "name": "Required",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.GreenCheckMark(),
             }
 
@@ -131,7 +131,7 @@ class ValidationRuleType(object):
             # Toggle icon to display a toggle button since Qt does not have a wiget for this.
             return {
                 "name": "Optional",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.Lock(),
                 "checkbox_icon": SGQIcon.Info(),
             }
@@ -139,14 +139,14 @@ class ValidationRuleType(object):
         if type_id == cls.RULE_TYPE_MANUAL:
             return {
                 "name": "Manual",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.RedRefresh(),
             }
 
         if type_id == cls.RULE_TYPE_ACTIVE:
             return {
                 "name": "Active",
-                # TODO icon
+                # TODO Design icon
                 "icon": SGQIcon.RedRefresh(),
             }
 
