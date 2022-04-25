@@ -447,7 +447,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if None in group_items:
                 # Create the "Ungrouped" item for any rules that may not define a grouping
                 group_items[None] = ValidationRuleModel.ValidationRuleGroupModelItem(
-                    None, "Ungrouped"
+                    None, ""
                 )
         else:
             group_items = {}
