@@ -201,6 +201,7 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         """
 
         # TODO Design icon
+        # TODO let this icons be configurable
         return {
             cls.RULE_TYPE_STATUS_OK: SGQIcon.GreenCheckMark(),
             cls.RULE_TYPE_STATUS_INCOMPLETE: SGQIcon.Lock(),

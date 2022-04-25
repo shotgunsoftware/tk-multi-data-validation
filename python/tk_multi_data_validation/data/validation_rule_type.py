@@ -106,6 +106,8 @@ class ValidationRuleType(object):
                 :description: The icon to use to display a checkbox for the rule type.
         """
 
+        # TODO let this icons be configurable
+
         if type_id == cls.RULE_TYPE_NONE:
             return {
                 "name": "All",
