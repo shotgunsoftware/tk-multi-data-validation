@@ -204,7 +204,7 @@ class ValidationManager(object):
         """
 
         for rule in rules:
-            if self.validate_accepts and self.validate_accepts(rule):
+            if self.validate_accepts and not self.validate_accepts(rule):
                 # Skip rules that are not accepted
                 continue
             self.validate_rule(rule)
