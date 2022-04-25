@@ -38,41 +38,7 @@ class AbstractDataValidatorHook(HookBaseClass):
         :return: The validation data that can be used to validate the data.
         :rtype: dict
 
-        :raises NotImplementedError: If the subclass does not implement thi function.
+        :raises NotImplementedError: If the subclass does not implement this function.
         """
 
         raise NotImplementedError()
-
-    def execute_check_action(self, action_name, *args, **kwargs):
-        """
-        Execute the action to validate the DCC data.
-
-        Implementing this method in the subclass is optional. Default behaviour does nothing.
-
-        :param action_name: The unique id to get the validation function to execute.
-        :type action_name: str
-        :param args: The arguments list to pass to the validation function.
-        :type args: list
-        :param kwargs: The keyword arguments dict to pass to the validation function.
-        :type kwargs: dict
-
-        :return: The result of the check function that was executed.
-        :rtype: any (see ValidationRule for guidelines on return values for check functions)
-        """
-
-    def execute_fix_action(self, action_name, *args, **kwargs):
-        """
-        Execute the action to resolve data violations by the DCC data.
-
-        Implementing this method in the subclass is optional. Default behaviour does nothing.
-
-        :param action_name: The unique id to get the fix function to execute.
-        :type action_name: str
-        :param args: The arguments list to pass to the check function.
-        :type args: list
-        :param kwargs: The keyword arguments dict to pass to the check function.
-        :type kwargs: dict
-
-        :return: The result of the fix function
-        :rtype: any
-        """
