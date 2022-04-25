@@ -34,7 +34,6 @@ class ValidationRule(object):
             name
                 :type: str
                 :description: The display name for this rule.
-
             data_type:
                 :type: str
                 :description: The name of the data type that this rule pertains to.
@@ -125,7 +124,7 @@ class ValidationRule(object):
     @property
     def id(self):
         """Get the unique identifier for this rule."""
-        return self._data.get("key")
+        return self._data.get("id")
 
     @property
     def type(self):

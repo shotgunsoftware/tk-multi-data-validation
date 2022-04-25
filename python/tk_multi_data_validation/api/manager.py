@@ -88,7 +88,7 @@ class ValidationManager(object):
 
         rule_settings = rule_settings or self._bundle.settings.get("rules")
         for rule_item in rule_settings:
-            rule_id = rule_item["key"]
+            rule_id = rule_item["id"]
             
             if include_rules and not rule_id in include_rules:
                 continue
