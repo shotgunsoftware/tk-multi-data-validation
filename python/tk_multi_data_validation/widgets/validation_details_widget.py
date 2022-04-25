@@ -86,12 +86,21 @@ class ValidationDetailsWidget(SGQWidget):
         # Set up details info
         #
         self._details.setTitle(self.rule.name)
-        description = "ID: {}\n\n{}".format(self.rule.id, self.rule.description)
+
         if self.rule.dependencies:
-            description += "\n\nDependencies (by ID):\n    "
-            dependencies_text = "\n    ".join([d for d in self.rule.dependencies])
-            description += dependencies_text
+            dependencies_text = "Dependencies (by ID):\n    "
+            dependencies_text += "\n    ".join([d for d in self.rule.dependencies])
+        else:
+            dependencies_text = ""
+
+        description = "{desc}\n\n{id}{space}{dependencies}".format(
+            desc=self.rule.description,
+            id="ID: {}".format(self.rule.id),
+            space="\n\n" if dependencies_text else "",
+            dependencies=dependencies_text,
+        )
         self._details_description.setText(description)
+
         self._details_item_model.initialize_data(self.rule.errors)
 
         #
