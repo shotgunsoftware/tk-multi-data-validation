@@ -92,7 +92,7 @@ class ValidationDetailsWidget(SGQWidget):
             dependencies_text = "\n    ".join([d for d in self.rule.dependencies])
             description += dependencies_text
         self._details_description.setText(description)
-        self._details_item_model.initialize_data(self.rule.invalid_items)
+        self._details_item_model.initialize_data(self.rule.errors)
 
         #
         # Set up details action items
@@ -127,7 +127,7 @@ class ValidationDetailsWidget(SGQWidget):
                 continue
 
             args = rule_action.get("args", [])
-            kwargs = {"invalid_items": self.rule.get_invalid_item_ids()}
+            kwargs = {"errors": self.rule.get_error_item_ids()}
             button = QtGui.QPushButton(rule_action["name"], self._details_toolbar)
             button.clicked.connect(lambda cb=action_cb, a=args, k=kwargs: cb(*a, **k))
             self._details_toolbar.add_widget(button)
@@ -135,7 +135,7 @@ class ValidationDetailsWidget(SGQWidget):
         #
         # Show/hide the overlay message
         #
-        if self.rule.invalid_items:
+        if self.rule.errors:
             self._details_item_view_overlay.hide()
         else:
             if self.rule.manual:
@@ -144,7 +144,7 @@ class ValidationDetailsWidget(SGQWidget):
                 )
             elif self.rule.valid is not None:
                 self._details_item_view_overlay.show_message(
-                    "Check passed. No invalid items found."
+                    "Check passed. No errors found."
                 )
             else:
                 self._details_item_view_overlay.show_message(
@@ -308,7 +308,7 @@ class ValidationDetailsWidget(SGQWidget):
 
     def _on_details_item_context_menu_requested(self, pos):
         """
-        Callback triggered when an invalid item from the view has been right-clicked.
+        Callback triggered when an error item from the view has been right-clicked.
 
         :param pos: The mouse position, relative to the sender (widget), captured when triggering this
             callback.

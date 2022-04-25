@@ -38,12 +38,13 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_FIX_FUNC_ROLE,
         RULE_EXECUTED_ROLE,  # False if the rule check function has never been executed, else True
         RULE_VALID_ROLE,
+        RULE_HAS_ERROR_ROLE,
         RULE_ACTIONS_ROLE,
         RULE_ITEM_ACTIONS_ROLE,
-        RULE_INVALID_ITEMS_ROLE,
+        RULE_ERROR_ITEMS_ROLE,
         RULE_MANUAL_CHECK_STATE_ROLE,
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 19)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 20)
 
     #
     # Signals
@@ -156,13 +157,12 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             # Initialize our file mode item data
             self._rule = rule
-            self._invalid_items = []
 
             # UI properties
             self._is_loading = False
 
-            invalid_color = QtGui.QColor(255, 0, 0, 25)
-            self._invalid_brush = QtGui.QBrush(invalid_color)
+            error_color = QtGui.QColor(255, 0, 0, 25)
+            self._error_brush = QtGui.QBrush(error_color)
 
         def data(self, role):
             """
@@ -175,11 +175,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             """
 
             if role == QtCore.Qt.BackgroundRole:
-                executed = self.data(ValidationRuleModel.RULE_EXECUTED_ROLE)
-                is_valid = self.data(ValidationRuleModel.RULE_VALID_ROLE)
-                if not executed or is_valid:
-                    return QtGui.QApplication.palette().midlight()
-                return self._invalid_brush
+                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self._error_brush
+                return QtGui.QApplication.palette().midlight()
 
             if role == QtCore.Qt.CheckStateRole:
                 return QtCore.Qt.Checked if self._rule.checked else QtCore.Qt.Unchecked
@@ -196,11 +194,13 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.IS_RULE_ITEM_ROLE:
                 return True
 
-            if role == ValidationRuleModel.RULE_INVALID_ITEMS_ROLE:
-                return self._invalid_items
-
             if role == ValidationRuleModel.RULE_ITEM_ROLE:
                 return self._rule
+
+            if role == ValidationRuleModel.RULE_ERROR_ITEMS_ROLE:
+                if not self._rule:
+                    return []
+                return self._rule.errors
 
             if role == ValidationRuleModel.RULE_ITEM_ID_ROLE:
                 if not self._rule:
@@ -266,6 +266,21 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
                 return self._rule.valid
 
+            if role == ValidationRuleModel.RULE_HAS_ERROR_ROLE:
+                if not self._rule:
+                    return False
+
+                if self._rule.optional and not self._rule.checked:
+                    # Optional rules that are not active do not have errors
+                    return False
+
+                if not self.data(ValidationRuleModel.RULE_EXECUTED_ROLE):
+                    # Rules that have not been executed do not have errors
+                    return False
+
+                # Rule is active and has been executed, check its valid status.
+                return not self.data(ValidationRuleModel.RULE_VALID_ROLE)
+
             if role == ValidationRuleModel.CHECKBOX_ICON_ROLE:
                 if not self._rule:
                     return None
@@ -276,9 +291,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
                 actions = []
                 for action in self._rule.actions:
-                    action["kwargs"] = {
-                        "invalid_items": self._rule.get_invalid_item_ids()
-                    }
+                    action["kwargs"] = {"errors": self._rule.get_error_item_ids()}
                     actions.append(action)
                 return actions
 
@@ -322,10 +335,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             if role == ValidationRuleModel.RULE_ITEM_ROLE:
                 self._rule = value
-                self.emitDataChanged()
-
-            elif role == ValidationRuleModel.RULE_INVALID_ITEMS_ROLE:
-                self._invalid_items = value
                 self.emitDataChanged()
 
             elif role == ValidationRuleModel.VIEW_ITEM_LOADING_ROLE:
@@ -786,12 +795,12 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         :return: A tuple with
             (1) the set of rule types where all rules have been checked and are vald
-            (2) the set of rule tyeps where all rules have been checked but some are invalid
+            (2) the set of rule tyeps where all rules have been checked but some have errors
             (3) the set of rule tyeps where not all rules have been checked
         :rtype: tupel<set,set,set>
         """
 
-        def update_status(model_item, all_types, incomplete, invalid):
+        def update_status(model_item, all_types, incomplete, errors):
             """
             Helper function to update the status sets.
 
@@ -801,8 +810,8 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             :type all_types: set<int>
             :param incomplete: The set of rule types that have rules that have not been checked yet.
             :type incomplete: set<int>
-            :param invalid: The set of rule types that have rules that have errors.
-            :type invalid: set<int>
+            :param errors: The set of rule types that have rules that have errors.
+            :type errors: set<int>
             """
 
             if not model_item.data(ValidationRuleModel.IS_RULE_ITEM_ROLE):
@@ -824,21 +833,21 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             else:
                 is_valid = model_item.data(ValidationRuleModel.RULE_VALID_ROLE)
                 if not is_valid:
-                    invalid.add(rule.type.id)
+                    errors.add(rule.type.id)
 
         all_types = set()
-        invalid = set()
+        errors = set()
         incomplete = set()
         rows = self.rowCount()
 
         for row in range(rows):
             model_item = self.item(row)
-            update_status(model_item, all_types, incomplete, invalid)
+            update_status(model_item, all_types, incomplete, errors)
 
             child_rows = model_item.rowCount()
             for child_row in range(child_rows):
                 child_item = model_item.child(child_row)
-                update_status(child_item, all_types, incomplete, invalid)
+                update_status(child_item, all_types, incomplete, errors)
 
-        valid = all_types - invalid - incomplete
-        return (valid, invalid, incomplete)
+        valid = all_types - errors - incomplete
+        return (valid, errors, incomplete)

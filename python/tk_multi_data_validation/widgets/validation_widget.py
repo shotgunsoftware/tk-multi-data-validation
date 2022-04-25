@@ -80,6 +80,9 @@ class ValidationWidget(SGQWidget):
         self._rule_type_filter_on = True
         self._group_rules_by = "data_type"
 
+        # Flag indicating that we're in the middle of validating all rules
+        self._is_validating_all = False
+
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # Set these callbacks to the default validate and fix methods
         self._validate_callback = self._validate_rules
@@ -477,7 +480,9 @@ class ValidationWidget(SGQWidget):
         self._filter_menu.set_visible_fields(
             [
                 "{role}.name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.rule_type_name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
+                "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
+                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
+                "{role}.manual".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
         self._filter_menu.set_filter_model(self._rules_proxy_model)
@@ -908,9 +913,12 @@ class ValidationWidget(SGQWidget):
         to the custom callback, else call the default validate all operation.
         """
 
-        active_rules = self.get_active_rules()
-        self.validate_callback(active_rules)
-        self.validate_all_finished()
+        self.validate_all_begin()
+        try:
+            active_rules = self.get_active_rules()
+            self.validate_callback(active_rules)
+        finally:
+            self.validate_all_finished()
 
     @wait_cursor
     def on_fix_all(self):
@@ -948,17 +956,16 @@ class ValidationWidget(SGQWidget):
         :type update_rule_type: bool
         """
 
-        if not rule:
+        if not rule or self._is_validating_all:
+            # Do not process the individual rule after validation if there is not rule, or all rules are
+            # being validated at once
             return
 
         rule_item = self._rules_model.get_item_for_rule(rule)
         if not rule_item:
             return
 
-        # Update the model validation rule model item corresponding to the rule
-        rule_item.setData(
-            rule.invalid_items, ValidationRuleModel.RULE_INVALID_ITEMS_ROLE
-        )
+        updated = False
 
         if update_rule_type:
             # Update the rule type status corresponding to the updated rule
@@ -968,6 +975,17 @@ class ValidationWidget(SGQWidget):
                 rule_type_index.setData(
                     status, ValidationRuleTypeModel.RULE_TYPE_STATUS_ROLE
                 )
+                updated = True
+
+        if not updated:
+            rule_item.emitDataChanged()
+
+    def validate_all_begin(self):
+        """
+        Call this method before all validation rules are checked.
+        """
+
+        self._is_validating_all = True
 
     def validate_all_finished(self):
         """
@@ -975,13 +993,15 @@ class ValidationWidget(SGQWidget):
         """
 
         # Get and update the rule type statuses
-        (valid, invalid, incomplete,) = self._rules_model.get_statuses_for_rule_type()
-        self._rule_types_model.set_statuses(valid, invalid, incomplete)
+        (valid, errors, incomplete,) = self._rules_model.get_statuses_for_rule_type()
+        self._rule_types_model.set_statuses(valid, errors, incomplete)
 
         # Emit signal that validation rules have been updated
         self._rules_model.emit_all_data_changed()
 
         self._rules_proxy_model._update()
+
+        self._is_validating_all = False
 
     def fix_rule_begin(self, rule):
         """
@@ -1068,7 +1088,13 @@ class ValidationWidget(SGQWidget):
         if (
             self._details_widget.isVisible()
             and self._details_widget.rule
-            and self._details_widget.rule.id != rule.id
+            and (
+                (self._is_validating_all and self._details_widget.rule.id == rule.id)
+                or (
+                    not self._is_validating_all
+                    and self._details_widget.rule.id != rule.id
+                )
+            )
         ):
             self._details_widget.set_data(rule)
 

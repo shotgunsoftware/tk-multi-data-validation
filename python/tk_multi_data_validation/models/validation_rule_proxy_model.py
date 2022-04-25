@@ -41,8 +41,8 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         self._error_filter = FilterItem(
             None,
             FilterItem.FilterType.BOOL,
-            FilterItem.FilterOp.IS_FALSE,
-            filter_role=ValidationRuleModel.RULE_VALID_ROLE,
+            FilterItem.FilterOp.IS_TRUE,
+            filter_role=ValidationRuleModel.RULE_HAS_ERROR_ROLE,
         )
 
     #########################################################################################################

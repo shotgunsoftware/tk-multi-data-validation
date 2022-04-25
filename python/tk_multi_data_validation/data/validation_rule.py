@@ -64,13 +64,13 @@ class ValidationRule(object):
                 :description: Text that describes what the rule's fix function will do.
             error_message
                 :type: str
-                :description: Text that describes what is invalid about the data.
+                :description: Text that describes how the data is not valid.
             kwargs
                 :type: dict
                 :description: The keyword arguments to pass to the check and fix functions.
             actions
                 :type: list<dict>
-                :description: A list of actions that can be applied to the invalid data found for this rule.
+                :description: A list of actions that can be applied to the data to resolve any errors for this rule.
 
                 **Required Keys**
                     name
@@ -86,7 +86,7 @@ class ValidationRule(object):
                         :description: Text to display as for the item action's tooltip help messages.
             item_actions
                 :type: list<dict>
-                :description: A list of actions that can be applied to an individual invalid item that was found after executing the check_func.
+                :description: A list of actions that can be applied to the particular data for this rule, to resolve the error.
 
                 **Required Keys**
                     name
@@ -116,11 +116,11 @@ class ValidationRule(object):
         # Get the validatin rule type object for this rule
         self._rule_type = ValidationRuleType.get_type_for_rule(self)
 
-        # Initialize invalid property to None, indicating that this rule has not been checked yet.
+        # Initialize valid property to None, indicating that this rule has not been checked yet.
         # Set to True once check has been run and the rule fails, or False if it passes.
         self._valid = None
-        # The invalid items found the last time the rule's check function was executed.
-        self._invalid_items = None
+        # The error items found the last time the rule's check function was executed.
+        self._error_items = None
 
     @property
     def id(self):
@@ -202,7 +202,7 @@ class ValidationRule(object):
 
     @property
     def error_message(self):
-        """Get the text that describes what is invalid about the data according to this rule."""
+        """Get the text that describes how the data is not valid."""
         return self._data.get("error_msg", "Data violation: '{}'".format(self.name))
 
     @property
@@ -261,7 +261,7 @@ class ValidationRule(object):
     @property
     def actions(self):
         """
-        Get the list of actions that can be applied to all invalid items (as a group) for this rule.
+        Get the list of actions that can be applied to all error items (as a group) for this rule.
 
         These do no include the primary check or fix functions. This property is a list of dicts, which contain
         a `name` and `callback` keys, and optionally contains keys: `tooltip`.
@@ -271,7 +271,7 @@ class ValidationRule(object):
     @property
     def item_actions(self):
         """
-        Get the list of actions that can be applied invididual invalid items (one at a time) for this rule.
+        Get the list of actions that can be applied invididual error items (one at a time) for this rule.
 
         These do no include the primary check or fix functions. This property is a list of dicts, which contain
         a `name` and `callback` keys, and optionally contains keys: `tooltip`.
@@ -288,13 +288,14 @@ class ValidationRule(object):
         return self._valid
 
     @property
-    def invalid_items(self):
+    def errors(self):
         """
-        Get the invalid item data found for this rule.
+        Get the error data found for this rule.
 
-        This will contain the invalid items found by the rule's check function the last time it was executed.
+        This will contain the error data items found by the rule's check function the last time it was
+        executed.
         """
-        return self._invalid_items or []
+        return self._error_items or []
 
     @property
     def dependencies(self):
@@ -322,15 +323,15 @@ class ValidationRule(object):
 
         return self._data.get(field)
 
-    def get_invalid_item_ids(self):
+    def get_error_item_ids(self):
         """
-        Convenience method to get a list of the item ids from the invalid items.
+        Convenience method to get a list of the item ids from the data errors.
 
-        :return: The item ids of the invalid items.
+        :return: The item ids of the error items.
         :rtype: list
         """
 
-        return [item["id"] for item in self.invalid_items]
+        return [item["id"] for item in self.errors]
 
     def exec_check(self, *args, **kwargs):
         """
@@ -351,7 +352,7 @@ class ValidationRule(object):
             kwargs.update(self.kwargs)
             result = func(*args, **kwargs)
 
-            # Try to set the valid and invalid item data properties on the rule from the result returned by
+            # Try to set the valid and errors data properties on the rule from the result returned by
             # the check function. If the result does not have the expected attributes, we will continue on
             # but the rule will not be updated
             try:
@@ -359,13 +360,13 @@ class ValidationRule(object):
             except:
                 pass
             try:
-                self._invalid_items = result.invalid_items
+                self._error_items = result.errors
             except:
                 pass
         else:
             # This is a manual check. It is considered valid if the user has checked it off.
             self._valid = self.manual_checked
-            self._invalid_items = []
+            self._error_items = []
             result = None
 
         return result
@@ -394,9 +395,11 @@ class ValidationRule(object):
             try:
                 func(*args, **kwargs)
                 if self.manual:
-                    # The fix was successful, set the manual check state to indicate it is valid
-                    # NOTE if the data changes after this fix was executed, this manual check state will
-                    # become invalid, and should be updated
+                    # The fix was successful, set the manual check state to indicate it is now valid
+                    # FIXME if the data changes after this fix was executed, the manual check state may
+                    # become out of sync with the current data (e.g. the data might have errors after the
+                    # update but the manual check state will remain the same indicating that the data is
+                    # valid)
                     self.manual_checked = True
             except Exception as e:
                 # Intercept the exception to set the manaul check state, and re-raise the exception for the

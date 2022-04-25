@@ -37,7 +37,7 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
     class ValidationRuleDetailsGroupModelItem(QtGui.QStandardItem):
         """
-        A group header item for an invalid item in the ValidationRuleDetailsModel.
+        A group header item for the ValidationRuleDetailsModel.
         """
 
         def __init__(self, text):

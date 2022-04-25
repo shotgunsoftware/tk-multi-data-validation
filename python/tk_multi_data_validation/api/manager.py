@@ -84,7 +84,7 @@ class ValidationManager(object):
         validation_data = self._bundle.execute_hook_method("hook_data_validator", "get_validation_data")
         self.__data = copy.deepcopy(validation_data)
         self.__rules = []
-        self.__invalid_rules = {}
+        self.__error_rules = {}
 
         rule_settings = rule_settings or self._bundle.settings.get("rules")
         for rule_item in rule_settings:
@@ -132,9 +132,9 @@ class ValidationManager(object):
         self._rule_types = type_data
 
     @property
-    def invalid_rules(self):
-        """Get the list of rules that were marked as invalid the last time the validate function was executed."""
-        return self.__invalid_rules
+    def errors(self):
+        """Get the list of rules which did not pass the last time their respective validate function was executed."""
+        return self.__error_rules
 
     @property
     def validate_accepts(self):
@@ -170,10 +170,10 @@ class ValidationManager(object):
         """
         Reset the manager state.
 
-        Clear the invalid rules.
+        Clear the errors.
         """
 
-        self.__invalid_rules = {}
+        self.__error_rules = {}
     
     def validate(self):
         """
@@ -192,7 +192,7 @@ class ValidationManager(object):
 
         self._notifier.validate_all_finished.emit()
 
-        return not self.__invalid_rules
+        return not self.__error_rules
 
     @sgtk.LogManager.log_timing
     def validate_rules(self, rules):
@@ -232,18 +232,19 @@ class ValidationManager(object):
         self._notifier.validate_rule_begin.emit(rule)
 
         # Run the validation rule check function
+        print("Validation Manager validating rule", rule.name)
         rule.exec_check(*args, **kwargs)
 
         # Check if rule's valid state after executing its check function
         is_valid = rule.valid
 
         if is_valid:
-            if rule.id in self.__invalid_rules:
-                # Remove the rule from the invalid set
-                del self.__invalid_rules[rule.id]
+            if rule.id in self.__error_rules:
+                # Remove the rule from the error set
+                del self.__error_rules[rule.id]
         else:
-            # Add the rule to the invalid set
-            self.__invalid_rules[rule.id] = rule
+            # Add the rule to the error set
+            self.__error_rules[rule.id] = rule
 
         # Emit a signal to notify that a specifc rule has finished validation
         self._notifier.validate_rule_finished.emit(rule)
@@ -277,12 +278,12 @@ class ValidationManager(object):
             # First run the validate method to check for data violations.
             self.validate()
 
-        if not self.invalid_rules:
+        if not self.errors:
             # There are no data violations to resolve.
             return success
 
         # Resolve the data violations
-        self.resolve_rules(self.invalid_rules.values())
+        self.resolve_rules(self.errors.values())
 
         if post_validate:
             # Run validation step once all resolution actions compelted to ensure everything was fixed.
@@ -312,6 +313,8 @@ class ValidationManager(object):
         list, then this fix operation may need to be optimized (e.g. build a dependency tree that defines
         the order of fixing the rules).
         """
+
+        print("ValidationManager resolvin rules...")
 
         self._notifier.resolve_all_begin.emit()
 
@@ -369,7 +372,7 @@ class ValidationManager(object):
         :type rule: ValidationRule
         """
 
-        print("Validation Manager resolving rule", rule.name)
+        print("\t"*len(rule.dependencies), rule.id, "(", " | ".join([d for d in rule.dependencies]), ")")
 
         self._notifier.resolve_rule_begin.emit(rule)
         rule.exec_fix()

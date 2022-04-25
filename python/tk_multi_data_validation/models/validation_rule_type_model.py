@@ -289,15 +289,15 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             model_item.set_check_state(check_state, emit_checked_signal)
             model_item.emitDataChanged()
 
-    def set_statuses(self, valid, invalid, incomplete):
+    def set_statuses(self, valid, errors, incomplete):
         """
         Iterate through all items in the model and update the status of each item.
 
         :param valid: The rule types (ids) thate are valid.
         :type valid: list<int>
-        :param invalid: The rule types (ids) thate are not valid.
-        :type invalid: list<int>
-        :param incomplete: The rule types (ids) thate are neither valid or invalid.
+        :param errors: The rule types (ids) thate are not valid (have errors).
+        :type errors: list<int>
+        :param incomplete: The rule types (ids) thate are neither valid or have errors.
         :type incomplete: list<int>
         """
 
@@ -309,7 +309,7 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             if rule_type in valid:
                 status = self.RULE_TYPE_STATUS_OK
-            elif rule_type in invalid:
+            elif rule_type in errors:
                 status = self.RULE_TYPE_STATUS_ERROR
             elif rule_type in incomplete:
                 status = self.RULE_TYPE_STATUS_INCOMPLETE
