@@ -44,7 +44,7 @@ class ValidationManager(object):
         resolve_all_finished = QtCore.Signal()
 
 
-    def __init__(self, rule_settings=None, include_rules=None, exclude_rules=None):
+    def __init__(self, rule_settings=None, include_rules=None, exclude_rules=None, validation_logger=None):
         """
         Initialize the validation manager from the settings data.
 
@@ -55,6 +55,8 @@ class ValidationManager(object):
         :type include_rules: list<str>
         :param exclude_rules: List of rule ids to exclude from the app's default rules list.
         :type exclude_rules: list<str>
+        :param validation_logger: This is a standard python logger to use during validation. A default logger
+            will be provided if not supplied.
 
         :signal ValidationNotifier.validate_rule_begin(ValidationRule): Emits before a validation rule check
             function is executed. The returned parameter is the validation rule.
@@ -63,6 +65,7 @@ class ValidationManager(object):
         """
 
         self._bundle = sgtk.platform.current_bundle()
+        self._logger = validation_logger or self._bundle.logger
         self._notifier = self.ValidationNotifier()
 
         # Set the default rule types (in order). This can be set using the rule_types property.
