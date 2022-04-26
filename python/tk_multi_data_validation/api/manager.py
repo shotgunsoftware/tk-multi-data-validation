@@ -12,7 +12,7 @@ import copy
 from collections import deque
 
 import sgtk
-from sgtk.platform.qt import QtCore
+from sgtk.platform.qt import QtCore, QtGui
 
 from ..data.validation_rule import ValidationRule
 from ..data.validation_rule_type import ValidationRuleType
@@ -78,7 +78,7 @@ class ValidationManager(object):
         ]
 
         # Default accept function is not set, which will accept all rules
-        self._validate_accepts = None
+        self._accept_rule_fn = None
 
         #
         # Retrieve the validation data from given settings or get them from the hook data validator hook.
@@ -86,7 +86,7 @@ class ValidationManager(object):
         #
         validation_data = self._bundle.execute_hook_method("hook_data_validator", "get_validation_data")
         self.__data = copy.deepcopy(validation_data)
-        self.__rules = []
+        self.__rules_by_id = {}
         self.__error_rules = {}
 
         rule_settings = rule_settings or self._bundle.settings.get("rules")
@@ -99,12 +99,14 @@ class ValidationManager(object):
             if exclude_rules and rule_id in exclude_rules:
                 continue
 
-            rule_data = self.get_data(rule_id)
+            rule_data = self.__data.get(rule_id)
             if rule_data:
                 rule_data.update(rule_item)
-
-            rule = ValidationRule(rule_data)
-            self.__rules.append(rule)
+                rule = ValidationRule(rule_data)
+                self.__rules_by_id[rule.id] = rule
+            else:
+                # The rule was not found for the id
+                self._logger.error("Data was not found for validation rule id '{}'".format(rule_id))
 
 
     #########################################################################################################
@@ -116,14 +118,9 @@ class ValidationManager(object):
         return self._notifier
 
     @property
-    def data(self):
-        """Get the raw validation data."""
-        return self.__data
-    
-    @property
     def rules(self):
         """Get the list of validtaion rules obtained from the validation data."""
-        return self.__rules
+        return self.__rules_by_id.values()
     
     @property
     def rule_types(self):
@@ -140,34 +137,34 @@ class ValidationManager(object):
         return self.__error_rules
 
     @property
-    def validate_accepts(self):
+    def accept_rule_fn(self):
         """
         Get or set the function called to check if the validation should be applied to the given rule.
 
         This property must be a function that takes a single param (ValidationRule) and returns a bool to
         indicate if the rule should be validated or not.
         """
-        return self._validate_accepts
+        return self._accept_rule_fn
 
-    @validate_accepts.setter
-    def validate_accepts(self, fn):
-        self._validate_accepts = fn
+    @accept_rule_fn.setter
+    def accept_rule_fn(self, fn):
+        self._accept_rule_fn = fn
 
     #########################################################################################################
     # Public functions
 
-    def get_data(self, validation_key):
+    def get_rule(self, rule_id):
         """
-        Return the validation data for the given key.
+        Return the validation rule object for the id.
         
-        :param validation_key: The unique identifier for the validation item.
-        :type validation_key: str
+        :param rule_id: The validation rule unique identifier.
+        :type rule_id: str
         
-        :return: The validation data
-        :rtype: dict
+        :return: The validation rule.
+        :rtype: ValidationRule
         """
 
-        return self.data.get(validation_key)
+        return self.__rules_by_id.get(rule_id)
     
     def reset(self):
         """
@@ -207,10 +204,8 @@ class ValidationManager(object):
         """
 
         for rule in rules:
-            if self.validate_accepts and not self.validate_accepts(rule):
-                # Skip rules that are not accepted
-                continue
-            self.validate_rule(rule)
+            if not self.accept_rule_fn or self.accept_rule_fn(rule):
+                self.validate_rule(rule)
 
     def validate_rule(self, rule, *args, **kwargs):
         """
@@ -235,7 +230,8 @@ class ValidationManager(object):
         self._notifier.validate_rule_begin.emit(rule)
 
         # Run the validation rule check function
-        print("Validation Manager validating rule", rule.name)
+        self._logger.debug("Validating Rule: {}".format(rule.id))
+        print("Validating Rule: {}".format(rule.id))
         rule.exec_check(*args, **kwargs)
 
         # Check if rule's valid state after executing its check function
@@ -295,16 +291,22 @@ class ValidationManager(object):
         return success
 
     @sgtk.LogManager.log_timing
-    def resolve_rules(self, rules):
+    def resolve_rules(self, rules, fetch_dependencies=None):
         """
         Resolve the given list of rules.
 
         Steps to resolve rules:
             1. Iterate over all rules
                 a. If the rule has no dependencies - resolve it immediately
-                b. If the ruel has dependencies - add it to the queue to process later
-            2. Process the queue of rules (with dependencies)
-                a. If the rule's dependencies have been resolved - now resolve it and mark it as resolved
+                b. If the rule has dependencies - add it to the queue to process later
+            2. If `fetch_dependencies` is not explicitly set as False, check if all dependencies are provided
+               a. If missing dependencies and `fetch_dependencies` not explicitly set to True then prompt
+                  user to fetch and resolve dependencies
+               b. If `fetch_dependencies` is explicitly set to True or user answered YES to (a), then try to
+                  find any missing dependencies in the manager, and process them as done with the other rules
+            3. Process the queue of rules (that have dependencies)
+                a. If the rule's dependencies have been resolved or ignored - now resolve it and mark it as
+                   resolved
                 b. If the rule's dependencies have not been resolved - add it back to the end of the queue
 
         Time complexity (n = number of rules):
@@ -315,48 +317,143 @@ class ValidationManager(object):
         validation rules is not expected to be so large. If the number of rules does grow to be a large
         list, then this fix operation may need to be optimized (e.g. build a dependency tree that defines
         the order of fixing the rules).
-        """
 
-        print("ValidationManager resolvin rules...")
+        :param rules: The list of rules to resolve.
+        :type rules: list<ValidationRule>
+        :param fetch_dependencies: 
+        :type fetch_dependencies: bool
+        """
 
         self._notifier.resolve_all_begin.emit()
 
+        # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
+        # through to check then check if the necessary dependencies are available to resolve first.
+        # Dependency rules may be added in the step wheere dependencies are checked.
+        rule_ids = set()
         # Add rules to the set once they have been resolved.
         resolved = set()
+        # Dependencies mapping - update this mapping as dependencies are resolved.
+        dependencies = {}
+        # The set of all dependencies to required by the list of rules passed to resolve.
+        all_dependencies = set()
         # Add rules to the queue if they have dependencies that have not been resolved yet.
         queue = deque()
         queue_count = 0
 
+
+        def process_rule(rule):
+            """
+            Helper function to intially process a validation rule.
+
+            1. Add the rule to the set of rule ids.
+            2a. If the rule does not have dependencies, resolve it immediately and add it to the resolved
+                set.
+            2b. If the rule has dependencies, update the dependencies map and list, and add it to the queue
+                to process later once all of its dependencies are resolved.
+            
+            :param rule: The rule to process
+            :type rule: ValidationRule
+            
+            :return: True if the rule was resolved, else False if it was not resolved and added to the queue.
+            :rtype: bool
+            """
+
+            if not rule or rule in rule_ids:
+                # Trivially return True for rule that does not exist, and skip rules that have already been
+                # processed
+                return True
+
+            rule_ids.add(rule.id)
+
+            if rule.dependencies:
+                # Copy the list of dependencies so that the original dependency list is not modified, and
+                # using a set instead for faster lookup and removal
+                dependencies[rule.id] = set(rule.dependencies)
+                all_dependencies.update(rule.dependencies)
+
+                queue.append(rule)
+                return False
+
+            # No dependencies, resolve it immediately
+            self.resolve_rule(rule)
+            resolved.add(rule.id)
+            return True
+
+
         # First pass will resolve any rules without dependencies. Rules with dependencies will be added to
         # the queue to be resolved once all its dependencies are resolved.
         for rule in rules:
-            if rule.dependencies:
-                queue.append(rule)
-                queue_count += 1
-            else:
-                self.resolve_rule(rule)
-                resolved.add(rule.id)
+            if not self.accept_rule_fn or self.accept_rule_fn(rule):
+                if not process_rule(rule):
+                    queue_count += 1
 
-        # Now process the queue of rules (that have dependencies). For each rule, check if all dependencies
-        # are resolved, if yes, then resolve it and add it to the resolved list, else add it back to the end
+        # Check for dependencies and fetch them if specified
+        if fetch_dependencies or fetch_dependencies is None:
+            for dependency_rule_id in all_dependencies:
+                if dependency_rule_id in rule_ids:
+                    # Dependency is already found
+                    continue
+
+                dependency_rule = self.get_rule(dependency_rule_id)
+                if not dependency_rule:
+                    # Skip dependenceis that the manager does not have
+                    continue
+
+                # If not yet specified, prompt user to fetch missing dependencies
+                if fetch_dependencies is None:
+                    # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
+                    # to only individual dependencies
+                    answer = QtGui.QMessageBox.question(
+                        None, "Resolve Dependencies",
+                        "Missing validation rule dependencies. Do you want to fetch and resolve all dependencies?",
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+                    )
+                    fetch_dependencies = bool(answer == QtGui.QMessageBox.Yes)
+
+                if fetch_dependencies:
+                    if not process_rule(dependency_rule):
+                        queue_count += 1
+                else:
+                    # No need to process any more dependencies since they will be ignored
+                    break
+
+        # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
+        # resolved or ignored, then resolve it and add it to the resolved list, else add it back to the end
         # of the queue to try again after all rules in the queue have been processed.
         #
         # Detect cycles by calculating the max number of iterations it would take to empty the queue, if this
         # count is exceeded, then there is a cycle. In the worst case, the each item depends on the item that
         # comes after it, which means it'll take n + (n-1) + (n-2) + ... + 2 + 1
-        max_iters = max(queue_count, (queue_count * (queue_count - 1)) / 2)
+        max_iters = queue_count + (queue_count * (queue_count - 1) / 2)
         iter_count = 0
         while queue:
             if iter_count > max_iters:
                 raise RecursionError("Detected cycle in Validation Rule dependencies.")
             iter_count += 1
 
+            # Get the next rule to process from the queue
             rule = queue.popleft()
+
+            # Determine if dependencies have been resolved
             has_dependencies = False
-            for dependency in rule.dependencies:
-                if dependency not in resolved:
-                    has_dependencies = True
-                    break
+            rule_dependencies = dependencies.get(rule.id, [])
+            while rule_dependencies and not has_dependencies:
+                dependency_rule_id = rule_dependencies.pop()
+
+                if dependency_rule_id not in rule_ids:
+                    if fetch_dependencies:
+                        self._logger.error("Dependency not resolved '{}'".format(dependency_rule_id))
+                        print("Dependency not resolved '{}'".format(dependency_rule_id))
+                    # Dependency is ignored
+                    continue
+
+                if dependency_rule_id in resolved:
+                    # Dependency has already been resolved
+                    continue
+                
+                # This dependency is not resolved yet, add it back to the set
+                has_dependencies = True
+                rule_dependencies.add(dependency_rule_id)
 
             if has_dependencies:
                 # Still unresolved dependencies, add it back to the end of the queue
@@ -375,7 +472,13 @@ class ValidationManager(object):
         :type rule: ValidationRule
         """
 
-        print("\t"*len(rule.dependencies), rule.id, "(", " | ".join([d for d in rule.dependencies]), ")")
+        self._logger.debug("\nResolving Rule: {}\nDependencies: {}".format(
+            rule.id,
+            ", ".join([d for d in rule.dependencies])))
+        print("\nResolving Rule: {}\nDependencies: {}".format(
+            rule.id,
+            ", ".join([d for d in rule.dependencies])))
+            
 
         self._notifier.resolve_rule_begin.emit(rule)
         rule.exec_fix()

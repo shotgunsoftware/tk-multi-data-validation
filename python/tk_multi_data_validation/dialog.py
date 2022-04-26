@@ -43,7 +43,7 @@ class AppDialog(QtGui.QWidget):
         # Create validation manager
 
         self._manager = ValidationManager()
-        self._manager.validate_accepts = lambda rule: not rule.optional or rule.checked
+        self._manager.accept_rule_fn = lambda rule: not rule.optional or rule.checked
 
         # -----------------------------------------------------
         # Set up settings
