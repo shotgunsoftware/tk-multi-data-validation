@@ -75,6 +75,8 @@ class ValidationWidget(SGQWidget):
             parent, layout_direction=QtGui.QBoxLayout.TopToBottom
         )
 
+        self._bundle = sgtk.platform.current_bundle()
+
         self._view_mode = self.VIEW_MODE_GROUPED
         self._details_on = True
         self._rule_type_filter_on = True
@@ -852,7 +854,7 @@ class ValidationWidget(SGQWidget):
             rules = [rules]
 
         for rule in rules:
-            print("Validating rule", rule.name)
+            self._bundle.logger.debug("Validating Rule: {}".format(rule.name))
             self.validate_rule_begin(rule)
             rule.exec_check()
             self.validate_rule_finished(rule, update_rule_type=False)
@@ -878,7 +880,7 @@ class ValidationWidget(SGQWidget):
             rules = [rules]
 
         for rule in rules:
-            print("Resolving rule", rule.name)
+            self._bundle.logger.debug("Resolving Rule: {}".format(rule.name))
             self.fix_rule_begin(rule)
             rule.exec_fix()
             self.fix_rule_finished(rule)
