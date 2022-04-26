@@ -332,10 +332,10 @@ class ValidationManager(object):
         rule_ids = set()
         # Add rules to the set once they have been resolved.
         resolved = set()
-        # Dependencies mapping - update this mapping as dependencies are resolved.
-        dependencies = {}
         # The set of all dependencies to required by the list of rules passed to resolve.
         all_dependencies = set()
+        # Dependencies mapping - update this mapping as dependencies are resolved.
+        dependencies = {}
         # Add rules to the queue if they have dependencies that have not been resolved yet.
         queue = deque()
         queue_count = 0
@@ -368,8 +368,10 @@ class ValidationManager(object):
             if rule.dependencies:
                 # Copy the list of dependencies so that the original dependency list is not modified, and
                 # using a set instead for faster lookup and removal
-                dependencies[rule.id] = set(rule.dependencies)
-                all_dependencies.update(rule.dependencies)
+                rule_dependencies_set = set(rule.dependencies)
+                dependencies[rule.id] = rule_dependencies_set
+                # Only add dependencies to the set if they have not been processed yet.
+                all_dependencies.update(rule_dependencies_set.difference(rule_ids))
 
                 queue.append(rule)
                 return False
@@ -389,7 +391,10 @@ class ValidationManager(object):
 
         # Check for dependencies and fetch them if specified
         if fetch_dependencies or fetch_dependencies is None:
-            for dependency_rule_id in all_dependencies:
+            # Keep processing dependencies until the set is empty - dependencies may be added during
+            # while iterating if a dependency and another dependency
+            while all_dependencies:
+                dependency_rule_id = all_dependencies.pop()
                 if dependency_rule_id in rule_ids:
                     # Dependency is already found
                     continue
