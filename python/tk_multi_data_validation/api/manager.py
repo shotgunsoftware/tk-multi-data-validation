@@ -42,6 +42,8 @@ class ValidationManager(object):
         resolve_rule_finished = QtCore.Signal(ValidationRule)
         resolve_all_begin = QtCore.Signal()
         resolve_all_finished = QtCore.Signal()
+        about_to_open_msg_box = QtCore.Signal()
+        msg_box_closed = QtCore.Signal()
 
 
     def __init__(self, rule_settings=None, include_rules=None, exclude_rules=None, validation_logger=None):
@@ -188,24 +190,32 @@ class ValidationManager(object):
         # Reset the manager state before performing validation
         self.reset()
 
-        self.validate_rules(self.rules)
+        self.validate_rules(self.rules, emit_signals=False)
 
         self._notifier.validate_all_finished.emit()
 
         return not self.__error_rules
 
     @sgtk.LogManager.log_timing
-    def validate_rules(self, rules):
+    def validate_rules(self, rules, emit_signals=True):
         """
         Validate the given list of rules.
 
         :param rules: The list of rules.
         :type rules: list<ValidationRule>
+        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.
+        :param emit_signals: bool
         """
+
+        if emit_signals:
+            self._notifier.validate_all_begin.emit()
 
         for rule in rules:
             if not self.accept_rule_fn or self.accept_rule_fn(rule):
                 self.validate_rule(rule)
+
+        if emit_signals:
+            self._notifier.validate_all_finished.emit()
 
     def validate_rule(self, rule, *args, **kwargs):
         """
@@ -406,6 +416,8 @@ class ValidationManager(object):
 
                 # If not yet specified, prompt user to fetch missing dependencies
                 if fetch_dependencies is None:
+                    self.notifier.about_to_open_msg_box.emit()
+
                     # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
                     # to only individual dependencies
                     answer = QtGui.QMessageBox.question(
@@ -414,6 +426,8 @@ class ValidationManager(object):
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
                     )
                     fetch_dependencies = bool(answer == QtGui.QMessageBox.Yes)
+
+                    self.notifier.msg_box_closed.emit()
 
                 if fetch_dependencies:
                     if not process_rule(dependency_rule):
