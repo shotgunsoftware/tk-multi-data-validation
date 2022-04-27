@@ -681,7 +681,7 @@ class ValidationWidget(SGQWidget):
                 },
                 {
                     "type": ViewItemAction.TYPE_PUSH_BUTTON,
-                    "name": "Actions",
+                    "name": "...",
                     "padding": 2,
                     "get_data": get_rule_show_actions_data,
                     "callback": self.rule_show_actions_callback,
