@@ -682,6 +682,8 @@ class ValidationWidget(SGQWidget):
                 {
                     "type": ViewItemAction.TYPE_PUSH_BUTTON,
                     "name": "...",
+                    "padding_left": 4,
+                    "padding_right": 4,
                     "padding": 2,
                     "get_data": get_rule_show_actions_data,
                     "callback": self.rule_show_actions_callback,
@@ -753,7 +755,7 @@ class ValidationWidget(SGQWidget):
         """
 
         if not self._details_on:
-            # The details widget is not avilable
+            # The details widget is not available
             return
 
         if show is None:
