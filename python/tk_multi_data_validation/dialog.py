@@ -39,6 +39,10 @@ class AppDialog(QtGui.QWidget):
 
         self._bundle = sgtk.platform.current_bundle()
 
+        # Information about the busy popup. Set 'showing' to True when the popup is showing, else False.
+        # Set the title and details to what the current busy popup is showing.
+        self._busy_info = {"showing": False, "title": "", "details": ""}
+
         # -----------------------------------------------------
         # Create validation manager
 
@@ -61,7 +65,8 @@ class AppDialog(QtGui.QWidget):
         # Set up UI
 
         # Requires the validation manager to alrady be creatd.
-        self.setup_ui()
+        self._setup_ui()
+        self._connect_signals()
 
         # -----------------------------------------------------
         # Restore settings
@@ -81,7 +86,7 @@ class AppDialog(QtGui.QWidget):
 
         self._bundle._log_metric_viewed_app()
 
-    def setup_ui(self):
+    def _setup_ui(self):
         """
         Set up the UI manually (without a .ui file). This should only be called once.
         """
@@ -90,23 +95,6 @@ class AppDialog(QtGui.QWidget):
         # Create the main validation widget
 
         self._validation_widget = ValidationWidget(self)
-
-        # Connect signals between manager and widget
-        self._manager.notifier.validate_rule_begin.connect(
-            self._validation_widget.validate_rule_begin
-        )
-        self._manager.notifier.validate_rule_finished.connect(
-            self._validation_widget.validate_rule_finished
-        )
-        self._manager.notifier.validate_all_finished.connect(
-            self._validation_widget.validate_rule_finished
-        )
-        self._manager.notifier.resolve_rule_begin.connect(
-            self._validation_widget.fix_rule_begin
-        )
-        self._manager.notifier.resolve_rule_finished.connect(
-            self._validation_widget.fix_rule_finished
-        )
 
         # NOTE hide the left-hand filter widget for now for simplicity
         self._validation_widget.turn_on_rule_type_filter(False)
@@ -129,6 +117,50 @@ class AppDialog(QtGui.QWidget):
         main_layout.addWidget(self._validation_widget)
         self.setLayout(main_layout)
 
+    def _connect_signals(self):
+        """
+        Set up Qt signals and slot connections.
+        """
+
+        # ------------------------------------------------------------
+        # ValidationManager signals connected to this dialog
+
+        self._manager.notifier.validate_all_begin.connect(
+            lambda: self.show_busy_popup("Validating Data...", "Please hold on.")
+        )
+        self._manager.notifier.resolve_all_begin.connect(
+            lambda: self.show_busy_popup("Resolving Data Errors...", "Please hold on.")
+        )
+        self._manager.notifier.validate_all_finished.connect(self.hide_busy_popup)
+        self._manager.notifier.resolve_all_finished.connect(self.hide_busy_popup)
+        self._manager.notifier.about_to_open_msg_box.connect(
+            lambda: self.hide_busy_popup(clear_info=False)
+        )
+        self._manager.notifier.msg_box_closed.connect(self.show_busy_popup)
+
+        # ------------------------------------------------------------
+        # ValidationManager signals connected to the ValidationWidget
+
+        # Connect signals from manager and widget
+        self._manager.notifier.validate_rule_begin.connect(
+            self._validation_widget.validate_rule_begin
+        )
+        self._manager.notifier.validate_rule_finished.connect(
+            self._validation_widget.validate_rule_finished
+        )
+        self._manager.notifier.validate_all_begin.connect(
+            self._validation_widget.validate_all_begin
+        )
+        self._manager.notifier.validate_all_finished.connect(
+            self._validation_widget.validate_all_finished
+        )
+        self._manager.notifier.resolve_rule_begin.connect(
+            self._validation_widget.fix_rule_begin
+        )
+        self._manager.notifier.resolve_rule_finished.connect(
+            self._validation_widget.fix_rule_finished
+        )
+
     ######################################################################################################
     # Override Qt methods
 
@@ -149,3 +181,61 @@ class AppDialog(QtGui.QWidget):
         )
 
         return QtGui.QWidget.closeEvent(self, event)
+
+    ######################################################################################################
+    # Public methods
+
+    def show_busy_popup(self, title=None, details=None):
+        """
+        Show the busy popup message dialog.
+
+        This can be used to display a "loading" popup message for when the validation is performing an
+        operation that takes some time.
+
+        :param title: The title for the popup message. Set to None to use the current busy info title.
+        :type title: str
+        :param title: The details for the popup message. Set to None to use the current busy info details.
+        :type title: str
+        """
+
+        if self._busy_info["showing"]:
+            return
+
+        engine = self._bundle.engine
+        if not engine:
+            return
+
+        if title:
+            self._busy_info["title"] = title
+
+        if details:
+            self._busy_info["details"] = details
+
+        engine.show_busy(self._busy_info["title"], self._busy_info["details"])
+        self._busy_info["showing"] = True
+
+    def hide_busy_popup(self, clear_info=True):
+        """
+        Hide the busy popup message dialog.
+
+        :param clear_info: Set to True will reset the busy information. Set to False to keep the busy
+            information to restore the next time `show_busy_popup` in called without specifying a title
+            or details.
+        :type clear_info: bool
+        """
+
+        if not self._busy_info["showing"]:
+            return
+
+        engine = self._bundle.engine
+        if not engine:
+            return
+
+        engine.clear_busy()
+        self._busy_info["showing"] = False
+
+        # Clear the busy info if specified. Do not clear if the popup is the popup needs to be resumed at a
+        # later time (e.g. pause pop up for user interaction and resume after)
+        if clear_info:
+            self._busy_info["title"] = ""
+            self._busy_info["details"] = ""

@@ -578,9 +578,9 @@ class ValidationWidget(SGQWidget):
         # Details widget signals
         #
         self._details_widget.request_validate_data.connect(
-            lambda rule: self._validate_rules(rule, refresh_details=True)
+            lambda rule: self.on_validate_rule(rule, refresh_details=True)
         )
-        self._details_widget.request_fix_data.connect(self._fix_rules)
+        self._details_widget.request_fix_data.connect(self.on_fix_rule)
 
         # -----------------------------------------------------
         # Button clicked signals
@@ -681,7 +681,9 @@ class ValidationWidget(SGQWidget):
                 },
                 {
                     "type": ViewItemAction.TYPE_PUSH_BUTTON,
-                    "name": "Actions",
+                    "name": "...",
+                    "padding_left": 4,
+                    "padding_right": 4,
                     "padding": 2,
                     "get_data": get_rule_show_actions_data,
                     "callback": self.rule_show_actions_callback,
@@ -753,7 +755,7 @@ class ValidationWidget(SGQWidget):
         """
 
         if not self._details_on:
-            # The details widget is not avilable
+            # The details widget is not available
             return
 
         if show is None:
@@ -832,6 +834,11 @@ class ValidationWidget(SGQWidget):
             action = QtGui.QAction(rule_action["name"])
             action.triggered.connect(lambda fn=callback, a=args, k=kwargs: fn(*a, **k))
             actions.append(action)
+
+        # Add action to show details for the item that the context menu is shown for.
+        show_details_action = QtGui.QAction("Show Details")
+        show_details_action.triggered.connect(lambda: self._show_details(show=True))
+        actions.append(show_details_action)
 
         # Create the menu, add the actions and show it
         menu = QtGui.QMenu(self)
@@ -933,6 +940,38 @@ class ValidationWidget(SGQWidget):
 
         active_rules = self.get_active_rules()
         self.fix_callback(active_rules)
+
+    @wait_cursor
+    def on_validate_rule(self, rule, refresh_details=False):
+        """
+        Callback triggered to validate a specific rule.
+
+        :param rule: The validation rule to run the check function for.
+        :type rule: VaildationRule
+        :param refresh_details: Set to True to refresh the details widget after the validation.
+        :type refresh_details: bool
+        """
+
+        self.validate_rule_begin(rule)
+        try:
+            self.validate_callback([rule])
+        finally:
+            self.validate_rule_finished(rule)
+
+        if refresh_details:
+            # Refresh the details since its data may have changed
+            self._refresh_details()
+
+    @wait_cursor
+    def on_fix_rule(self, rule):
+        """
+        Callback triggered to fix a specific rule.
+
+        :param rule: The validation rule to run the fix function for.
+        :type rule: VaildationRule
+        """
+
+        self.fix_callback([rule])
 
     def validate_rule_begin(self, rule):
         """
@@ -1210,7 +1249,7 @@ class ValidationWidget(SGQWidget):
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self._validate_rules(rule, refresh_details=True)
+        self.on_validate_rule(rule, refresh_details=True)
 
     @wait_cursor
     def rule_fix_action_callback(self, view, index, pos):
@@ -1227,7 +1266,7 @@ class ValidationWidget(SGQWidget):
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self._fix_rules(rule)
+        self.on_fix_rule(rule)
 
 
 #############################################################################################################

@@ -9,3 +9,16 @@ By accessing, using, copying or modifying this work you indicate your
 agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 not expressly granted therein are reserved by Autodesk, Inc.
 */
+
+SGQToolButton
+{
+  border: none;
+  outline: none;
+  padding: 4px;
+}
+SGQToolButton:checked,
+SGQToolButton:hover
+{
+  background-color: palette(light);
+  border-radius: 4px;
+}

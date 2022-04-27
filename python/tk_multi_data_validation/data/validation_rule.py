@@ -187,7 +187,7 @@ class ValidationRule(object):
     @property
     def check_name(self):
         """Get the display name for the check function of this rule."""
-        return self._data.get("check_name", "Check")
+        return self._data.get("check_name", "Validate")
 
     @property
     def fix_name(self):
