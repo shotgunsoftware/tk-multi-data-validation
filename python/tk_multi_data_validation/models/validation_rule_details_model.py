@@ -32,8 +32,8 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
     # The maximum number of items the model can display at a time
     # TODO handle large data sets with pagination
-    MAX_DISPLAY_NUM = 500
-    INCREMENT_DISPLAY_NUM = 100
+    MAX_DISPLAY_NUM = 250
+    INCREMENT_DISPLAY_NUM = 250
 
     class ValidationRuleDetailsGroupModelItem(QtGui.QStandardItem):
         """
