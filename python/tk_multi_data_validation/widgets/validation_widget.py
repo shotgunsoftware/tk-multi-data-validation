@@ -1541,8 +1541,12 @@ def get_rule_check_action_data(parent, index):
     :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)
     """
 
-    name = index.data(ValidationRuleModel.RULE_CHECK_NAME_ROLE)
     visible = index.data(ValidationRuleModel.RULE_CHECK_FUNC_ROLE) is not None
+    name = index.data(ValidationRuleModel.RULE_CHECK_NAME_ROLE)
+
+    if name and index.data(ValidationRuleModel.RULE_EXECUTED_ROLE):
+        # Modify the name to prepend "Re", e.g. Validate -> Revalidate
+        name = "Re{name}".format(name=name.lower())
 
     return {
         "visible": visible,
