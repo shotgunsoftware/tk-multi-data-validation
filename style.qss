@@ -22,3 +22,13 @@ SGQToolButton:hover
   background-color: palette(light);
   border-radius: 4px;
 }
+SGQToolButton#errors_toggle:checked,
+SGQToolButton#errors_toggle:hover
+{
+  background-color: none;
+}
+
+SGQToolButton:hover
+{
+  color: rgba(255, 255, 255, 1);
+}
