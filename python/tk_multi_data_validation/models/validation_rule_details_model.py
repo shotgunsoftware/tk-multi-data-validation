@@ -309,11 +309,44 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             return
 
         if num_items > self._display_num:
-            display_num = self._display_num + self.INCREMENT_DISPLAY_NUM
-        else:
-            display_num = self.MAX_DISPLAY_NUM
+            # Show more
+            new_display_num = self._display_num + self.INCREMENT_DISPLAY_NUM
 
-        self.initialize_data(display_num=display_num)
+            # NOTE this method and the initialize_data method do very similar things - they could be merged
+            # into a single method for easier maintenance
+
+            # Get the root group item to add the new items to
+            group_item = self.item(0)
+            if not group_item or group_item.rowCount() <= 0:
+                return
+
+            # Get the footer and add it back to the end after all the new items are added.
+            # footer_item = self.item(self.rowCount()-1)
+            footer_item = group_item.takeRow(group_item.rowCount() - 1)[0]
+            if not footer_item or not footer_item.data(
+                ValidationRuleDetailsModel.IS_FOOTER_ROLE
+            ):
+                footer_item = ValidationRuleDetailsModel.ValidationRuleDetailsModelItem(
+                    {}, is_footer=True
+                )
+
+            # Add the new items
+            for item_data in self._details_items[self._display_num : new_display_num]:
+                model_item = ValidationRuleDetailsModel.ValidationRuleDetailsModelItem(
+                    item_data
+                )
+                group_item.appendRow(model_item)
+
+            num_items = len(self._details_items)
+            if num_items > new_display_num or num_items > self.MAX_DISPLAY_NUM:
+                group_item.appendRow(footer_item)
+
+            # Update the display number
+            self._display_num = new_display_num
+
+        else:
+            # Show less (revert to original max number of items)
+            self.initialize_data()
 
     def get_footer_text(self):
         """
