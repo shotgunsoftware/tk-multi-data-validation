@@ -714,6 +714,17 @@ class ValidationWidget(SGQWidget):
             ],
             ViewItemDelegate.TOP_RIGHT,
         )
+        delegate.add_actions(
+            [
+                {
+                    "type": ViewItemAction.TYPE_ICON,
+                    "show_always": True,
+                    "padding": 2,
+                    "get_data": get_rule_status_action_data,
+                },
+            ],
+            ViewItemDelegate.TOP_LEFT,
+        )
 
         self._rules_view.setItemDelegate(delegate)
         return delegate
@@ -1560,6 +1571,30 @@ def get_rule_fix_action_data(parent, index):
     return {
         "visible": visible,
         "name": name,
+    }
+
+
+def get_rule_status_action_data(parent, index):
+    """
+    Callback function triggered by the ViewItemDelegate.
+
+    Get the data for displaying the rule status.
+
+    :param parent: The parent of the ViewItemDelegate which triggered this callback
+    :type parent: QAbstractItemView
+    :param index: The index the action is for.
+    :type index: :class:`sgtk.platform.qt.QtCore.QModelIndex`
+
+    :return: The data for the action and index.
+    :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)
+    """
+
+    icon = index.data(ValidationRuleModel.RULE_STATUS_ICON_ROLE)
+    visible = icon is not None
+
+    return {
+        "visible": visible,
+        "icon": icon,
     }
 
 
