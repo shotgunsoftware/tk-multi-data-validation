@@ -61,9 +61,12 @@ class ValidationRule(object):
             fix_tooltip
                 :type: str
                 :description: Text that describes what the rule's fix function will do.
-            error_message
+            error_msg
                 :type: str
                 :description: Text that describes how the data is not valid.
+            warn_msg
+                :type: str
+                :description: Text that describes the warning for this rule.
             kwargs
                 :type: dict
                 :description: The keyword arguments to pass to the check and fix functions.
@@ -202,7 +205,14 @@ class ValidationRule(object):
     @property
     def error_message(self):
         """Get the text that describes how the data is not valid."""
-        return self._data.get("error_msg", "Data violation: '{}'".format(self.name))
+        default_msg = "Found errors." if not self.manual else ""
+        return self._data.get("error_msg", default_msg)
+
+    @property
+    def warn_message(self):
+        """Get the text that describes the warning for this rule."""
+        default_msg = "Validatoin must be manually checked." if self.manual else ""
+        return self._data.get("warn_msg", default_msg)
 
     @property
     def checked(self):
