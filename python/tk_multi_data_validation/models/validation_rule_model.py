@@ -211,17 +211,28 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
                 return self._rule.name
 
-            if role == ValidationRuleModel.VIEW_ITEM_SUBTITLE_ROLE:
-                if not self._rule:
-                    return None
-                if self._rule.valid is None or self._rule.valid:
-                    return ""
-                return self._rule.error_message
-
             if role == ValidationRuleModel.VIEW_ITEM_TEXT_ROLE:
                 if not self._rule:
                     return None
-                return self._rule.description
+                if not self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self._rule.description
+                return "<br/>".join(
+                    [
+                        "<span style='color:#EB5555;'>{}</span>".format(
+                            self._rule.error_message
+                        ),
+                        "<span>{}</span>".format(self._rule.description),
+                    ]
+                )
+
+            if role == ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE:
+                if not self._rule:
+                    return None
+                if not self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return None
+                return "<span style='color:#EB5555;'>{}</span>".format(
+                    self._rule.error_message
+                )
 
             if role == ValidationRuleModel.RULE_TYPE_ID_ROLE:
                 if not self._rule:

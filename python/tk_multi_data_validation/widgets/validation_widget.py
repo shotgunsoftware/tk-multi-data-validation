@@ -439,35 +439,29 @@ class ValidationWidget(SGQWidget):
         # List view mode button
         self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.ListViewMode())
         self._view_mode_list_button.setToolTip("Compact List View")
-        self._view_mode_list_button.clicked.connect(
-            lambda checked=None: self._set_view_mode(self.VIEW_MODE_LIST)
-        )
 
         # Grouped view mode button
         self._view_mode_grouped_button = SGQToolButton(
             self, icon=SGQIcon.GridViewMode()
         )
         self._view_mode_grouped_button.setToolTip("Grouped View")
-        self._view_mode_grouped_button.clicked.connect(
-            lambda checked=None: self._set_view_mode(self.VIEW_MODE_GROUPED)
-        )
 
         # Error view mode button
-        self._errors_button = SGQToolButton(self, icon=SGQIcon.RedBullet())
-        self._errors_button.setToolTip("Toggle to see only validation errors.")
-        self._errors_button.clicked.connect(lambda checked=None: self._toggle_errors())
+        self._errors_toggle = SGQToolButton(self, icon=SGQIcon.Toggle())
+        self._errors_toggle.setObjectName("errors_toggle")
+        self._errors_toggle.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self._errors_toggle.setText("  Only show validation errors")
+        self._errors_toggle.setToolTip("Toggle to see only validation errors.")
+        self._errors_toggle.setIconSize(QtCore.QSize(25, 14))
+        self._errors_toggle.setCursor(QtCore.Qt.PointingHandCursor)
 
         # Details button
         self._details_button = SGQToolButton(self, icon=SGQIcon.Info())
         self._details_button.setToolTip("Show/Hide Details Panel")
-        self._details_button.clicked.connect(
-            lambda checked=None: self._show_details(checked)
-        )
 
         # Filter text search bar
         self._search_text_widget = SearchWidget(self)
         self._search_text_widget.setMaximumWidth(150)
-        self._search_text_widget.search_edited.connect(self._on_search_text_changed)
 
         # Filter menu
         self._filter_menu = FilterMenu(self)
@@ -506,7 +500,6 @@ class ValidationWidget(SGQWidget):
                 None,
                 self._view_mode_list_button,
                 self._view_mode_grouped_button,
-                self._errors_button,
                 self._search_text_widget,
                 self._filter_menu_button,
                 self._details_button,
@@ -514,7 +507,7 @@ class ValidationWidget(SGQWidget):
         )
 
         # -----------------------------------------------------
-        # Bottom right main action buttons
+        # Bottom toolbar
         #
 
         self._validate_button = QtGui.QPushButton("Validate")
@@ -525,6 +518,7 @@ class ValidationWidget(SGQWidget):
         self._footer_widget = SGQWidget(
             self,
             child_widgets=[
+                self._errors_toggle,
                 None,
                 self._validate_button,
                 self._fix_button,
@@ -545,17 +539,37 @@ class ValidationWidget(SGQWidget):
         """
 
         # -----------------------------------------------------
+        # Button signals
+        #
+        self._view_mode_list_button.clicked.connect(
+            lambda checked=None: self._set_view_mode(self.VIEW_MODE_LIST)
+        )
+        self._view_mode_grouped_button.clicked.connect(
+            lambda checked=None: self._set_view_mode(self.VIEW_MODE_GROUPED)
+        )
+        self._details_button.clicked.connect(
+            lambda checked=None: self._show_details(checked)
+        )
+        self._errors_toggle.clicked.connect(lambda checked=None: self._toggle_errors())
+        self._search_text_widget.search_edited.connect(self._on_search_text_changed)
+
+        # -----------------------------------------------------
         # Rule types view signals
         #
         self._rule_types_view.selectionModel().selectionChanged.connect(
             self._on_rule_type_selection_changed
         )
+
+        # -----------------------------------------------------
+        # Rules view signals
+        #
         self._rules_view.selectionModel().selectionChanged.connect(
             self._on_rule_selection_changed
         )
         self._rules_view.customContextMenuRequested.connect(
             self._on_rule_item_context_menu_requested
         )
+        self._rules_view.doubleClicked.connect(self._on_rule_item_double_clicked)
 
         # -----------------------------------------------------
         # Rules types model signals
@@ -654,11 +668,10 @@ class ValidationWidget(SGQWidget):
         delegate.text_padding = ViewItemDelegate.Padding(2, 7, 2, 7)
 
         delegate.header_role = ValidationRuleModel.VIEW_ITEM_HEADER_ROLE
-        delegate.subtitle_role = ValidationRuleModel.VIEW_ITEM_SUBTITLE_ROLE
-        delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
         delegate.separator_role = ValidationRuleModel.VIEW_ITEM_SEPARATOR_ROLE
         delegate.loading_role = ValidationRuleModel.VIEW_ITEM_LOADING_ROLE
         delegate.height_role = ValidationRuleModel.VIEW_ITEM_HEIGHT_ROLE
+        delegate.expand_role = ValidationRuleModel.VIEW_ITEM_EXPAND_ROLE
 
         delegate.add_action(
             {
@@ -744,9 +757,11 @@ class ValidationWidget(SGQWidget):
             self._view_mode = view_mode
             self._rules_model.hierarchical = False
             self._rules_view.group_items_selectable = True
-            self._rules_delegate.expand_role = None
-            self._rules_delegate.visible_lines = 1
+            self._rules_delegate.text_role = (
+                ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE
+            )
             self._rules_delegate.action_item_margin = 4
+            self._details_widget.show_description = True
             self._view_mode_list_button.setChecked(True)
             self._view_mode_grouped_button.setChecked(False)
 
@@ -754,9 +769,9 @@ class ValidationWidget(SGQWidget):
             self._view_mode = view_mode
             self._rules_model.hierarchical = True
             self._rules_view.group_items_selectable = False
-            self._rules_delegate.expand_role = ValidationRuleModel.VIEW_ITEM_EXPAND_ROLE
-            self._rules_delegate.visible_lines = 2
+            self._rules_delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
             self._rules_delegate.action_item_margin = 7
+            self._details_widget.show_description = False
             self._view_mode_grouped_button.setChecked(True)
             self._view_mode_list_button.setChecked(False)
 
@@ -923,7 +938,7 @@ class ValidationWidget(SGQWidget):
             self._view_overlay_widget.show_message("No validation data.")
 
         elif self._rules_proxy_model.rowCount() <= 0:
-            if self._errors_button.isChecked():
+            if self._errors_toggle.isChecked():
                 msg = "No validation errors found."
             else:
                 msg = "No results. Clear filters to see validation data."
