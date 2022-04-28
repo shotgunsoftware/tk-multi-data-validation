@@ -161,6 +161,18 @@ class AppDialog(QtGui.QWidget):
             self._validation_widget.fix_rule_finished
         )
 
+        # ------------------------------------------------------------
+        # ValidationWidget signals
+
+        self._validation_widget.details_about_to_execute_action.connect(
+            lambda action: self.show_busy_popup(
+                "Executing Action...", action.get("name", "Please hold on.")
+            )
+        )
+        self._validation_widget.details_execute_action_finished.connect(
+            self.hide_busy_popup
+        )
+
     ######################################################################################################
     # Override Qt methods
 

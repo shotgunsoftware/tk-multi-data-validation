@@ -63,6 +63,11 @@ class ValidationWidget(SGQWidget):
     #
     (VIEW_MODE_LIST, VIEW_MODE_GROUPED,) = range(2)
 
+    # Emit signals to indicate that the details widget is about to run an action, and when it has finished
+    # (this is useful to # show a busy indicator, if the operation takes some time)
+    details_about_to_execute_action = QtCore.Signal(dict)
+    details_execute_action_finished = QtCore.Signal()
+
     def __init__(self, parent):
         """
         Create the validation widget.
@@ -581,6 +586,12 @@ class ValidationWidget(SGQWidget):
             lambda rule: self.on_validate_rule(rule, refresh_details=True)
         )
         self._details_widget.request_fix_data.connect(self.on_fix_rule)
+        self._details_widget.about_to_execute_action.connect(
+            self.details_about_to_execute_action
+        )
+        self._details_widget.execute_action_finished.connect(
+            self.details_execute_action_finished
+        )
 
         # -----------------------------------------------------
         # Button clicked signals

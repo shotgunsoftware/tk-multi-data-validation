@@ -33,6 +33,11 @@ class ValidationDetailsWidget(SGQWidget):
     # Emit signal to request to fix data according to the validation rule
     request_fix_data = QtCore.Signal(ValidationRule)
 
+    # Emit signals to indicate that an action is about to run, and when it has finished (this is useful to
+    # show a busy indicator, if the operation takes some time)
+    about_to_execute_action = QtCore.Signal(dict)
+    execute_action_finished = QtCore.Signal()
+
     def __init__(self, parent):
         """
         Create the validation details widget.
@@ -285,15 +290,10 @@ class ValidationDetailsWidget(SGQWidget):
 
         actions = []
         for rule_action in rule_actions:
-            callback = rule_action.get("callback")
-            if not callback:
-                continue
-
-            args = rule_action.get("args", [])
-            kwargs = rule_action.get("kwargs", {})
-
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, a=args, k=kwargs: fn(*a, **k))
+            action.triggered.connect(
+                lambda checked=False, a=rule_action: self._execute_action(a)
+            )
             actions.append(action)
 
         menu = QtGui.QMenu(self)
@@ -324,6 +324,66 @@ class ValidationDetailsWidget(SGQWidget):
             action["args"] = [item_id]
             actions.append(action)
         return actions
+
+    def _get_details_item_first_action(self, index):
+        """
+        Get the actions for the details item that corresponds to the given index, and return the
+        first action in the list.
+
+        :param index: The details item index.
+        :type index: QModelIndex
+
+        :return: The first action for the details item.
+        :rtype: dict
+        """
+
+        actions = self._get_details_item_actions(index)
+        if not actions:
+            return {}
+
+        return actions[0]
+
+    def _execute_details_item_first_action(self, index):
+        """
+        Get the actions for the details item that corresponds to the given index, and execute the
+        first action in the list.
+
+        :param index: The details item index.
+        :type index: QModelIndex
+        """
+
+        action = self._get_details_item_first_action(index)
+        return self._execute_action(action)
+
+    def _execute_action(self, action):
+        """
+        Execute an action.
+
+        Get the data from the action to execute it. Emit signals to indicate when the action is about to run
+        and after it has finished.
+
+        :parm action: The action to execute.
+        :type action: dict
+
+        :return: The value returned by the action.
+        :rtype: any
+        """
+
+        if not action:
+            return None
+
+        callback_fn = action.get("callback")
+        if not callback_fn:
+            return None
+
+        args = action.get("args", [])
+        kwargs = action.get("kwargs", {})
+
+        self.about_to_execute_action.emit(action)
+        result = callback_fn(*args, **kwargs)
+        self.execute_action_finished.emit()
+
+        return result
 
     ######################################################################################################
     # Callback methods
@@ -377,11 +437,11 @@ class ValidationDetailsWidget(SGQWidget):
         :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)
         """
 
-        actions = self._get_details_item_actions(index)
+        action = self._get_details_item_first_action(index)
 
-        if actions and actions[0]:
+        if action:
             visible = True
-            name = actions[0]["name"]
+            name = action["name"]
         else:
             visible = False
             name = ""
@@ -402,22 +462,7 @@ class ValidationDetailsWidget(SGQWidget):
         :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`
         """
 
-        actions = self._get_details_item_actions(index)
-
-        if not actions:
-            return
-
-        action = actions[0]
-        if not action:
-            return
-
-        func = action.get("callback")
-        if not func:
-            return
-
-        args = action.get("args", [])
-        kwargs = action.get("kwargs", {})
-        return func(*args, **kwargs)
+        self._execute_details_item_first_action(index)
 
 
 ######################################################################################################
