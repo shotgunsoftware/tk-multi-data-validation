@@ -751,27 +751,27 @@ class ValidationWidget(SGQWidget):
         :type view_mode: int
         """
 
+        self._view_mode = view_mode
+
         if view_mode == self.VIEW_MODE_LIST:
-            self._view_mode = view_mode
+            self._view_mode_list_button.setChecked(True)
+            self._view_mode_grouped_button.setChecked(False)
             self._rules_model.hierarchical = False
             self._rules_view.group_items_selectable = True
+            self._details_widget.show_description = True
+            self._rules_delegate.action_item_margin = 4
             self._rules_delegate.text_role = (
                 ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE
             )
-            self._rules_delegate.action_item_margin = 4
-            self._details_widget.show_description = True
-            self._view_mode_list_button.setChecked(True)
-            self._view_mode_grouped_button.setChecked(False)
 
         elif view_mode == self.VIEW_MODE_GROUPED:
-            self._view_mode = view_mode
-            self._rules_model.hierarchical = True
-            self._rules_view.group_items_selectable = False
-            self._rules_delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
-            self._rules_delegate.action_item_margin = 7
-            self._details_widget.show_description = False
             self._view_mode_grouped_button.setChecked(True)
             self._view_mode_list_button.setChecked(False)
+            self._rules_model.hierarchical = True
+            self._rules_view.group_items_selectable = False
+            self._details_widget.show_description = False
+            self._rules_delegate.action_item_margin = 7
+            self._rules_delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
 
         else:
             assert False, "Unsupported view mode"
