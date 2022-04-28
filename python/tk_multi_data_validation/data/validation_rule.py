@@ -123,6 +123,8 @@ class ValidationRule(object):
         self._valid = None
         # The error items found the last time the rule's check function was executed.
         self._error_items = None
+        # Flag indicating that the rule fix method was executed at least once
+        self._fix_executed = False
 
     @property
     def id(self):
@@ -307,6 +309,13 @@ class ValidationRule(object):
         return self._error_items or []
 
     @property
+    def fix_executed(self):
+        """
+        Get the flag indicating if the rule's fix method was executed at least once.
+        """
+        return self._fix_executed
+
+    @property
     def dependencies(self):
         """
         Get the dependencies information for this rule.
@@ -434,3 +443,6 @@ class ValidationRule(object):
                 if self.manual:
                     self.manual_checked = False
                 raise e
+
+            # The fix function was executed - set the flag to True
+            self._fix_executed = True
