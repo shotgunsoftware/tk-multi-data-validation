@@ -226,6 +226,9 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_item_view.customContextMenuRequested.connect(
             self._on_details_item_context_menu_requested
         )
+        self._details_item_view.doubleClicked.connect(
+            self._on_details_item_double_clicked
+        )
 
     def _create_delegate(self):
         """
@@ -398,6 +401,16 @@ class ValidationDetailsWidget(SGQWidget):
         """
 
         self._show_context_menu(self.sender(), pos)
+
+    def _on_details_item_double_clicked(self, index):
+        """
+        Callback triggered when an error item from the view has been right-clicked.
+
+        :param index: The index the mouse double-clicked on.
+        :type index: QModelIndex
+        """
+
+        self._execute_details_item_first_action(index)
 
     def _request_validate_rule(self):
         """
