@@ -543,7 +543,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._rules = rules
 
         # Set up the groupings for hierarchical model mode
-        if self.hierarchical:
+        if self.hierarchical and self.group_by:
             group_items = {r.get_data(self.group_by): None for r in self._rules}
 
             if None in group_items:
