@@ -188,6 +188,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.VIEW_ITEM_LOADING_ROLE:
                 return self._is_loading
 
+            if role == ValidationRuleModel.VIEW_ITEM_HEIGHT_ROLE:
+                return None
+
             if role == ValidationRuleModel.IS_GROUP_ITEM_ROLE:
                 return False
 
