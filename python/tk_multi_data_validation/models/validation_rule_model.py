@@ -495,6 +495,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         rows = self.rowCount()
         for row in range(rows):
             model_item = self.item(row)
+            model_item.emitDataChanged()
             row_count = model_item.rowCount()
             for child_row in range(row_count):
                 child = model_item.child(child_row)
