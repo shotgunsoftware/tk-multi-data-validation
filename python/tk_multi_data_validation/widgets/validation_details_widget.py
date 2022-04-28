@@ -33,6 +33,11 @@ class ValidationDetailsWidget(SGQWidget):
     # Emit signal to request to fix data according to the validation rule
     request_fix_data = QtCore.Signal(ValidationRule)
 
+    # Emit signals to indicate that an action is about to run, and when it has finished (this is useful to
+    # show a busy indicator, if the operation takes some time)
+    about_to_execute_action = QtCore.Signal(dict)
+    execute_action_finished = QtCore.Signal()
+
     def __init__(self, parent):
         """
         Create the validation details widget.
@@ -47,6 +52,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         self._rule = None
         self._details_item_model = ValidationRuleDetailsModel(self)
+        self._show_description = True
 
         self._setup_ui()
         self._connect_signals()
@@ -58,6 +64,17 @@ class ValidationDetailsWidget(SGQWidget):
     def rule(self):
         """Get the validation rule that this details widget displays data for."""
         return self._rule
+
+    @property
+    def show_description(self):
+        """
+        Get or set the flag indicating to display the validation rule description in the details text.
+        """
+        return self._show_description
+
+    @show_description.setter
+    def show_description(self, show):
+        self._show_description = show
 
     ######################################################################################################
     # Public methods
@@ -87,16 +104,17 @@ class ValidationDetailsWidget(SGQWidget):
         #
         self._details.setTitle(self.rule.name)
 
-        if self.rule.dependencies:
-            dependencies_text = "Dependencies (by ID):\n    "
-            dependencies_text += "\n    ".join([d for d in self.rule.dependencies])
+        dependencies_names = self.rule.get_dependency_names()
+        if dependencies_names:
+            dependencies_text = "Dependencies that will run before this fix:<ul>{deps}</ul>".format(
+                deps="".join(["<li>{}</li>".format(d) for d in dependencies_names])
+            )
         else:
             dependencies_text = ""
 
-        description = "{desc}\n\n{id}{space}{dependencies}".format(
-            desc=self.rule.description,
-            id="ID: {}".format(self.rule.id),
-            space="\n\n" if dependencies_text else "",
+        description = "<html>{desc}{space}{dependencies}</html>".format(
+            desc=self.rule.description if self.show_description else "",
+            space="<br/><br/>" if self.show_description and dependencies_text else "",
             dependencies=dependencies_text,
         )
         self._details_description.setText(description)
@@ -208,6 +226,9 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_item_view.customContextMenuRequested.connect(
             self._on_details_item_context_menu_requested
         )
+        self._details_item_view.doubleClicked.connect(
+            self._on_details_item_double_clicked
+        )
 
     def _create_delegate(self):
         """
@@ -272,15 +293,10 @@ class ValidationDetailsWidget(SGQWidget):
 
         actions = []
         for rule_action in rule_actions:
-            callback = rule_action.get("callback")
-            if not callback:
-                continue
-
-            args = rule_action.get("args", [])
-            kwargs = rule_action.get("kwargs", {})
-
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, a=args, k=kwargs: fn(*a, **k))
+            action.triggered.connect(
+                lambda checked=False, a=rule_action: self._execute_action(a)
+            )
             actions.append(action)
 
         menu = QtGui.QMenu(self)
@@ -312,6 +328,66 @@ class ValidationDetailsWidget(SGQWidget):
             actions.append(action)
         return actions
 
+    def _get_details_item_first_action(self, index):
+        """
+        Get the actions for the details item that corresponds to the given index, and return the
+        first action in the list.
+
+        :param index: The details item index.
+        :type index: QModelIndex
+
+        :return: The first action for the details item.
+        :rtype: dict
+        """
+
+        actions = self._get_details_item_actions(index)
+        if not actions:
+            return {}
+
+        return actions[0]
+
+    def _execute_details_item_first_action(self, index):
+        """
+        Get the actions for the details item that corresponds to the given index, and execute the
+        first action in the list.
+
+        :param index: The details item index.
+        :type index: QModelIndex
+        """
+
+        action = self._get_details_item_first_action(index)
+        return self._execute_action(action)
+
+    def _execute_action(self, action):
+        """
+        Execute an action.
+
+        Get the data from the action to execute it. Emit signals to indicate when the action is about to run
+        and after it has finished.
+
+        :parm action: The action to execute.
+        :type action: dict
+
+        :return: The value returned by the action.
+        :rtype: any
+        """
+
+        if not action:
+            return None
+
+        callback_fn = action.get("callback")
+        if not callback_fn:
+            return None
+
+        args = action.get("args", [])
+        kwargs = action.get("kwargs", {})
+
+        self.about_to_execute_action.emit(action)
+        result = callback_fn(*args, **kwargs)
+        self.execute_action_finished.emit()
+
+        return result
+
     ######################################################################################################
     # Callback methods
 
@@ -325,6 +401,16 @@ class ValidationDetailsWidget(SGQWidget):
         """
 
         self._show_context_menu(self.sender(), pos)
+
+    def _on_details_item_double_clicked(self, index):
+        """
+        Callback triggered when an error item from the view has been right-clicked.
+
+        :param index: The index the mouse double-clicked on.
+        :type index: QModelIndex
+        """
+
+        self._execute_details_item_first_action(index)
 
     def _request_validate_rule(self):
         """
@@ -364,11 +450,11 @@ class ValidationDetailsWidget(SGQWidget):
         :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)
         """
 
-        actions = self._get_details_item_actions(index)
+        action = self._get_details_item_first_action(index)
 
-        if actions and actions[0]:
+        if action:
             visible = True
-            name = actions[0]["name"]
+            name = action["name"]
         else:
             visible = False
             name = ""
@@ -389,22 +475,7 @@ class ValidationDetailsWidget(SGQWidget):
         :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`
         """
 
-        actions = self._get_details_item_actions(index)
-
-        if not actions:
-            return
-
-        action = actions[0]
-        if not action:
-            return
-
-        func = action.get("callback")
-        if not func:
-            return
-
-        args = action.get("args", [])
-        kwargs = action.get("kwargs", {})
-        return func(*args, **kwargs)
+        self._execute_details_item_first_action(index)
 
 
 ######################################################################################################

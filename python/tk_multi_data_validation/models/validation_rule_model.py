@@ -13,7 +13,7 @@ from sgtk.platform.qt import QtGui, QtCore
 
 from .validation_rule_type_model import ValidationRuleTypeModel
 from ..data.validation_rule import ValidationRule
-from ..utils.framework_qtwidgets import ViewItemRolesMixin
+from ..utils.framework_qtwidgets import SGQIcon, ViewItemRolesMixin
 
 
 class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
@@ -36,15 +36,17 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_CHECK_FUNC_ROLE,
         RULE_FIX_NAME_ROLE,
         RULE_FIX_FUNC_ROLE,
-        RULE_EXECUTED_ROLE,  # False if the rule check function has never been executed, else True
+        RULE_VALIDATION_RAN,  # False if the rule check function has never been executed, else True
+        RULE_FIX_RAN,  # False if the rule fix function has never been executed, else True
         RULE_VALID_ROLE,
         RULE_HAS_ERROR_ROLE,
         RULE_ACTIONS_ROLE,
         RULE_ITEM_ACTIONS_ROLE,
         RULE_ERROR_ITEMS_ROLE,
         RULE_MANUAL_CHECK_STATE_ROLE,
+        RULE_STATUS_ICON_ROLE,
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 20)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 22)
 
     #
     # Signals
@@ -110,7 +112,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     child_item = self.child(row)
                     if child_item:
                         executed = child_item.data(
-                            ValidationRuleModel.RULE_EXECUTED_ROLE
+                            ValidationRuleModel.RULE_VALIDATION_RAN
                         )
                         if executed:
                             valid = child_item.data(ValidationRuleModel.RULE_VALID_ROLE)
@@ -161,9 +163,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             # UI properties
             self._is_loading = False
 
-            error_color = QtGui.QColor(255, 0, 0, 25)
-            self._error_brush = QtGui.QBrush(error_color)
-
         def data(self, role):
             """
             Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.
@@ -175,8 +174,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             """
 
             if role == QtCore.Qt.BackgroundRole:
-                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
-                    return self._error_brush
                 return QtGui.QApplication.palette().midlight()
 
             if role == QtCore.Qt.CheckStateRole:
@@ -187,6 +184,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             if role == ValidationRuleModel.VIEW_ITEM_LOADING_ROLE:
                 return self._is_loading
+
+            if role == ValidationRuleModel.VIEW_ITEM_HEIGHT_ROLE:
+                return None
 
             if role == ValidationRuleModel.IS_GROUP_ITEM_ROLE:
                 return False
@@ -212,17 +212,62 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
                 return self._rule.name
 
-            if role == ValidationRuleModel.VIEW_ITEM_SUBTITLE_ROLE:
-                if not self._rule:
-                    return None
-                if self._rule.valid is None or self._rule.valid:
-                    return ""
-                return self._rule.error_message
-
             if role == ValidationRuleModel.VIEW_ITEM_TEXT_ROLE:
                 if not self._rule:
                     return None
-                return self._rule.description
+
+                if self._rule.optional and not self._rule.checked:
+                    return None
+
+                lines = []
+                if (
+                    self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE)
+                    and self._rule.error_message
+                ):
+                    lines.append(
+                        "<span style='color:#EB5555;'>{}</span>".format(
+                            self._rule.error_message
+                        )
+                    )
+                if (
+                    (self._rule.manual and not self._rule.manual_checked)
+                    or (not self._rule.manual and not self._rule.check_func)
+                ) and self._rule.warn_message:
+                    lines.append(
+                        "<span style='color:#FBB549;'>{}</span>".format(
+                            self._rule.warn_message
+                        )
+                    )
+                lines.append(self._rule.description)
+                return "<br/>".join(lines)
+
+            if role == ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE:
+                if not self._rule:
+                    return None
+
+                if self._rule.optional and not self._rule.checked:
+                    return None
+
+                lines = []
+                if (
+                    self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE)
+                    and self._rule.error_message
+                ):
+                    lines.append(
+                        "<span style='color:#EB5555;'>{}</span>".format(
+                            self._rule.error_message
+                        )
+                    )
+                if (
+                    (self._rule.manual and not self._rule.manual_checked)
+                    or (not self._rule.manual and not self._rule.check_func)
+                ) and self._rule.warn_message:
+                    lines.append(
+                        "<span style='color:#FBB549;'>{}</span>".format(
+                            self._rule.warn_message
+                        )
+                    )
+                return "<br/>".join(lines)
 
             if role == ValidationRuleModel.RULE_TYPE_ID_ROLE:
                 if not self._rule:
@@ -256,10 +301,15 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
                 return self._rule.fix_func
 
-            if role == ValidationRuleModel.RULE_EXECUTED_ROLE:
+            if role == ValidationRuleModel.RULE_VALIDATION_RAN:
                 if not self._rule:
                     return None
                 return self._rule.valid is not None
+
+            if role == ValidationRuleModel.RULE_FIX_RAN:
+                if not self._rule:
+                    return None
+                return self._rule.fix_executed
 
             if role == ValidationRuleModel.RULE_VALID_ROLE:
                 if not self._rule:
@@ -274,12 +324,44 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     # Optional rules that are not active do not have errors
                     return False
 
-                if not self.data(ValidationRuleModel.RULE_EXECUTED_ROLE):
+                if self._rule.manual or not self._rule.check_func:
+                    # Manual rules cannot have errors since they cannot be checked.
+                    return False
+
+                if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
                     # Rules that have not been executed do not have errors
                     return False
 
                 # Rule is active and has been executed, check its valid status.
                 return not self.data(ValidationRuleModel.RULE_VALID_ROLE)
+
+            if role == ValidationRuleModel.RULE_STATUS_ICON_ROLE:
+                if not self._rule:
+                    return None
+
+                if self._rule.optional and not self._rule.checked:
+                    # Optional rules that are not active do not have errors
+                    return False
+
+                if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
+                    return None
+
+                # TODO revist this special case handling for rules that do not have an automated validate
+                # function, but do have an autoamted fix (semi-automated)
+                if (
+                    not self._rule.fix_executed
+                    and not self._rule.manual
+                    and not self._rule.check_func
+                ):
+                    return self.model().warning_status_icon
+
+                if self._rule.manual and not self._rule.manual_checked:
+                    return self.model().warning_status_icon
+
+                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self.model().error_status_icon
+
+                return self.model().ok_status_icon
 
             if role == ValidationRuleModel.CHECKBOX_ICON_ROLE:
                 if not self._rule:
@@ -347,7 +429,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 )
 
     ######################################################################################################
-    # ValidationRuleTypeModel methods
+    # ValidationRuleModel methods
     #
 
     def __init__(self, parent, group_by=None):
@@ -365,6 +447,11 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._group_by = group_by
         self._rules = []
         self._hierarchical = True
+
+        # Status icons
+        self._error_status_icon = SGQIcon.ValidationError()
+        self._warning_status_icon = SGQIcon.ValidationWarning(size=SGQIcon.SMALL)
+        self._ok_status_icon = SGQIcon.ValidationOk()
 
         # Add additional roles defined by the ViewItemRolesMixin class.
         self.NEXT_AVAILABLE_ROLE = self.initialize_roles(self.NEXT_AVAILABLE_ROLE)
@@ -396,6 +483,21 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     @hierarchical.setter
     def hierarchical(self, value):
         self._hierarchical = value
+
+    @property
+    def error_status_icon(self):
+        """Get the error status icon."""
+        return self._error_status_icon
+
+    @property
+    def warning_status_icon(self):
+        """Get the warning status icon."""
+        return self._warning_status_icon
+
+    @property
+    def ok_status_icon(self):
+        """Get the ok status icon."""
+        return self._ok_status_icon
 
     ######################################################################################################
     # Public methods
@@ -441,7 +543,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._rules = rules
 
         # Set up the groupings for hierarchical model mode
-        if self.hierarchical:
+        if self.hierarchical and self.group_by:
             group_items = {r.get_data(self.group_by): None for r in self._rules}
 
             if None in group_items:
@@ -495,6 +597,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         rows = self.rowCount()
         for row in range(rows):
             model_item = self.item(row)
+            model_item.emitDataChanged()
             row_count = model_item.rowCount()
             for child_row in range(row_count):
                 child = model_item.child(child_row)
@@ -747,7 +850,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 # Optional checks that are not turned on are trivally OK
                 return ValidationRuleTypeModel.RULE_TYPE_STATUS_OK
 
-            executed = model_item.data(ValidationRuleModel.RULE_EXECUTED_ROLE)
+            executed = model_item.data(ValidationRuleModel.RULE_VALIDATION_RAN)
             if not executed:
                 return ValidationRuleTypeModel.RULE_TYPE_STATUS_INCOMPLETE
 
@@ -827,7 +930,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 # Optional checks that are not turned on are skipped
                 return
 
-            executed = model_item.data(ValidationRuleModel.RULE_EXECUTED_ROLE)
+            executed = model_item.data(ValidationRuleModel.RULE_VALIDATION_RAN)
             if not executed:
                 incomplete.add(rule.type.id)
             else:

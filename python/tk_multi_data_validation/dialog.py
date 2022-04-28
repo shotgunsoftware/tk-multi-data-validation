@@ -94,7 +94,7 @@ class AppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Create the main validation widget
 
-        self._validation_widget = ValidationWidget(self)
+        self._validation_widget = ValidationWidget(self, group_rules_by="data_type")
 
         # NOTE hide the left-hand filter widget for now for simplicity
         self._validation_widget.turn_on_rule_type_filter(False)
@@ -159,6 +159,18 @@ class AppDialog(QtGui.QWidget):
         )
         self._manager.notifier.resolve_rule_finished.connect(
             self._validation_widget.fix_rule_finished
+        )
+
+        # ------------------------------------------------------------
+        # ValidationWidget signals
+
+        self._validation_widget.details_about_to_execute_action.connect(
+            lambda action: self.show_busy_popup(
+                "Executing Action...", action.get("name", "Please hold on.")
+            )
+        )
+        self._validation_widget.details_execute_action_finished.connect(
+            self.hide_busy_popup
         )
 
     ######################################################################################################

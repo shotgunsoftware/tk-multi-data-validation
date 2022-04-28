@@ -61,9 +61,12 @@ class ValidationRule(object):
             fix_tooltip
                 :type: str
                 :description: Text that describes what the rule's fix function will do.
-            error_message
+            error_msg
                 :type: str
                 :description: Text that describes how the data is not valid.
+            warn_msg
+                :type: str
+                :description: Text that describes the warning for this rule.
             kwargs
                 :type: dict
                 :description: The keyword arguments to pass to the check and fix functions.
@@ -100,8 +103,8 @@ class ValidationRule(object):
                         :type: str
                         :description: Text to display as for the item action's tooltip help messages.
             dependencies
-                :type: list<str>
-                :description: A list of the valiation rule ids that this rule depends on. All dependency rules must be fixed before this rule can be fixed.
+                :type: dict<str>
+                :description: A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.
         """
 
         # Set the main rule data
@@ -120,6 +123,8 @@ class ValidationRule(object):
         self._valid = None
         # The error items found the last time the rule's check function was executed.
         self._error_items = None
+        # Flag indicating that the rule fix method was executed at least once
+        self._fix_executed = False
 
     @property
     def id(self):
@@ -175,7 +180,7 @@ class ValidationRule(object):
         These types of rules must be manually validated by user.
         """
 
-        return not bool(self.check_func)
+        return not (bool(self.check_func) or bool(self.fix_func))
 
     @property
     def optional(self):
@@ -202,7 +207,14 @@ class ValidationRule(object):
     @property
     def error_message(self):
         """Get the text that describes how the data is not valid."""
-        return self._data.get("error_msg", "Data violation: '{}'".format(self.name))
+        default_msg = "Found errors." if not self.manual else ""
+        return self._data.get("error_msg", default_msg)
+
+    @property
+    def warn_message(self):
+        """Get the text that describes the warning for this rule."""
+        default_msg = "Validatoin must be manually checked." if self.manual else ""
+        return self._data.get("warn_msg", default_msg)
 
     @property
     def checked(self):
@@ -297,14 +309,21 @@ class ValidationRule(object):
         return self._error_items or []
 
     @property
+    def fix_executed(self):
+        """
+        Get the flag indicating if the rule's fix method was executed at least once.
+        """
+        return self._fix_executed
+
+    @property
     def dependencies(self):
         """
-        Get the validation rules that this rule depends on.
+        Get the dependencies information for this rule.
 
         Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
         fixed in, when fixing in bulk.
         """
-        return self._data.get("dependencies", [])
+        return self._data.get("dependencies", {})
 
     #########################################################################################################
     # Public methods
@@ -331,6 +350,24 @@ class ValidationRule(object):
         """
 
         return [item["id"] for item in self.errors]
+
+    def get_dependency_ids(self):
+        """
+        Get the validation rules (ids) that this rule depends on.
+
+        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+        fixed in, when fixing in bulk.
+        """
+        return self.dependencies.keys()
+
+    def get_dependency_names(self):
+        """
+        Get the validation rules (display names) that this rule depends on.
+
+        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+        fixed in, when fixing in bulk.
+        """
+        return self.dependencies.values()
 
     def exec_check(self, *args, **kwargs):
         """
@@ -406,3 +443,6 @@ class ValidationRule(object):
                 if self.manual:
                     self.manual_checked = False
                 raise e
+
+            # The fix function was executed - set the flag to True
+            self._fix_executed = True

@@ -102,14 +102,20 @@ class ValidationManager(object):
                 continue
 
             rule_data = self.__data.get(rule_id)
-            if rule_data:
-                rule_data.update(rule_item)
-                rule = ValidationRule(rule_data)
-                self.__rules_by_id[rule.id] = rule
-            else:
-                # The rule was not found for the id
+            if not rule_data:
                 self._logger.error("Data was not found for validation rule id '{}'".format(rule_id))
+                continue
 
+            # Collect dependencies first, if any
+            for dependency_id in rule_data.get("dependency_ids", []):
+                dependency_data = self.__data.get(dependency_id)
+                if dependency_data:
+                    rule_data.setdefault("dependencies", {})[dependency_id] = dependency_data.get("name")
+
+            rule_data.update(rule_item)
+            rule = ValidationRule(rule_data)
+            self.__rules_by_id[rule.id] = rule
+        
 
     #########################################################################################################
     # Properties
@@ -375,10 +381,11 @@ class ValidationManager(object):
 
             rule_ids.add(rule.id)
 
-            if rule.dependencies:
+            dependencies_ids = rule.get_dependency_ids()
+            if dependencies_ids:
                 # Copy the list of dependencies so that the original dependency list is not modified, and
                 # using a set instead for faster lookup and removal
-                rule_dependencies_set = set(rule.dependencies)
+                rule_dependencies_set = set(dependencies_ids)
                 dependencies[rule.id] = rule_dependencies_set
                 # Only add dependencies to the set if they have not been processed yet.
                 all_dependencies.update(rule_dependencies_set.difference(rule_ids))
@@ -493,10 +500,10 @@ class ValidationManager(object):
 
         self._logger.debug("\nResolving Rule: {}\nDependencies: {}".format(
             rule.id,
-            ", ".join([d for d in rule.dependencies])))
+            ", ".join([d for d in rule.get_dependency_names()])))
         print("\nResolving Rule: {}\nDependencies: {}".format(
             rule.id,
-            ", ".join([d for d in rule.dependencies])))
+            ", ".join([d for d in rule.get_dependency_names()])))
             
 
         self._notifier.resolve_rule_begin.emit(rule)
