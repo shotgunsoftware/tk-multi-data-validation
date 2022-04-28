@@ -47,6 +47,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         self._rule = None
         self._details_item_model = ValidationRuleDetailsModel(self)
+        self._show_description = True
 
         self._setup_ui()
         self._connect_signals()
@@ -58,6 +59,17 @@ class ValidationDetailsWidget(SGQWidget):
     def rule(self):
         """Get the validation rule that this details widget displays data for."""
         return self._rule
+
+    @property
+    def show_description(self):
+        """
+        Get or set the flag indicating to display the validation rule description in the details text.
+        """
+        return self._show_description
+
+    @show_description.setter
+    def show_description(self, show):
+        self._show_description = show
 
     ######################################################################################################
     # Public methods
@@ -87,16 +99,17 @@ class ValidationDetailsWidget(SGQWidget):
         #
         self._details.setTitle(self.rule.name)
 
-        if self.rule.dependencies:
-            dependencies_text = "Dependencies (by ID):\n    "
-            dependencies_text += "\n    ".join([d for d in self.rule.dependencies])
+        dependencies_names = self.rule.get_dependency_names()
+        if dependencies_names:
+            dependencies_text = "Dependencies that will run before this fix:<ul>{deps}</ul>".format(
+                deps="".join(["<li>{}</li>".format(d) for d in dependencies_names])
+            )
         else:
             dependencies_text = ""
 
-        description = "{desc}\n\n{id}{space}{dependencies}".format(
-            desc=self.rule.description,
-            id="ID: {}".format(self.rule.id),
-            space="\n\n" if dependencies_text else "",
+        description = "<html>{desc}{space}{dependencies}</html>".format(
+            desc=self.rule.description if self.show_description else "",
+            space="<br/><br/>" if self.show_description and dependencies_text else "",
             dependencies=dependencies_text,
         )
         self._details_description.setText(description)

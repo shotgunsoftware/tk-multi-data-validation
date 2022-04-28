@@ -100,8 +100,8 @@ class ValidationRule(object):
                         :type: str
                         :description: Text to display as for the item action's tooltip help messages.
             dependencies
-                :type: list<str>
-                :description: A list of the valiation rule ids that this rule depends on. All dependency rules must be fixed before this rule can be fixed.
+                :type: dict<str>
+                :description: A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.
         """
 
         # Set the main rule data
@@ -299,12 +299,12 @@ class ValidationRule(object):
     @property
     def dependencies(self):
         """
-        Get the validation rules that this rule depends on.
+        Get the dependencies information for this rule.
 
         Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
         fixed in, when fixing in bulk.
         """
-        return self._data.get("dependencies", [])
+        return self._data.get("dependencies", {})
 
     #########################################################################################################
     # Public methods
@@ -331,6 +331,24 @@ class ValidationRule(object):
         """
 
         return [item["id"] for item in self.errors]
+
+    def get_dependency_ids(self):
+        """
+        Get the validation rules (ids) that this rule depends on.
+
+        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+        fixed in, when fixing in bulk.
+        """
+        return self.dependencies.keys()
+
+    def get_dependency_names(self):
+        """
+        Get the validation rules (display names) that this rule depends on.
+
+        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+        fixed in, when fixing in bulk.
+        """
+        return self.dependencies.values()
 
     def exec_check(self, *args, **kwargs):
         """
