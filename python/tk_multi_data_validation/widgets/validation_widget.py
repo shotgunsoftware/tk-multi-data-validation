@@ -1557,7 +1557,7 @@ def get_rule_check_action_data(parent, index):
     visible = index.data(ValidationRuleModel.RULE_CHECK_FUNC_ROLE) is not None
     name = index.data(ValidationRuleModel.RULE_CHECK_NAME_ROLE)
 
-    if name and index.data(ValidationRuleModel.RULE_EXECUTED_ROLE):
+    if name and index.data(ValidationRuleModel.RULE_VALIDATION_RAN):
         # Modify the name to prepend "Re", e.g. Validate -> Revalidate
         name = "Re{name}".format(name=name.lower())
 
