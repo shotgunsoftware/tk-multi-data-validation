@@ -180,7 +180,7 @@ class ValidationRule(object):
         These types of rules must be manually validated by user.
         """
 
-        return not bool(self.check_func)
+        return not (bool(self.check_func) or bool(self.fix_func))
 
     @property
     def optional(self):
