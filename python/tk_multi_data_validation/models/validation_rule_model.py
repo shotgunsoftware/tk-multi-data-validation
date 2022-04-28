@@ -13,7 +13,7 @@ from sgtk.platform.qt import QtGui, QtCore
 
 from .validation_rule_type_model import ValidationRuleTypeModel
 from ..data.validation_rule import ValidationRule
-from ..utils.framework_qtwidgets import ViewItemRolesMixin
+from ..utils.framework_qtwidgets import SGQIcon, ViewItemRolesMixin
 
 
 class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
@@ -43,8 +43,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_ITEM_ACTIONS_ROLE,
         RULE_ERROR_ITEMS_ROLE,
         RULE_MANUAL_CHECK_STATE_ROLE,
+        RULE_STATUS_ICON_ROLE,
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 20)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 21)
 
     #
     # Signals
@@ -161,9 +162,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             # UI properties
             self._is_loading = False
 
-            error_color = QtGui.QColor(255, 0, 0, 25)
-            self._error_brush = QtGui.QBrush(error_color)
-
         def data(self, role):
             """
             Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.
@@ -175,8 +173,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             """
 
             if role == QtCore.Qt.BackgroundRole:
-                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
-                    return self._error_brush
                 return QtGui.QApplication.palette().midlight()
 
             if role == QtCore.Qt.CheckStateRole:
@@ -307,6 +303,20 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     else QtCore.Qt.Unchecked
                 )
 
+            if role == ValidationRuleModel.RULE_STATUS_ICON_ROLE:
+                if not self._rule:
+                    return None
+
+                if not self.data(ValidationRuleModel.RULE_EXECUTED_ROLE):
+                    if not self._rule.check_func:
+                        return self.model().warning_status_icon
+                    return None
+
+                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self.model().error_status_icon
+
+                return self.model().ok_status_icon
+
             return super(ValidationRuleModel.ValidationRuleModelItem, self).data(role)
 
         def setData(self, value, role):
@@ -369,6 +379,11 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._rules = []
         self._hierarchical = True
 
+        # Status icons
+        self._error_status_icon = SGQIcon.ValidationError()
+        self._warning_status_icon = SGQIcon.ValidationWarning(size=SGQIcon.SMALL)
+        self._ok_status_icon = SGQIcon.ValidationOk()
+
         # Add additional roles defined by the ViewItemRolesMixin class.
         self.NEXT_AVAILABLE_ROLE = self.initialize_roles(self.NEXT_AVAILABLE_ROLE)
 
@@ -399,6 +414,21 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     @hierarchical.setter
     def hierarchical(self, value):
         self._hierarchical = value
+
+    @property
+    def error_status_icon(self):
+        """Get the error status icon."""
+        return self._error_status_icon
+
+    @property
+    def warning_status_icon(self):
+        """Get the warning status icon."""
+        return self._warning_status_icon
+
+    @property
+    def ok_status_icon(self):
+        """Get the ok status icon."""
+        return self._ok_status_icon
 
     ######################################################################################################
     # Public methods
