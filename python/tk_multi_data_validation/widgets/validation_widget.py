@@ -1087,6 +1087,17 @@ class ValidationWidget(SGQWidget):
 
         self._show_context_menu(self.sender(), pos)
 
+    def _on_rule_item_double_clicked(self, index):
+        """
+        Callback triggered when a rule from the view has been double-clicked.
+
+        :param index: The index the mouse double-clicked on.
+        :type index: QModelIndex
+        """
+
+        rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
+        self.on_validate_rule(rule, refresh_details=True)
+
     def _on_search_text_changed(self):
         """
         Callback triggered when the search widget text has been updated.
