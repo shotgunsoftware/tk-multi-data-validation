@@ -94,7 +94,7 @@ class AppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Create the main validation widget
 
-        self._validation_widget = ValidationWidget(self)
+        self._validation_widget = ValidationWidget(self, group_rules_by="data_type")
 
         # NOTE hide the left-hand filter widget for now for simplicity
         self._validation_widget.turn_on_rule_type_filter(False)

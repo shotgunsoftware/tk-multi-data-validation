@@ -68,12 +68,14 @@ class ValidationWidget(SGQWidget):
     details_about_to_execute_action = QtCore.Signal(dict)
     details_execute_action_finished = QtCore.Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, group_rules_by=None):
         """
         Create the validation widget.
 
         :param parent: The parent widget
         :type parent: QWidget
+        :param group_rules_by: The validation rule field that the view will group rules by
+        :type group_rules_by: str
         """
 
         super(ValidationWidget, self).__init__(
@@ -85,7 +87,7 @@ class ValidationWidget(SGQWidget):
         self._view_mode = self.VIEW_MODE_GROUPED
         self._details_on = True
         self._rule_type_filter_on = True
-        self._group_rules_by = "data_type"
+        self._group_rules_by = group_rules_by
 
         # Flag indicating that we're in the middle of validating all rules
         self._is_validating_all = False
@@ -122,12 +124,8 @@ class ValidationWidget(SGQWidget):
 
     @property
     def group_rules_by(self):
-        """Get or set the field to group the validation rules by in the main view."""
+        """Get the field to group the validation rules by in the main view."""
         return self._group_rules_by
-
-    @group_rules_by.setter
-    def group_rules_by(self, field):
-        self._group_rules_by = field
 
     @property
     def validate_button(self):
