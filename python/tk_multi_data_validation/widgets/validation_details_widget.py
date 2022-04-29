@@ -36,7 +36,7 @@ class ValidationDetailsWidget(SGQWidget):
     # Emit signals to indicate that an action is about to run, and when it has finished (this is useful to
     # show a busy indicator, if the operation takes some time)
     about_to_execute_action = QtCore.Signal(dict)
-    execute_action_finished = QtCore.Signal()
+    execute_action_finished = QtCore.Signal(dict)
 
     def __init__(self, parent):
         """
@@ -384,7 +384,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         self.about_to_execute_action.emit(action)
         result = callback_fn(*args, **kwargs)
-        self.execute_action_finished.emit()
+        self.execute_action_finished.emit(action)
 
         return result
 

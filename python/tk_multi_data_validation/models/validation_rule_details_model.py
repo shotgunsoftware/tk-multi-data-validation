@@ -30,10 +30,9 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
     ) = range(_BASE_ROLE, _BASE_ROLE + 6)
 
-    # The maximum number of items the model can display at a time
-    # TODO handle large data sets with pagination
-    MAX_DISPLAY_NUM = 250
-    INCREMENT_DISPLAY_NUM = 250
+    # The max number of items the model can display at a time. TODO handle large data sets with pagination
+    MAX_DISPLAY_NUM = 150
+    INCREMENT_DISPLAY_NUM = 150
 
     class ValidationRuleDetailsGroupModelItem(QtGui.QStandardItem):
         """

@@ -210,14 +210,16 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.VIEW_ITEM_HEADER_ROLE:
                 if not self._rule:
                     return None
-                return self._rule.name
+                return "<b>{}</b>".format(self._rule.name)
 
             if role == ValidationRuleModel.VIEW_ITEM_TEXT_ROLE:
                 if not self._rule:
                     return None
 
                 if self._rule.optional and not self._rule.checked:
-                    return None
+                    return "<div style='line-height:1.2;'>{}</div>".format(
+                        self._rule.description
+                    )
 
                 lines = []
                 if (
@@ -239,35 +241,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                         )
                     )
                 lines.append(self._rule.description)
-                return "<br/>".join(lines)
-
-            if role == ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE:
-                if not self._rule:
-                    return None
-
-                if self._rule.optional and not self._rule.checked:
-                    return None
-
-                lines = []
-                if (
-                    self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE)
-                    and self._rule.error_message
-                ):
-                    lines.append(
-                        "<span style='color:#EB5555;'>{}</span>".format(
-                            self._rule.error_message
-                        )
-                    )
-                if (
-                    (self._rule.manual and not self._rule.manual_checked)
-                    or (not self._rule.manual and not self._rule.check_func)
-                ) and self._rule.warn_message:
-                    lines.append(
-                        "<span style='color:#FBB549;'>{}</span>".format(
-                            self._rule.warn_message
-                        )
-                    )
-                return "<br/>".join(lines)
+                return "<div style='line-height:1.2;'>{}</div>".format(
+                    "<br/>".join(lines)
+                )
 
             if role == ValidationRuleModel.RULE_TYPE_ID_ROLE:
                 if not self._rule:
@@ -324,13 +300,18 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     # Optional rules that are not active do not have errors
                     return False
 
-                if self._rule.manual or not self._rule.check_func:
-                    # Manual rules cannot have errors since they cannot be checked.
+                if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
+                    # Do not report errors until validation has run at least once
                     return False
 
-                if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
-                    # Rules that have not been executed do not have errors
-                    return False
+                if not self._rule.manual and not self._rule.check_func:
+                    # Special case for rule that do not have a check func, but have a fix func:
+                    # Show as an error if its fix has never been executed
+                    return not self._rule.fix_executed
+
+                if self._rule.manual and not self._rule.manual_checked:
+                    # Manual rules that are not checked are an error
+                    return True
 
                 # Rule is active and has been executed, check its valid status.
                 return not self.data(ValidationRuleModel.RULE_VALID_ROLE)
@@ -341,27 +322,26 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
                 if self._rule.optional and not self._rule.checked:
                     # Optional rules that are not active do not have errors
-                    return False
+                    return None
 
                 if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
                     return None
 
                 # TODO revist this special case handling for rules that do not have an automated validate
                 # function, but do have an autoamted fix (semi-automated)
-                if (
-                    not self._rule.fix_executed
-                    and not self._rule.manual
-                    and not self._rule.check_func
-                ):
+                if not self._rule.manual and not self._rule.check_func:
+                    if self._rule.fix_executed:
+                        return self.model().ok_status_icon
                     return self.model().warning_status_icon
 
-                if self._rule.manual and not self._rule.manual_checked:
+                if self._rule.manual:
+                    if self._rule.manual_checked:
+                        return self.model().ok_status_icon
                     return self.model().warning_status_icon
 
-                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
-                    return self.model().error_status_icon
-
-                return self.model().ok_status_icon
+                if self.data(ValidationRuleModel.RULE_VALID_ROLE):
+                    return self.model().ok_status_icon
+                return self.model().error_status_icon
 
             if role == ValidationRuleModel.CHECKBOX_ICON_ROLE:
                 if not self._rule:
