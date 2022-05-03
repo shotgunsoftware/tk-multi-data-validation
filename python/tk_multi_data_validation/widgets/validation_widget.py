@@ -29,6 +29,10 @@ from ..utils.framework_qtwidgets import (
     SearchWidget,
     SGQToolButton,
     SGQWidget,
+    SGQPushButton,
+    SGQSplitter,
+    SGQMenu,
+    SGQLabel,
 )
 
 from ..utils.decorators import wait_cursor
@@ -428,7 +432,7 @@ class ValidationWidget(SGQWidget):
         )
 
         # Create horizontal splitter for main view and details widgets
-        self._view_details_splitter = QtGui.QSplitter(self)
+        self._view_details_splitter = SGQSplitter(self)
         self._view_details_splitter.setSizePolicy(
             QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         )
@@ -483,6 +487,9 @@ class ValidationWidget(SGQWidget):
         self._errors_toggle.setIconSize(QtCore.QSize(25, 14))
         self._errors_toggle.setCursor(QtCore.Qt.PointingHandCursor)
 
+        # Number of errors label
+        self._errors_label = SGQLabel(self)
+
         # Details button
         self._details_button = SGQToolButton(self, icon=SGQIcon.Info())
         self._details_button.setToolTip("Show/Hide Details Panel")
@@ -533,9 +540,9 @@ class ValidationWidget(SGQWidget):
         # Bottom toolbar
         #
 
-        self._validate_button = QtGui.QPushButton("Validate")
-        self._fix_button = QtGui.QPushButton("Fix All")
-        self._publish_button = QtGui.QPushButton("Ready to Publish")
+        self._validate_button = SGQPushButton("Validate")
+        self._fix_button = SGQPushButton("Fix All")
+        self._publish_button = SGQPushButton("Ready to Publish")
 
         # Create the button layout and add the widgets
         self._footer_widget = SGQWidget(
@@ -543,6 +550,7 @@ class ValidationWidget(SGQWidget):
             child_widgets=[
                 self._errors_toggle,
                 None,
+                self._errors_label,
                 self._validate_button,
                 self._fix_button,
                 self._publish_button,
@@ -874,6 +882,20 @@ class ValidationWidget(SGQWidget):
 
         self._details_widget.refresh()
 
+    def _update_errors(self):
+        """
+        Update the errors label text to indicated how many errors ther are currently.
+        """
+
+        num_errors = len(self._rules_model.get_errors())
+        if num_errors:
+            self._errors_label.setText(
+                "{} issue{} found    ".format(num_errors, "s" if num_errors > 1 else "")
+            )
+            self._errors_label.show()
+        else:
+            self._errors_label.hide()
+
     def _show_context_menu(self, widget, pos, indexes=None):
         """
         Show a context menu for the selected items.
@@ -914,7 +936,7 @@ class ValidationWidget(SGQWidget):
         actions.append(show_details_action)
 
         # Create the menu, add the actions and show it
-        menu = QtGui.QMenu(self)
+        menu = SGQMenu(self)
         menu.addActions(actions)
         pos = widget.mapToGlobal(pos)
         menu.exec_(pos)
@@ -1090,6 +1112,12 @@ class ValidationWidget(SGQWidget):
         if not updated:
             rule_item.emitDataChanged()
 
+        # Update the proxy model to reflect any changes after validation
+        self._rules_proxy_model._update()
+
+        # Update the errors label to reflect any changes after validation
+        self._update_errors()
+
         self._refresh_details(rule)
 
     def validate_all_begin(self):
@@ -1111,7 +1139,11 @@ class ValidationWidget(SGQWidget):
         # Emit signal that validation rules have been updated
         self._rules_model.emit_all_data_changed()
 
+        # Update the proxy model to reflect any changes after validation
         self._rules_proxy_model._update()
+
+        # Update the errors label to reflect any changes after validation
+        self._update_errors()
 
         # Ensure the details is refreshed
         self._refresh_details()

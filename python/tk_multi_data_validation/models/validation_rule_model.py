@@ -637,6 +637,34 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         return None
 
+    def get_errors(self):
+        """
+        Iterate over the model items to find all items with errors.
+
+        :return: The list of items with errors.
+        :rtype: list<QtGui.QStandardItem>
+        """
+
+        errors = []
+        rows = self.rowCount()
+
+        for row in range(rows):
+            model_item = self.item(row)
+            if model_item.data(
+                ValidationRuleModel.IS_RULE_ITEM_ROLE
+            ) and model_item.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                errors.append(model_item)
+
+            child_rows = model_item.rowCount()
+            for child_row in range(child_rows):
+                child_item = model_item.child(child_row)
+                if child_item.data(
+                    ValidationRuleModel.IS_RULE_ITEM_ROLE
+                ) and child_item.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    errors.append(child_item)
+
+        return errors
+
     def get_check_state_for_rule_type(self, rule_type):
         """
         Iterate over the model items to compute the check state for the rule type.

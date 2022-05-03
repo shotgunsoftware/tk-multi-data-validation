@@ -83,7 +83,7 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                         displaying=num_display, total=num_total
                     )
 
-                return "{} TOTAL".format(num_total)
+                return "{} Items".format(num_total)
 
             if role == ValidationRuleDetailsModel.VIEW_ITEM_SEPARATOR_ROLE:
                 return True
@@ -274,7 +274,7 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._display_num = display_num or self.MAX_DISPLAY_NUM
 
         group_item = ValidationRuleDetailsModel.ValidationRuleDetailsGroupModelItem(
-            "Validation Rule Errors"
+            "Affected Objects"
         )
         self.invisibleRootItem().appendRow(group_item)
 
