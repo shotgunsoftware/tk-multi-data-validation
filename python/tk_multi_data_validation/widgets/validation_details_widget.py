@@ -19,6 +19,10 @@ from ..utils.framework_qtwidgets import (
     ViewItemAction,
     ShotgunOverlayWidget,
     SGQWidget,
+    SGQLabel,
+    SGQGroupBox,
+    SGQPushButton,
+    SGQMenu,
 )
 
 
@@ -36,7 +40,7 @@ class ValidationDetailsWidget(SGQWidget):
     # Emit signals to indicate that an action is about to run, and when it has finished (this is useful to
     # show a busy indicator, if the operation takes some time)
     about_to_execute_action = QtCore.Signal(dict)
-    execute_action_finished = QtCore.Signal()
+    execute_action_finished = QtCore.Signal(dict)
 
     def __init__(self, parent):
         """
@@ -106,7 +110,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         dependencies_names = self.rule.get_dependency_names()
         if dependencies_names:
-            dependencies_text = "Dependencies that will run before this fix:<ul>{deps}</ul>".format(
+            dependencies_text = "Dependencies that will run with this fix:<ul>{deps}</ul>".format(
                 deps="".join(["<li>{}</li>".format(d) for d in dependencies_names])
             )
         else:
@@ -130,7 +134,7 @@ class ValidationDetailsWidget(SGQWidget):
         # Add check action
         if self.rule.check_func is not None:
             name = self.rule.check_name
-            check_button = QtGui.QPushButton(name, self._details_toolbar)
+            check_button = SGQPushButton(name, self._details_toolbar)
 
             args = []
             kwargs = {}
@@ -140,7 +144,7 @@ class ValidationDetailsWidget(SGQWidget):
         # Add fix action
         if self.rule.fix_func is not None:
             name = self.rule.fix_name
-            fix_button = QtGui.QPushButton(name, self._details_toolbar)
+            fix_button = SGQPushButton(name, self._details_toolbar)
 
             args = []
             kwargs = {}
@@ -155,7 +159,7 @@ class ValidationDetailsWidget(SGQWidget):
 
             args = rule_action.get("args", [])
             kwargs = {"errors": self.rule.get_error_item_ids()}
-            button = QtGui.QPushButton(rule_action["name"], self._details_toolbar)
+            button = SGQPushButton(rule_action["name"], self._details_toolbar)
             button.clicked.connect(lambda cb=action_cb, a=args, k=kwargs: cb(*a, **k))
             self._details_toolbar.add_widget(button)
 
@@ -188,13 +192,13 @@ class ValidationDetailsWidget(SGQWidget):
         This should be called once when creating the widget.
         """
 
-        self._details = QtGui.QGroupBox(self)
+        self._details = SGQGroupBox(self)
         self._details.setMinimumWidth(200)
         self._details.setMaximumWidth(400)
         self._details.setSizePolicy(
             QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         )
-        self._details_description = QtGui.QLabel(self._details)
+        self._details_description = SGQLabel(self._details)
         self._details_description.setWordWrap(True)
         details_vlayout = QtGui.QVBoxLayout()
         details_vlayout.addWidget(self._details_description)
@@ -299,7 +303,7 @@ class ValidationDetailsWidget(SGQWidget):
             )
             actions.append(action)
 
-        menu = QtGui.QMenu(self)
+        menu = SGQMenu(self)
         menu.addActions(actions)
         pos = widget.mapToGlobal(pos)
         menu.exec_(pos)
@@ -384,7 +388,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         self.about_to_execute_action.emit(action)
         result = callback_fn(*args, **kwargs)
-        self.execute_action_finished.emit()
+        self.execute_action_finished.emit(action)
 
         return result
 

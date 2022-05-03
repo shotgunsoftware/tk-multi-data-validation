@@ -89,7 +89,7 @@ class ValidationManager(object):
         validation_data = self._bundle.execute_hook_method("hook_data_validator", "get_validation_data")
         self.__data = copy.deepcopy(validation_data)
         self.__rules_by_id = {}
-        self.__error_rules = {}
+        self.__errors = {}
 
         rule_settings = rule_settings or self._bundle.settings.get("rules")
         for rule_item in rule_settings:
@@ -142,7 +142,7 @@ class ValidationManager(object):
     @property
     def errors(self):
         """Get the list of rules which did not pass the last time their respective validate function was executed."""
-        return self.__error_rules
+        return self.__errors
 
     @property
     def accept_rule_fn(self):
@@ -181,26 +181,29 @@ class ValidationManager(object):
         Clear the errors.
         """
 
-        self.__error_rules = {}
+        self.__errors = {}
     
-    def validate(self):
+    def validate(self, emit_signals=True):
         """
         Validate the DCC data by executing all validation rule check functions.
+
+        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.
+        :param emit_signals: bool
 
         :return: True if all validation rule checks passed (data is valid), else False.
         :rtype: bool
         """
 
         self._notifier.validate_all_begin.emit()
-        
-        # Reset the manager state before performing validation
-        self.reset()
 
-        self.validate_rules(self.rules, emit_signals=False)
+        try:        
+            # Reset the manager state before performing validation
+            self.reset()
+            self.validate_rules(self.rules, emit_signals=False)
+        finally:
+            self._notifier.validate_all_finished.emit()
 
-        self._notifier.validate_all_finished.emit()
-
-        return not self.__error_rules
+        return not self.__errors
 
     @sgtk.LogManager.log_timing
     def validate_rules(self, rules, emit_signals=True):
@@ -223,7 +226,7 @@ class ValidationManager(object):
         if emit_signals:
             self._notifier.validate_all_finished.emit()
 
-    def validate_rule(self, rule, *args, **kwargs):
+    def validate_rule(self, rule, emit_signals=True):
         """
         Validate the DCC data with the given rule.
 
@@ -233,36 +236,33 @@ class ValidationManager(object):
 
         :param rule: The rule to validate data by
         :type rule: ValidationRule
-        :param args: The arguments list to pass to the validation rule check function
-        :type args: list
-        :param kwargs: The keyword arguments dict to pass to the validation rule check function
-        :type kwargs: dict
 
         :return: True if the validation rule check passed (data is valid for this rule), else False.
         :rtype: bool
         """
 
-        # Emit a signal to notify that a specifc rule has started validation
-        self._notifier.validate_rule_begin.emit(rule)
+        if emit_signals:
+            # Emit a signal to notify that a specifc rule has started validation
+            self._notifier.validate_rule_begin.emit(rule)
 
         # Run the validation rule check function
         self._logger.debug("Validating Rule: {}".format(rule.id))
-        print("Validating Rule: {}".format(rule.id))
-        rule.exec_check(*args, **kwargs)
+        rule.exec_check()
 
         # Check if rule's valid state after executing its check function
         is_valid = rule.valid
 
         if is_valid:
-            if rule.id in self.__error_rules:
+            if rule.id in self.__errors:
                 # Remove the rule from the error set
-                del self.__error_rules[rule.id]
+                del self.__errors[rule.id]
         else:
             # Add the rule to the error set
-            self.__error_rules[rule.id] = rule
+            self.__errors[rule.id] = rule
 
-        # Emit a signal to notify that a specifc rule has finished validation
-        self._notifier.validate_rule_finished.emit(rule)
+        if emit_signals:
+            # Emit a signal to notify that a specifc rule has finished validation
+            self._notifier.validate_rule_finished.emit(rule)
 
         return is_valid
 
@@ -287,6 +287,8 @@ class ValidationManager(object):
         :rtype: bool
         """
 
+        self._notifier.resolve_all_begin.emit()
+
         success = True
 
         if pre_validate:
@@ -297,17 +299,23 @@ class ValidationManager(object):
             # There are no data violations to resolve.
             return success
 
-        # Resolve the data violations
-        self.resolve_rules(self.errors.values())
+        # Resolve the data violations. Explicitly say not to fetch dependencies because this function
+        # has validated all rules and all rules will be passed to resolve that will be fixed - if
+        # dependencies are not included, then that means they have no errors and thus, do not need to
+        # run their fix action to modify the data. Basically, this means dependencies can be ignored
+        # as they will have no effect on the data.
+        self.resolve_rules(self.errors.values(), fetch_dependencies=False, emit_signals=False)
 
         if post_validate:
             # Run validation step once all resolution actions compelted to ensure everything was fixed.
             success = self.validate()
 
+        self._notifier.resolve_all_finished.emit()
+
         return success
 
     @sgtk.LogManager.log_timing
-    def resolve_rules(self, rules, fetch_dependencies=None):
+    def resolve_rules(self, rules, fetch_dependencies=None, emit_signals=True):
         """
         Resolve the given list of rules.
 
@@ -336,11 +344,18 @@ class ValidationManager(object):
 
         :param rules: The list of rules to resolve.
         :type rules: list<ValidationRule>
-        :param fetch_dependencies: 
+        :param fetch_dependencies: Set to True to ensure all dependencies for a reule are resolved before
+            the rule itself is resolved. Set to False will not fetch any missing dependencies to resolve.
         :type fetch_dependencies: bool
+        :param emit_signals: Set to True to emit notifier signals for resolve operation.
+        :type emit_signals: bool
         """
 
-        self._notifier.resolve_all_begin.emit()
+        if not rules:
+            return
+
+        if emit_signals: 
+            self._notifier.resolve_all_begin.emit()
 
         # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
         # through to check then check if the necessary dependencies are available to resolve first.
@@ -428,11 +443,11 @@ class ValidationManager(object):
                     # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
                     # to only individual dependencies
                     answer = QtGui.QMessageBox.question(
-                        None, "Resolve Dependencies",
-                        "Missing validation rule dependencies. Do you want to fetch and resolve all dependencies?",
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+                        None, "Fix Dependencies",
+                        "This operation will apply additional fixes for dependencies.",
+                        QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel
                     )
-                    fetch_dependencies = bool(answer == QtGui.QMessageBox.Yes)
+                    fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
 
                     self.notifier.msg_box_closed.emit()
 
@@ -440,8 +455,10 @@ class ValidationManager(object):
                     if not process_rule(dependency_rule):
                         queue_count += 1
                 else:
-                    # No need to process any more dependencies since they will be ignored
-                    break
+                    # The user canceled the operation
+                    if emit_signals:
+                        self._notifier.resolve_all_finished.emit()
+                    return
 
         # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
         # resolved or ignored, then resolve it and add it to the resolved list, else add it back to the end
@@ -469,7 +486,6 @@ class ValidationManager(object):
                 if dependency_rule_id not in rule_ids:
                     if fetch_dependencies:
                         self._logger.error("Dependency not resolved '{}'".format(dependency_rule_id))
-                        print("Dependency not resolved '{}'".format(dependency_rule_id))
                     # Dependency is ignored
                     continue
 
@@ -488,7 +504,8 @@ class ValidationManager(object):
                 self.resolve_rule(rule)
                 resolved.add(rule.id)
 
-        self._notifier.resolve_all_finished.emit()
+        if emit_signals:
+            self._notifier.resolve_all_finished.emit()
 
     def resolve_rule(self, rule):
         """
@@ -501,10 +518,6 @@ class ValidationManager(object):
         self._logger.debug("\nResolving Rule: {}\nDependencies: {}".format(
             rule.id,
             ", ".join([d for d in rule.get_dependency_names()])))
-        print("\nResolving Rule: {}\nDependencies: {}".format(
-            rule.id,
-            ", ".join([d for d in rule.get_dependency_names()])))
-            
 
         self._notifier.resolve_rule_begin.emit(rule)
         rule.exec_fix()

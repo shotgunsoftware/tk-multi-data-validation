@@ -12,8 +12,10 @@
 import sgtk
 from sgtk.platform.qt import QtCore, QtGui
 
+from ..utils.framework_qtwidgets import SGQListView
 
-class ListViewAutoHeight(QtGui.QListView):
+
+class ListViewAutoHeight(SGQListView):
     """A QListView subclass to create a view whose height auto adjusts to the view contents."""
 
     def __init__(self, parent=None, height_padding=0):

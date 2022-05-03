@@ -27,6 +27,10 @@ class AppDialog(QtGui.QWidget):
     #
     SETTINGS_WIDGET_GEOMETRY = "app_dialog_geometry"
 
+    # Notifier IDS for show/hide busy popup
+    VALIDATE_ID = "validate"
+    RESOLVE_ID = "resolve"
+
     def __init__(self, parent=None):
         """
         Initialize the App dialog.
@@ -41,7 +45,7 @@ class AppDialog(QtGui.QWidget):
 
         # Information about the busy popup. Set 'showing' to True when the popup is showing, else False.
         # Set the title and details to what the current busy popup is showing.
-        self._busy_info = {"showing": False, "title": "", "details": ""}
+        self._busy_info = {"id": None, "showing": False, "title": "", "details": ""}
 
         # -----------------------------------------------------
         # Create validation manager
@@ -102,9 +106,15 @@ class AppDialog(QtGui.QWidget):
         # TODO implement the functionality for validation -> publish and then this button can be shown
         self._validation_widget.publish_button.hide()
 
-        # Override the default fix all method
-        self._validation_widget.validate_callback = self._manager.validate_rules
-        self._validation_widget.fix_callback = self._manager.resolve_rules
+        # Set custom callbacks for validating/fix all and validating/fix individual rules
+        self._validation_widget.validate_rule_callback = self._manager.validate_rule
+        self._validation_widget.validate_all_callback = (
+            lambda rules: self._manager.validate()
+        )
+        self._validation_widget.fix_rule_callback = self._resolve_rule
+        self._validation_widget.fix_all_callback = lambda rules: self._manager.resolve(
+            pre_validate=True, post_validate=True
+        )
 
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
@@ -126,15 +136,36 @@ class AppDialog(QtGui.QWidget):
         # ValidationManager signals connected to this dialog
 
         self._manager.notifier.validate_all_begin.connect(
-            lambda: self.show_busy_popup("Validating Data...", "Please hold on.")
+            lambda: self.show_busy_popup(
+                self.VALIDATE_ID, "Validating Data...", "Please hold on."
+            )
         )
+        self._manager.notifier.validate_all_finished.connect(
+            lambda: self.hide_busy_popup(self.VALIDATE_ID)
+        )
+
+        self._manager.notifier.validate_rule_begin.connect(
+            lambda rule: self.show_busy_popup(
+                "{}_{}".format(self.VALIDATE_ID, rule.id),
+                "Validating Rule '{}'...".format(rule.name),
+                "Please hold on.",
+            )
+        )
+        self._manager.notifier.validate_rule_finished.connect(
+            lambda rule: self.hide_busy_popup("{}_{}".format(self.VALIDATE_ID, rule.id))
+        )
+
         self._manager.notifier.resolve_all_begin.connect(
-            lambda: self.show_busy_popup("Resolving Data Errors...", "Please hold on.")
+            lambda: self.show_busy_popup(
+                self.RESOLVE_ID, "Resolving Data Errors...", "Please hold on."
+            )
         )
-        self._manager.notifier.validate_all_finished.connect(self.hide_busy_popup)
-        self._manager.notifier.resolve_all_finished.connect(self.hide_busy_popup)
+        self._manager.notifier.resolve_all_finished.connect(
+            lambda: self.hide_busy_popup(self.RESOLVE_ID)
+        )
+
         self._manager.notifier.about_to_open_msg_box.connect(
-            lambda: self.hide_busy_popup(clear_info=False)
+            lambda: self.hide_busy_popup(self._busy_info["id"], clear_info=False)
         )
         self._manager.notifier.msg_box_closed.connect(self.show_busy_popup)
 
@@ -166,12 +197,34 @@ class AppDialog(QtGui.QWidget):
 
         self._validation_widget.details_about_to_execute_action.connect(
             lambda action: self.show_busy_popup(
-                "Executing Action...", action.get("name", "Please hold on.")
+                "exec_action_{}".format(action.get("name")),
+                "Executing Action...",
+                action.get("name", "Please hold on."),
             )
         )
         self._validation_widget.details_execute_action_finished.connect(
-            self.hide_busy_popup
+            lambda action: self.hide_busy_popup(
+                "exec_action_{}".format(action.get("name"))
+            )
         )
+
+    def _resolve_rule(self, rule):
+        """
+        Helper function to execute the manager resolve rule and then call validate post resolution.
+
+        :param rule: The rule to resolve and then validate.
+        :type rule: ValidationRule
+        """
+
+        busy_id = "{}_{}".format(self.RESOLVE_ID, rule.id)
+        self.show_busy_popup(
+            busy_id, "Resolving Data '{}'...".format(rule.name), "Please hold on."
+        )
+        try:
+            self._manager.resolve_rules([rule])
+            self._manager.validate_rule(rule)
+        finally:
+            self.hide_busy_popup(busy_id)
 
     ######################################################################################################
     # Override Qt methods
@@ -197,13 +250,15 @@ class AppDialog(QtGui.QWidget):
     ######################################################################################################
     # Public methods
 
-    def show_busy_popup(self, title=None, details=None):
+    def show_busy_popup(self, busy_id=None, title=None, details=None):
         """
         Show the busy popup message dialog.
 
         This can be used to display a "loading" popup message for when the validation is performing an
         operation that takes some time.
 
+        :param busy_id: The unique identifier to set the busy info.
+        :type busy_id: str
         :param title: The title for the popup message. Set to None to use the current busy info title.
         :type title: str
         :param title: The details for the popup message. Set to None to use the current busy info details.
@@ -217,6 +272,9 @@ class AppDialog(QtGui.QWidget):
         if not engine:
             return
 
+        if busy_id:
+            self._busy_info["id"] = busy_id
+
         if title:
             self._busy_info["title"] = title
 
@@ -226,17 +284,19 @@ class AppDialog(QtGui.QWidget):
         engine.show_busy(self._busy_info["title"], self._busy_info["details"])
         self._busy_info["showing"] = True
 
-    def hide_busy_popup(self, clear_info=True):
+    def hide_busy_popup(self, busy_id, clear_info=True):
         """
         Hide the busy popup message dialog.
 
+        :param busy_id: The unique identifier to set the busy info.
+        :type busy_id: str
         :param clear_info: Set to True will reset the busy information. Set to False to keep the busy
             information to restore the next time `show_busy_popup` in called without specifying a title
             or details.
         :type clear_info: bool
         """
 
-        if not self._busy_info["showing"]:
+        if not self._busy_info["showing"] or busy_id != self._busy_info["id"]:
             return
 
         engine = self._bundle.engine
@@ -249,5 +309,6 @@ class AppDialog(QtGui.QWidget):
         # Clear the busy info if specified. Do not clear if the popup is the popup needs to be resumed at a
         # later time (e.g. pause pop up for user interaction and resume after)
         if clear_info:
+            self._busy_info["id"] = None
             self._busy_info["title"] = ""
             self._busy_info["details"] = ""

@@ -29,6 +29,10 @@ from ..utils.framework_qtwidgets import (
     SearchWidget,
     SGQToolButton,
     SGQWidget,
+    SGQPushButton,
+    SGQSplitter,
+    SGQMenu,
+    SGQLabel,
 )
 
 from ..utils.decorators import wait_cursor
@@ -66,7 +70,7 @@ class ValidationWidget(SGQWidget):
     # Emit signals to indicate that the details widget is about to run an action, and when it has finished
     # (this is useful to # show a busy indicator, if the operation takes some time)
     details_about_to_execute_action = QtCore.Signal(dict)
-    details_execute_action_finished = QtCore.Signal()
+    details_execute_action_finished = QtCore.Signal(dict)
 
     def __init__(self, parent, group_rules_by=None):
         """
@@ -94,8 +98,10 @@ class ValidationWidget(SGQWidget):
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # Set these callbacks to the default validate and fix methods
-        self._validate_callback = self._validate_rules
-        self._fix_callback = self._fix_rules
+        self._validate_all_callback = self._validate_rules
+        self._validate_rule_callback = lambda rule: self._validate_rules([rule])
+        self._fix_all_callback = self._fix_rules
+        self._fix_rule_callback = lambda rule: self._fix_rules([rule])
 
         # -----------------------------------------------------
         # Set up the UI
@@ -155,32 +161,60 @@ class ValidationWidget(SGQWidget):
         return self._publish_button
 
     @property
-    def validate_callback(self):
+    def validate_rule_callback(self):
         """
         Get or set the custom callback triggered when the validate button is clicked.
 
         This property must be a function that accepts a single parameter that is a list of ValidationRule
         objects.
         """
-        return self._validate_callback
+        return self._validate_rule_callback
 
-    @validate_callback.setter
-    def validate_callback(self, cb):
-        self._validate_callback = cb
+    @validate_rule_callback.setter
+    def validate_rule_callback(self, cb):
+        self._validate_rule_callback = cb
 
     @property
-    def fix_callback(self):
+    def validate_all_callback(self):
+        """
+        Get or set the custom callback triggered when the validate button is clicked.
+
+        This property must be a function that accepts a single parameter that is a list of ValidationRule
+        objects.
+        """
+        return self._validate_all_callback
+
+    @validate_all_callback.setter
+    def validate_all_callback(self, cb):
+        self._validate_all_callback = cb
+
+    @property
+    def fix_all_callback(self):
         """
         Get or set the custom callback triggered when the fix button is clicked.
 
         This property must be a function that accepts a single parameter that is a list of ValidationRule
         objects.
         """
-        return self._fix_callback
+        return self._fix_all_callback
 
-    @fix_callback.setter
-    def fix_callback(self, cb):
-        self._fix_callback = cb
+    @fix_all_callback.setter
+    def fix_all_callback(self, cb):
+        self._fix_all_callback = cb
+
+    @property
+    def fix_rule_callback(self):
+        """
+        Get or set the custom callback triggered when the fix button is clicked.
+
+        This property must be a function that accepts a single parameter that is a list of ValidationRule
+        objects.
+        """
+        return self._fix_rule_callback
+
+    @fix_rule_callback.setter
+    def fix_rule_callback(self, cb):
+        self._fix_rule_callback = cb
 
     #########################################################################################################
     # Public methods
@@ -398,7 +432,7 @@ class ValidationWidget(SGQWidget):
         )
 
         # Create horizontal splitter for main view and details widgets
-        self._view_details_splitter = QtGui.QSplitter(self)
+        self._view_details_splitter = SGQSplitter(self)
         self._view_details_splitter.setSizePolicy(
             QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         )
@@ -453,6 +487,9 @@ class ValidationWidget(SGQWidget):
         self._errors_toggle.setIconSize(QtCore.QSize(25, 14))
         self._errors_toggle.setCursor(QtCore.Qt.PointingHandCursor)
 
+        # Number of errors label
+        self._errors_label = SGQLabel(self)
+
         # Details button
         self._details_button = SGQToolButton(self, icon=SGQIcon.Info())
         self._details_button.setToolTip("Show/Hide Details Panel")
@@ -470,18 +507,13 @@ class ValidationWidget(SGQWidget):
             [
                 "{role}.name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.rule_type_name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.optional".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.manual".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
         self._filter_menu.set_visible_fields(
             [
                 "{role}.name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.manual".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
         self._filter_menu.set_filter_model(self._rules_proxy_model)
@@ -508,9 +540,9 @@ class ValidationWidget(SGQWidget):
         # Bottom toolbar
         #
 
-        self._validate_button = QtGui.QPushButton("Validate")
-        self._fix_button = QtGui.QPushButton("Fix All")
-        self._publish_button = QtGui.QPushButton("Ready to Publish")
+        self._validate_button = SGQPushButton("Validate")
+        self._fix_button = SGQPushButton("Fix All")
+        self._publish_button = SGQPushButton("Ready to Publish")
 
         # Create the button layout and add the widgets
         self._footer_widget = SGQWidget(
@@ -518,6 +550,7 @@ class ValidationWidget(SGQWidget):
             child_widgets=[
                 self._errors_toggle,
                 None,
+                self._errors_label,
                 self._validate_button,
                 self._fix_button,
                 self._publish_button,
@@ -580,7 +613,6 @@ class ValidationWidget(SGQWidget):
         # -----------------------------------------------------
         # Rules model signals
         #
-        self._rules_model.itemChanged.connect(self._on_rules_model_item_changed)
         self._rules_model.modelReset.connect(self._on_rules_model_reset)
         self._rules_model.rule_check_state_changed.connect(
             self._on_rule_check_state_changed
@@ -663,13 +695,16 @@ class ValidationWidget(SGQWidget):
         assert self._rules_view, "The rules view must be created before the delegate"
 
         delegate = ViewItemDelegate(self._rules_view)
-        delegate.text_padding = ViewItemDelegate.Padding(2, 7, 2, 7)
+        delegate.text_rect_valign = ViewItemDelegate.CENTER
+        delegate.elide_text = False
+        delegate.elide_header = True
 
         delegate.header_role = ValidationRuleModel.VIEW_ITEM_HEADER_ROLE
         delegate.separator_role = ValidationRuleModel.VIEW_ITEM_SEPARATOR_ROLE
         delegate.loading_role = ValidationRuleModel.VIEW_ITEM_LOADING_ROLE
         delegate.height_role = ValidationRuleModel.VIEW_ITEM_HEIGHT_ROLE
         delegate.expand_role = ValidationRuleModel.VIEW_ITEM_EXPAND_ROLE
+        delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
 
         delegate.add_action(
             {
@@ -723,7 +758,7 @@ class ValidationWidget(SGQWidget):
                     "callback": self.rule_check_action_callback,
                 },
             ],
-            ViewItemDelegate.TOP_RIGHT,
+            ViewItemDelegate.FLOAT_TOP_RIGHT,
         )
         delegate.add_actions(
             [
@@ -734,7 +769,7 @@ class ValidationWidget(SGQWidget):
                     "get_data": get_rule_status_action_data,
                 },
             ],
-            ViewItemDelegate.TOP_LEFT,
+            ViewItemDelegate.LEFT,
         )
 
         self._rules_view.setItemDelegate(delegate)
@@ -759,10 +794,10 @@ class ValidationWidget(SGQWidget):
             self._rules_model.hierarchical = False
             self._rules_view.group_items_selectable = True
             self._details_widget.show_description = True
+
+            self._rules_delegate.text_padding = ViewItemDelegate.Padding(8, 10, 8, 10)
             self._rules_delegate.action_item_margin = 4
-            self._rules_delegate.text_role = (
-                ValidationRuleModel.VIEW_ITEM_SHORT_TEXT_ROLE
-            )
+            self._rules_delegate.visible_lines = 1
 
         elif view_mode == self.VIEW_MODE_GROUPED:
             self._view_mode_grouped_button.setChecked(True)
@@ -770,8 +805,10 @@ class ValidationWidget(SGQWidget):
             self._rules_model.hierarchical = True
             self._rules_view.group_items_selectable = False
             self._details_widget.show_description = False
+
+            self._rules_delegate.visible_lines = -1
+            self._rules_delegate.text_padding = ViewItemDelegate.Padding(10, 10, 10, 10)
             self._rules_delegate.action_item_margin = 7
-            self._rules_delegate.text_role = ValidationRuleModel.VIEW_ITEM_TEXT_ROLE
 
         else:
             assert False, "Unsupported view mode"
@@ -819,14 +856,16 @@ class ValidationWidget(SGQWidget):
                 "Select an item to see more details."
             )
         elif len(selected_indexes) > 1:
-            self._details_overlay.show_message("Select a single item to see details.")
+            self._details_overlay_widget.show_message(
+                "Select a single item to see details."
+            )
         else:
             self._details_overlay_widget.hide()
             model_index = selected_indexes[0]
             rule = model_index.data(ValidationRuleModel.RULE_ITEM_ROLE)
             self._details_widget.set_data(rule)
 
-    def _refresh_details(self):
+    def _refresh_details(self, rule=None):
         """
         Refresh the details widget to reflect the latest changes to the data.
         """
@@ -834,7 +873,28 @@ class ValidationWidget(SGQWidget):
         if not self._details_on or not self._details_widget.isVisible():
             return
 
+        if (
+            rule
+            and self._details_widget.rule
+            and self._details_widget.rule.id != rule.id
+        ):
+            return
+
         self._details_widget.refresh()
+
+    def _update_errors(self):
+        """
+        Update the errors label text to indicated how many errors ther are currently.
+        """
+
+        num_errors = len(self._rules_model.get_errors())
+        if num_errors:
+            self._errors_label.setText(
+                "{} issue{} found    ".format(num_errors, "s" if num_errors > 1 else "")
+            )
+            self._errors_label.show()
+        else:
+            self._errors_label.hide()
 
     def _show_context_menu(self, widget, pos, indexes=None):
         """
@@ -876,7 +936,7 @@ class ValidationWidget(SGQWidget):
         actions.append(show_details_action)
 
         # Create the menu, add the actions and show it
-        menu = QtGui.QMenu(self)
+        menu = SGQMenu(self)
         menu.addActions(actions)
         pos = widget.mapToGlobal(pos)
         menu.exec_(pos)
@@ -960,7 +1020,7 @@ class ValidationWidget(SGQWidget):
         self.validate_all_begin()
         try:
             active_rules = self.get_active_rules()
-            self.validate_callback(active_rules)
+            self.validate_all_callback(active_rules)
         finally:
             self.validate_all_finished()
 
@@ -974,7 +1034,7 @@ class ValidationWidget(SGQWidget):
         """
 
         active_rules = self.get_active_rules()
-        self.fix_callback(active_rules)
+        self.fix_all_callback(active_rules)
 
     @wait_cursor
     def on_validate_rule(self, rule, refresh_details=False):
@@ -987,11 +1047,7 @@ class ValidationWidget(SGQWidget):
         :type refresh_details: bool
         """
 
-        self.validate_rule_begin(rule)
-        try:
-            self.validate_callback([rule])
-        finally:
-            self.validate_rule_finished(rule)
+        self.validate_rule_callback(rule)
 
         if refresh_details:
             # Refresh the details since its data may have changed
@@ -1006,7 +1062,7 @@ class ValidationWidget(SGQWidget):
         :type rule: VaildationRule
         """
 
-        self.fix_callback([rule])
+        self.fix_rule_callback(rule)
 
     def validate_rule_begin(self, rule):
         """
@@ -1056,6 +1112,14 @@ class ValidationWidget(SGQWidget):
         if not updated:
             rule_item.emitDataChanged()
 
+        # Update the proxy model to reflect any changes after validation
+        self._rules_proxy_model._update()
+
+        # Update the errors label to reflect any changes after validation
+        self._update_errors()
+
+        self._refresh_details(rule)
+
     def validate_all_begin(self):
         """
         Call this method before all validation rules are checked.
@@ -1075,7 +1139,14 @@ class ValidationWidget(SGQWidget):
         # Emit signal that validation rules have been updated
         self._rules_model.emit_all_data_changed()
 
+        # Update the proxy model to reflect any changes after validation
         self._rules_proxy_model._update()
+
+        # Update the errors label to reflect any changes after validation
+        self._update_errors()
+
+        # Ensure the details is refreshed
+        self._refresh_details()
 
         self._is_validating_all = False
 
@@ -1158,32 +1229,6 @@ class ValidationWidget(SGQWidget):
         """
 
         self._update_view_overlay()
-
-    def _on_rules_model_item_changed(self, item):
-        """
-        Callback triggered when data for the item in the rules model has been updated.
-
-        :param item: The item in the ValidationRuleModel
-        :type item: QStandardItem
-        """
-
-        rule = item.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        if not rule:
-            return
-
-        # Check if the details widget needs to be updated to reflect the item changes
-        if (
-            self._details_widget.isVisible()
-            and self._details_widget.rule
-            and (
-                (self._is_validating_all and self._details_widget.rule.id == rule.id)
-                or (
-                    not self._is_validating_all
-                    and self._details_widget.rule.id != rule.id
-                )
-            )
-        ):
-            self._details_widget.set_data(rule)
 
     def _on_rule_check_state_changed(self, rule, check_state):
         """
@@ -1278,6 +1323,11 @@ class ValidationWidget(SGQWidget):
         :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`
         """
 
+        # First select the index
+        self._rules_view.selectionModel().select(
+            index, QtGui.QItemSelectionModel.ClearAndSelect
+        )
+
         self._show_context_menu(view, pos, [index])
 
     @wait_cursor
@@ -1292,6 +1342,11 @@ class ValidationWidget(SGQWidget):
         :param pos: The mouse position captured on triggered this callback
         :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`
         """
+
+        # First select the index
+        self._rules_view.selectionModel().select(
+            index, QtGui.QItemSelectionModel.ClearAndSelect
+        )
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
@@ -1309,6 +1364,11 @@ class ValidationWidget(SGQWidget):
         :param pos: The mouse position captured on triggered this callback
         :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`
         """
+
+        # First select the index
+        self._rules_view.selectionModel().select(
+            index, QtGui.QItemSelectionModel.ClearAndSelect
+        )
 
         # Get the ValidationRule object for the index
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)

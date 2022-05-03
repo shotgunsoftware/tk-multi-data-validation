@@ -207,7 +207,7 @@ class ValidationRule(object):
     @property
     def error_message(self):
         """Get the text that describes how the data is not valid."""
-        default_msg = "Found errors." if not self.manual else ""
+        default_msg = "Found errors." if self.check_func else ""
         return self._data.get("error_msg", default_msg)
 
     @property
