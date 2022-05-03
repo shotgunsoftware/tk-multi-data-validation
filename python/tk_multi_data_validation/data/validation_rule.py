@@ -170,7 +170,7 @@ class ValidationRule(object):
     @property
     def required(self):
         """Get the property flag indicating if this rule should be executed to validate the data."""
-        return self._data.get("required", False)
+        return self._data.get("required", True)
 
     @property
     def manual(self):
