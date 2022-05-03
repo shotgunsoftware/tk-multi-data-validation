@@ -52,3 +52,4 @@ SGQIcon = sg_qicons.SGQIcon
 sg_qwidgets = sgtk.platform.import_framework("tk-framework-qtwidgets", "sg_qwidgets")
 SGQToolButton = sg_qwidgets.SGQToolButton
 SGQWidget = sg_qwidgets.SGQWidget
+SGQLabel = sg_qwidgets.SGQLabel

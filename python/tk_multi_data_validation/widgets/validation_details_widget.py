@@ -19,6 +19,7 @@ from ..utils.framework_qtwidgets import (
     ViewItemAction,
     ShotgunOverlayWidget,
     SGQWidget,
+    SGQLabel,
 )
 
 
@@ -194,7 +195,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details.setSizePolicy(
             QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         )
-        self._details_description = QtGui.QLabel(self._details)
+        self._details_description = SGQLabel(self._details)
         self._details_description.setWordWrap(True)
         details_vlayout = QtGui.QVBoxLayout()
         details_vlayout.addWidget(self._details_description)
