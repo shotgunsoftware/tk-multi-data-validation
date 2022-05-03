@@ -505,15 +505,14 @@ class ValidationWidget(SGQWidget):
         )
         self._filter_menu.set_accept_fields(
             [
-                "{role}.name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
         self._filter_menu.set_visible_fields(
             [
-                "{role}.name".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
                 "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
+                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
         self._filter_menu.set_filter_model(self._rules_proxy_model)
