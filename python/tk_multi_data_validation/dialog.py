@@ -124,6 +124,8 @@ class AppDialog(QtGui.QWidget):
         # Add the validation widget to this dialog's layout
 
         main_layout = QtGui.QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
         main_layout.addWidget(self._validation_widget)
         self.setLayout(main_layout)
 

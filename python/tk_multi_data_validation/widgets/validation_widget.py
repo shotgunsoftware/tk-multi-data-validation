@@ -556,7 +556,15 @@ class ValidationWidget(SGQWidget):
             ],
         )
 
-        # Add the widgest to the main widget layout
+        # -----------------------------------------------------
+        # Layouts and main widget
+        #
+
+        self._toolbar_widget.layout().setContentsMargins(10, 10, 10, 0)
+        self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
+        self._footer_widget.layout().setContentsMargins(10, 0, 10, 10)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
         self.add_widgets(
             [self._toolbar_widget, self._content_widget, self._footer_widget,]
         )
