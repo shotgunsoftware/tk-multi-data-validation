@@ -1132,12 +1132,20 @@ class ValidationWidget(SGQWidget):
         Call this method before all validation rules are checked.
         """
 
+        if self._is_validating_all:
+            # Already validating
+            return
+
         self._is_validating_all = True
 
     def validate_all_finished(self):
         """
         Call this method after all validation rules have been checked.
         """
+
+        if not self._is_validating_all:
+            # Nothing to do, if validation did not happen.
+            return
 
         # Get and update the rule type statuses
         (valid, errors, incomplete,) = self._rules_model.get_statuses_for_rule_type()
