@@ -560,9 +560,9 @@ class ValidationWidget(SGQWidget):
         # Layouts and main widget
         #
 
-        self._toolbar_widget.layout().setContentsMargins(10, 10, 10, 0)
+        self._toolbar_widget.layout().setContentsMargins(10, 0, 10, 0)
         self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
-        self._footer_widget.layout().setContentsMargins(10, 0, 10, 10)
+        self._footer_widget.layout().setContentsMargins(10, 0, 10, 0)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.add_widgets(
@@ -771,6 +771,7 @@ class ValidationWidget(SGQWidget):
             [
                 {
                     "type": ViewItemAction.TYPE_ICON,
+                    "icon_size": QtCore.QSize(20, 20),
                     "show_always": True,
                     "padding": 2,
                     "get_data": get_rule_status_action_data,
@@ -800,6 +801,7 @@ class ValidationWidget(SGQWidget):
             self._view_mode_grouped_button.setChecked(False)
             self._rules_model.hierarchical = False
             self._rules_view.group_items_selectable = True
+            self._rules_view.group_spacing = 30
             self._details_widget.show_description = True
 
             self._rules_delegate.text_padding = ViewItemDelegate.Padding(8, 10, 8, 10)
@@ -811,6 +813,7 @@ class ValidationWidget(SGQWidget):
             self._view_mode_list_button.setChecked(False)
             self._rules_model.hierarchical = True
             self._rules_view.group_items_selectable = False
+            self._rules_view.group_spacing = 4
             self._details_widget.show_description = False
 
             self._rules_delegate.visible_lines = -1

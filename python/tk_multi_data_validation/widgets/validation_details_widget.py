@@ -134,6 +134,12 @@ class ValidationDetailsWidget(SGQWidget):
         # Add check action
         if self.rule.check_func is not None:
             name = self.rule.check_name
+
+            # Check if the rule has already run its validation once, if so, modify the name to
+            # prepend "Re", e.g. Validate -> Revalidate
+            if self.rule.valid is not None:
+                name = "Re{name}".format(name=name.lower())
+
             check_button = SGQPushButton(name, self._details_toolbar)
 
             args = []
@@ -194,9 +200,8 @@ class ValidationDetailsWidget(SGQWidget):
 
         self._details = SGQGroupBox(self)
         self._details.setMinimumWidth(200)
-        self._details.setMaximumWidth(400)
         self._details.setSizePolicy(
-            QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+            QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         )
         self._details_description = SGQLabel(self._details)
         self._details_description.setWordWrap(True)
@@ -216,6 +221,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_view_item_delegate = self._create_delegate()
         self._details_item_view_overlay = ShotgunOverlayWidget(self._details_item_view)
 
+        self.layout().setContentsMargins(10, 0, 0, 0)
         self.add_widgets(
             [self._details, self._details_toolbar, self._details_item_view]
         )
@@ -240,7 +246,9 @@ class ValidationDetailsWidget(SGQWidget):
         """
 
         delegate = ViewItemDelegate(self._details_item_view)
-        delegate.text_padding = ViewItemDelegate.Padding(0, 7, 0, 7)
+        delegate.item_padding = ViewItemDelegate.Padding(0, 0, 0, 0)
+        delegate.text_padding = ViewItemDelegate.Padding(10, 10, 10, 10)
+        delegate.text_rect_valign = ViewItemDelegate.CENTER
 
         delegate.header_role = ValidationRuleDetailsModel.VIEW_ITEM_HEADER_ROLE
         delegate.subtitle_role = ValidationRuleDetailsModel.VIEW_ITEM_SUBTITLE_ROLE

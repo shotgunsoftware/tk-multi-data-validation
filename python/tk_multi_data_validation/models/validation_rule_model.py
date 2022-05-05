@@ -430,7 +430,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         # Status icons
         self._error_status_icon = SGQIcon.ValidationError()
-        self._warning_status_icon = SGQIcon.ValidationWarning(size=SGQIcon.SMALL)
+        self._warning_status_icon = SGQIcon.ValidationWarning()
         self._ok_status_icon = SGQIcon.ValidationOk()
 
         # Add additional roles defined by the ViewItemRolesMixin class.
