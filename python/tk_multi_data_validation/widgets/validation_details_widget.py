@@ -110,8 +110,10 @@ class ValidationDetailsWidget(SGQWidget):
 
         dependencies_names = self.rule.get_dependency_names()
         if dependencies_names:
-            dependencies_text = "Dependencies that will run with this fix:<ul>{deps}</ul>".format(
-                deps="".join(["<li>{}</li>".format(d) for d in dependencies_names])
+            dependencies_text = (
+                "Dependencies that will run with this fix:<ul>{deps}</ul>".format(
+                    deps="".join(["<li>{}</li>".format(d) for d in dependencies_names])
+                )
             )
         else:
             dependencies_text = ""

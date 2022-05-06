@@ -45,8 +45,13 @@ class ValidationManager(object):
         about_to_open_msg_box = QtCore.Signal()
         msg_box_closed = QtCore.Signal()
 
-
-    def __init__(self, rule_settings=None, include_rules=None, exclude_rules=None, validation_logger=None):
+    def __init__(
+        self,
+        rule_settings=None,
+        include_rules=None,
+        exclude_rules=None,
+        validation_logger=None,
+    ):
         """
         Initialize the validation manager from the settings data.
 
@@ -86,7 +91,9 @@ class ValidationManager(object):
         # Retrieve the validation data from given settings or get them from the hook data validator hook.
         # Create the set of ValidationRules from the validation data retrieved.
         #
-        validation_data = self._bundle.execute_hook_method("hook_data_validator", "get_validation_data")
+        validation_data = self._bundle.execute_hook_method(
+            "hook_data_validator", "get_validation_data"
+        )
         self.__data = copy.deepcopy(validation_data)
         self.__rules_by_id = {}
         self.__errors = {}
@@ -94,7 +101,7 @@ class ValidationManager(object):
         rule_settings = rule_settings or self._bundle.settings.get("rules")
         for rule_item in rule_settings:
             rule_id = rule_item["id"]
-            
+
             if include_rules and not rule_id in include_rules:
                 continue
 
@@ -103,19 +110,22 @@ class ValidationManager(object):
 
             rule_data = self.__data.get(rule_id)
             if not rule_data:
-                self._logger.error("Data was not found for validation rule id '{}'".format(rule_id))
+                self._logger.error(
+                    "Data was not found for validation rule id '{}'".format(rule_id)
+                )
                 continue
 
             # Collect dependencies first, if any
             for dependency_id in rule_data.get("dependency_ids", []):
                 dependency_data = self.__data.get(dependency_id)
                 if dependency_data:
-                    rule_data.setdefault("dependencies", {})[dependency_id] = dependency_data.get("name")
+                    rule_data.setdefault("dependencies", {})[
+                        dependency_id
+                    ] = dependency_data.get("name")
 
             rule_data.update(rule_item)
             rule = ValidationRule(rule_data)
             self.__rules_by_id[rule.id] = rule
-        
 
     #########################################################################################################
     # Properties
@@ -129,7 +139,7 @@ class ValidationManager(object):
     def rules(self):
         """Get the list of validtaion rules obtained from the validation data."""
         return self.__rules_by_id.values()
-    
+
     @property
     def rule_types(self):
         """Get or set the rule types."""
@@ -164,16 +174,16 @@ class ValidationManager(object):
     def get_rule(self, rule_id):
         """
         Return the validation rule object for the id.
-        
+
         :param rule_id: The validation rule unique identifier.
         :type rule_id: str
-        
+
         :return: The validation rule.
         :rtype: ValidationRule
         """
 
         return self.__rules_by_id.get(rule_id)
-    
+
     def reset(self):
         """
         Reset the manager state.
@@ -182,7 +192,7 @@ class ValidationManager(object):
         """
 
         self.__errors = {}
-    
+
     def validate(self, emit_signals=True):
         """
         Validate the DCC data by executing all validation rule check functions.
@@ -196,7 +206,7 @@ class ValidationManager(object):
 
         self._notifier.validate_all_begin.emit()
 
-        try:        
+        try:
             # Reset the manager state before performing validation
             self.reset()
             self.validate_rules(self.rules, emit_signals=False)
@@ -304,7 +314,9 @@ class ValidationManager(object):
         # dependencies are not included, then that means they have no errors and thus, do not need to
         # run their fix action to modify the data. Basically, this means dependencies can be ignored
         # as they will have no effect on the data.
-        self.resolve_rules(self.errors.values(), fetch_dependencies=False, emit_signals=False)
+        self.resolve_rules(
+            self.errors.values(), fetch_dependencies=False, emit_signals=False
+        )
 
         if post_validate:
             # Run validation step once all resolution actions compelted to ensure everything was fixed.
@@ -357,7 +369,7 @@ class ValidationManager(object):
         if not rules:
             return
 
-        if emit_signals: 
+        if emit_signals:
             self._notifier.resolve_all_begin.emit()
 
         # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
@@ -374,7 +386,6 @@ class ValidationManager(object):
         queue = deque()
         queue_count = 0
 
-
         def process_rule(rule):
             """
             Helper function to intially process a validation rule.
@@ -384,10 +395,10 @@ class ValidationManager(object):
                 set.
             2b. If the rule has dependencies, update the dependencies map and list, and add it to the queue
                 to process later once all of its dependencies are resolved.
-            
+
             :param rule: The rule to process
             :type rule: ValidationRule
-            
+
             :return: True if the rule was resolved, else False if it was not resolved and added to the queue.
             :rtype: bool
             """
@@ -415,7 +426,6 @@ class ValidationManager(object):
             self.resolve_rule(rule)
             resolved.add(rule.id)
             return True
-
 
         # First pass will resolve any rules without dependencies. Rules with dependencies will be added to
         # the queue to be resolved once all its dependencies are resolved.
@@ -446,9 +456,10 @@ class ValidationManager(object):
                     # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
                     # to only individual dependencies
                     answer = QtGui.QMessageBox.question(
-                        None, "Fix Dependencies",
+                        None,
+                        "Fix Dependencies",
                         "This operation will apply additional fixes for dependencies.",
-                        QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel
+                        QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
                     )
                     fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
 
@@ -488,14 +499,16 @@ class ValidationManager(object):
 
                 if dependency_rule_id not in rule_ids:
                     if fetch_dependencies:
-                        self._logger.error("Dependency not resolved '{}'".format(dependency_rule_id))
+                        self._logger.error(
+                            "Dependency not resolved '{}'".format(dependency_rule_id)
+                        )
                     # Dependency is ignored
                     continue
 
                 if dependency_rule_id in resolved:
                     # Dependency has already been resolved
                     continue
-                
+
                 # This dependency is not resolved yet, add it back to the set
                 has_dependencies = True
                 rule_dependencies.add(dependency_rule_id)
@@ -513,14 +526,16 @@ class ValidationManager(object):
     def resolve_rule(self, rule):
         """
         Resolve the validation rule.
-        
+
         :param rule: The validation rule to resolve
         :type rule: ValidationRule
         """
 
-        self._logger.debug("\nResolving Rule: {}\nDependencies: {}".format(
-            rule.id,
-            ", ".join([d for d in rule.get_dependency_names()])))
+        self._logger.debug(
+            "\nResolving Rule: {}\nDependencies: {}".format(
+                rule.id, ", ".join([d for d in rule.get_dependency_names()])
+            )
+        )
 
         self._notifier.resolve_rule_begin.emit(rule)
         rule.exec_fix()

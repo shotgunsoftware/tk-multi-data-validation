@@ -35,9 +35,11 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     ) = range(_BASE_ROLE, _BASE_ROLE + 8)
 
     # Status to indicate if validation state for this rule type
-    (RULE_TYPE_STATUS_OK, RULE_TYPE_STATUS_INCOMPLETE, RULE_TYPE_STATUS_ERROR,) = range(
-        3
-    )
+    (
+        RULE_TYPE_STATUS_OK,
+        RULE_TYPE_STATUS_INCOMPLETE,
+        RULE_TYPE_STATUS_ERROR,
+    ) = range(3)
 
     #
     # Signals

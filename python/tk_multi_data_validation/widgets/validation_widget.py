@@ -55,8 +55,8 @@ class ValidationWidget(SGQWidget):
     SETTINGS_DETAILS_VISIBILITY = "{prefix}_details_visibility".format(
         prefix=SETTINGS_PREFIX
     )
-    SETTINGS_VIEW_DETAILS_SPLITTER_STATE = "{prefix}_view_details_splitter_state".format(
-        prefix=SETTINGS_PREFIX
+    SETTINGS_VIEW_DETAILS_SPLITTER_STATE = (
+        "{prefix}_view_details_splitter_state".format(prefix=SETTINGS_PREFIX)
     )
     SETTINGS_SELECTED_RULE_TYPE_ID = "{prefix}_selected_rule_type_id".format(
         prefix=SETTINGS_PREFIX
@@ -65,7 +65,10 @@ class ValidationWidget(SGQWidget):
     #
     # List of view modes
     #
-    (VIEW_MODE_LIST, VIEW_MODE_GROUPED,) = range(2)
+    (
+        VIEW_MODE_LIST,
+        VIEW_MODE_GROUPED,
+    ) = range(2)
 
     # Emit signals to indicate that the details widget is about to run an action, and when it has finished
     # (this is useful to # show a busy indicator, if the operation takes some time)
@@ -501,7 +504,9 @@ class ValidationWidget(SGQWidget):
         # Filter menu
         self._filter_menu = FilterMenu(self)
         self._filter_menu.set_filter_roles(
-            [self._rules_model.RULE_ITEM_ROLE,]
+            [
+                self._rules_model.RULE_ITEM_ROLE,
+            ]
         )
         self._filter_menu.set_accept_fields(
             [
@@ -566,7 +571,11 @@ class ValidationWidget(SGQWidget):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.add_widgets(
-            [self._toolbar_widget, self._content_widget, self._footer_widget,]
+            [
+                self._toolbar_widget,
+                self._content_widget,
+                self._footer_widget,
+            ]
         )
 
     def _connect_signals(self):
@@ -1151,7 +1160,11 @@ class ValidationWidget(SGQWidget):
             return
 
         # Get and update the rule type statuses
-        (valid, errors, incomplete,) = self._rules_model.get_statuses_for_rule_type()
+        (
+            valid,
+            errors,
+            incomplete,
+        ) = self._rules_model.get_statuses_for_rule_type()
         self._rule_types_model.set_statuses(valid, errors, incomplete)
 
         # Emit signal that validation rules have been updated
@@ -1302,7 +1315,8 @@ class ValidationWidget(SGQWidget):
             self._rules_proxy_model.remove_rule_type_filter()
         else:
             self._rules_proxy_model.set_rule_type(
-                rule_type, filter_role=ValidationRuleModel.RULE_ITEM_ROLE,
+                rule_type,
+                filter_role=ValidationRuleModel.RULE_ITEM_ROLE,
             )
 
     def _on_rule_selection_changed(self):

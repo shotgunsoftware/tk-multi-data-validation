@@ -59,7 +59,10 @@ class DataValidation(sgtk.platform.Application):
         return self._widget_class(parent, validation_manager=validation_manager)
 
     def create_validation_manager(
-        self, rule_settings=None, include_rules=None, exclude_rules=None,
+        self,
+        rule_settings=None,
+        include_rules=None,
+        exclude_rules=None,
     ):
         """
         Create a validation manager instance.
