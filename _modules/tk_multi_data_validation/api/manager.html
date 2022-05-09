@@ -1,0 +1,789 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.api.manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.api.manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="kn">import</span> <span class="nn">sgtk</span>
+<span class="kn">from</span> <span class="nn">sgtk.platform.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+
+<span class="kn">from</span> <span class="nn">..data.validation_rule</span> <span class="kn">import</span> <span class="n">ValidationRule</span>
+<span class="kn">from</span> <span class="nn">..data.validation_rule_type</span> <span class="kn">import</span> <span class="n">ValidationRuleType</span>
+
+
+<div class="viewcode-block" id="ValidationManager"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager">[docs]</a><span class="k">class</span> <span class="nc">ValidationManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manager class for data validation.</span>
+
+<span class="sd">    This class is responsible for retrieving the data validation rules from the current bundle&#39;s settings,</span>
+<span class="sd">    and creating the set of ValidationRule objects that define how the data should be validated.</span>
+
+<span class="sd">    This class object may be passed to the :class:`tk_multi_data_validation.widgets.ValidationWidget` to help</span>
+<span class="sd">    manager validation rules, and executing their actions.</span>
+
+<span class="sd">    It also coordinates the execution of validation rule check and fix functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ValidationManager.ValidationNotifier"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.ValidationNotifier">[docs]</a>    <span class="k">class</span> <span class="nc">ValidationNotifier</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inner helper class to emit signals around validation operations.&quot;&quot;&quot;</span>
+
+        <span class="n">validate_rule_begin</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+        <span class="n">validate_rule_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+        <span class="n">validate_all_begin</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+        <span class="n">validate_all_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+        <span class="n">resolve_rule_begin</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+        <span class="n">resolve_rule_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+        <span class="n">resolve_all_begin</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+        <span class="n">resolve_all_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+        <span class="n">about_to_open_msg_box</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+        <span class="n">msg_box_closed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rule_settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_rules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">exclude_rules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">validation_logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the validation manager from the settings data.</span>
+
+<span class="sd">        :param rule_settings: The rule settings to use for this manager. Default is to use the</span>
+<span class="sd">                              current bunlde&#39;s settings.</span>
+<span class="sd">        :type rule_settings: dict</span>
+<span class="sd">        :param include_rules: List of rule ids to include from the app&#39;s default rules list.</span>
+<span class="sd">        :type include_rules: list&lt;str&gt;</span>
+<span class="sd">        :param exclude_rules: List of rule ids to exclude from the app&#39;s default rules list.</span>
+<span class="sd">        :type exclude_rules: list&lt;str&gt;</span>
+<span class="sd">        :param validation_logger: This is a standard python logger to use during validation. A default logger</span>
+<span class="sd">            will be provided if not supplied.</span>
+
+<span class="sd">        :signal ValidationNotifier.validate_rule_begin(ValidationRule): Emits before a validation rule check</span>
+<span class="sd">            function is executed. The returned parameter is the validation rule.</span>
+<span class="sd">        :signal ValidationNotifier.validate_rule_finished(ValidationRule): Emits after a validation rule</span>
+<span class="sd">            check function is executed. The returned parameter is the validation rule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span> <span class="o">=</span> <span class="n">sgtk</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">current_bundle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">validation_logger</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ValidationNotifier</span><span class="p">()</span>
+
+        <span class="c1"># Set the default rule types (in order). This can be set using the rule_types property.</span>
+        <span class="c1"># TODO allow this to be config-based</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ValidationRuleType</span><span class="p">(</span><span class="n">ValidationRuleType</span><span class="o">.</span><span class="n">RULE_TYPE_NONE</span><span class="p">),</span>
+            <span class="n">ValidationRuleType</span><span class="p">(</span><span class="n">ValidationRuleType</span><span class="o">.</span><span class="n">RULE_TYPE_ACTIVE</span><span class="p">),</span>
+            <span class="n">ValidationRuleType</span><span class="p">(</span><span class="n">ValidationRuleType</span><span class="o">.</span><span class="n">RULE_TYPE_REQUIRED</span><span class="p">),</span>
+            <span class="n">ValidationRuleType</span><span class="p">(</span><span class="n">ValidationRuleType</span><span class="o">.</span><span class="n">RULE_TYPE_OPTIONAL</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Default accept function is not set, which will accept all rules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Retrieve the validation data from given settings or get them from the hook data validator hook.</span>
+        <span class="c1"># Create the set of ValidationRules from the validation data retrieved.</span>
+        <span class="c1">#</span>
+        <span class="n">validation_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">execute_hook_method</span><span class="p">(</span>
+            <span class="s2">&quot;hook_data_validator&quot;</span><span class="p">,</span> <span class="s2">&quot;get_validation_data&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">validation_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">rule_settings</span> <span class="o">=</span> <span class="n">rule_settings</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rules&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rule_item</span> <span class="ow">in</span> <span class="n">rule_settings</span><span class="p">:</span>
+            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">rule_item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">include_rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">include_rules</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">exclude_rules</span> <span class="ow">and</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">exclude_rules</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">rule_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule_data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Data was not found for validation rule id &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Collect dependencies first, if any</span>
+            <span class="k">for</span> <span class="n">dependency_id</span> <span class="ow">in</span> <span class="n">rule_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependency_ids&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">dependency_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dependency_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dependency_data</span><span class="p">:</span>
+                    <span class="n">rule_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">{})[</span>
+                        <span class="n">dependency_id</span>
+                    <span class="p">]</span> <span class="o">=</span> <span class="n">dependency_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+            <span class="n">rule_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rule_item</span><span class="p">)</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">ValidationRule</span><span class="p">(</span><span class="n">rule_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">notifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the notifier for the validation manager.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of validtaion rules obtained from the validation data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get or set the rule types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types</span>
+
+    <span class="nd">@rule_types</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types</span> <span class="o">=</span> <span class="n">type_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of rules which did not pass the last time their respective validate function was executed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get or set the function called to check if the validation should be applied to the given rule.</span>
+
+<span class="sd">        This property must be a function that takes a single param (ValidationRule) and returns a bool to</span>
+<span class="sd">        indicate if the rule should be validated or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span>
+
+    <span class="nd">@accept_rule_fn</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span> <span class="o">=</span> <span class="n">fn</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Public functions</span>
+
+<div class="viewcode-block" id="ValidationManager.get_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.get_rule">[docs]</a>    <span class="k">def</span> <span class="nf">get_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the validation rule object for the id.</span>
+
+<span class="sd">        :param rule_id: The validation rule unique identifier.</span>
+<span class="sd">        :type rule_id: str</span>
+
+<span class="sd">        :return: The validation rule.</span>
+<span class="sd">        :rtype: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationManager.reset"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the manager state.</span>
+
+<span class="sd">        Clear the errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="ValidationManager.validate"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the DCC data by executing all validation rule check functions.</span>
+
+<span class="sd">        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.</span>
+<span class="sd">        :param emit_signals: bool</span>
+
+<span class="sd">        :return: True if all validation rule checks passed (data is valid), else False.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Reset the manager state before performing validation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span></div>
+
+<div class="viewcode-block" id="ValidationManager.validate_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rules">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
+    <span class="k">def</span> <span class="nf">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the given list of rules.</span>
+
+<span class="sd">        :param rules: The list of rules.</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.</span>
+<span class="sd">        :param emit_signals: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_rule_fn</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_rule_fn</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">validate_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationManager.validate_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rule">[docs]</a>    <span class="k">def</span> <span class="nf">validate_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the DCC data with the given rule.</span>
+
+<span class="sd">        The check function executed to validate the DCC data is implemented by the ValidationRule (e.g. the</span>
+<span class="sd">        manager does nothing to validate the data, it is just responsible for executing the validate</span>
+<span class="sd">        functions).</span>
+
+<span class="sd">        :param rule: The rule to validate data by</span>
+<span class="sd">        :type rule: ValidationRule</span>
+
+<span class="sd">        :return: True if the validation rule check passed (data is valid for this rule), else False.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="c1"># Emit a signal to notify that a specifc rule has started validation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_rule_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="c1"># Run the validation rule check function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validating Rule: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="n">rule</span><span class="o">.</span><span class="n">exec_check</span><span class="p">()</span>
+
+        <span class="c1"># Check if rule&#39;s valid state after executing its check function</span>
+        <span class="n">is_valid</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">valid</span>
+
+        <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span><span class="p">:</span>
+                <span class="c1"># Remove the rule from the error set</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Add the rule to the error set</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="c1"># Emit a signal to notify that a specifc rule has finished validation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">validate_rule_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">is_valid</span></div>
+
+<div class="viewcode-block" id="ValidationManager.resolve"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve">[docs]</a>    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the current data violations found by the validate method.</span>
+
+<span class="sd">        The fix function executed to resolve the DCC data violations is implemented by the ValidationRule</span>
+<span class="sd">        (e.g. the manager does nothing to validate the data, it is just responsible for executing the</span>
+<span class="sd">        fix functions).</span>
+
+<span class="sd">        :param pre_validate: True will run the validation step before the resovle step, to ensure the</span>
+<span class="sd">                             list of items to resolve is the most up to date.</span>
+<span class="sd">        :type pre_validate: bool</span>
+<span class="sd">        :param post_validate: True will run the validation step after the resolve step, to check that</span>
+<span class="sd">                              the scene data is valid after resolution steps applied.</span>
+<span class="sd">        :type post_validate: bool</span>
+
+<span class="sd">        :return: True if the resolve operation was successful, else False. Note that if the post_validate</span>
+<span class="sd">            param is False, this will always be True, since the return status is based on the status</span>
+<span class="sd">            returned by post validating the data.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">pre_validate</span><span class="p">:</span>
+            <span class="c1"># First run the validate method to check for data violations.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+            <span class="c1"># There are no data violations to resolve.</span>
+            <span class="k">return</span> <span class="n">success</span>
+
+        <span class="c1"># Resolve the data violations. Explicitly say not to fetch dependencies because this function</span>
+        <span class="c1"># has validated all rules and all rules will be passed to resolve that will be fixed - if</span>
+        <span class="c1"># dependencies are not included, then that means they have no errors and thus, do not need to</span>
+        <span class="c1"># run their fix action to modify the data. Basically, this means dependencies can be ignored</span>
+        <span class="c1"># as they will have no effect on the data.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolve_rules</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">post_validate</span><span class="p">:</span>
+            <span class="c1"># Run validation step once all resolution actions compelted to ensure everything was fixed.</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">success</span></div>
+
+<div class="viewcode-block" id="ValidationManager.resolve_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve_rules">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
+    <span class="k">def</span> <span class="nf">resolve_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the given list of rules.</span>
+
+<span class="sd">        Steps to resolve rules</span>
+<span class="sd">        1. Iterate over all rules</span>
+
+<span class="sd">            a. If the rule has no dependencies - resolve it immediately</span>
+<span class="sd">            b. If the rule has dependencies - add it to the queue to process later</span>
+
+<span class="sd">        2. If `fetch_dependencies` is not explicitly set as False, check if all dependencies are provided</span>
+
+<span class="sd">            a. If missing dependencies and `fetch_dependencies` not explicitly set to True then prompt user to fetch and resolve dependencies</span>
+<span class="sd">            b. If `fetch_dependencies` is explicitly set to True or user answered YES to (a), then try to find any missing dependencies in the manager, and process them as done with the other rules</span>
+
+<span class="sd">        3. Process the queue of rules (that have dependencies)</span>
+
+<span class="sd">            a. If the rule&#39;s dependencies have been resolved or ignored - now resolve it and mark it as resolved</span>
+<span class="sd">            b. If the rule&#39;s dependencies have not been resolved - add it back to the end of the queue</span>
+
+<span class="sd">        Time complexity (n = number of rules)</span>
+
+<span class="sd">        1. O(n)</span>
+<span class="sd">        2. O(n^2) - worst case</span>
+
+<span class="sd">        NOTE: Time complexity is not the best with O(n^2) but is probably good enough since the list of</span>
+<span class="sd">        validation rules is not expected to be so large. If the number of rules does grow to be a large</span>
+<span class="sd">        list, then this fix operation may need to be optimized (e.g. build a dependency tree that defines</span>
+<span class="sd">        the order of fixing the rules).</span>
+
+<span class="sd">        :param rules: The list of rules to resolve.</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        :param fetch_dependencies: Set to True to ensure all dependencies for a reule are resolved before</span>
+<span class="sd">            the rule itself is resolved. Set to False will not fetch any missing dependencies to resolve.</span>
+<span class="sd">        :type fetch_dependencies: bool</span>
+<span class="sd">        :param emit_signals: Set to True to emit notifier signals for resolve operation.</span>
+<span class="sd">        :type emit_signals: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rules</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="c1"># The set of rule ids passed to resolve - this set gets populated the first the rules are iterated</span>
+        <span class="c1"># through to check then check if the necessary dependencies are available to resolve first.</span>
+        <span class="c1"># Dependency rules may be added in the step wheere dependencies are checked.</span>
+        <span class="n">rule_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="c1"># Add rules to the set once they have been resolved.</span>
+        <span class="n">resolved</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="c1"># The set of all dependencies to required by the list of rules passed to resolve.</span>
+        <span class="n">all_dependencies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="c1"># Dependencies mapping - update this mapping as dependencies are resolved.</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Add rules to the queue if they have dependencies that have not been resolved yet.</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">queue_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to intially process a validation rule.</span>
+
+<span class="sd">            1. Add the rule to the set of rule ids.</span>
+<span class="sd">            2a. If the rule does not have dependencies, resolve it immediately and add it to the resolved</span>
+<span class="sd">                set.</span>
+<span class="sd">            2b. If the rule has dependencies, update the dependencies map and list, and add it to the queue</span>
+<span class="sd">                to process later once all of its dependencies are resolved.</span>
+
+<span class="sd">            :param rule: The rule to process</span>
+<span class="sd">            :type rule: ValidationRule</span>
+
+<span class="sd">            :return: True if the rule was resolved, else False if it was not resolved and added to the queue.</span>
+<span class="sd">            :rtype: bool</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span> <span class="ow">or</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rule_ids</span><span class="p">:</span>
+                <span class="c1"># Trivially return True for rule that does not exist, and skip rules that have already been</span>
+                <span class="c1"># processed</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="n">rule_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="n">dependencies_ids</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">get_dependency_ids</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">dependencies_ids</span><span class="p">:</span>
+                <span class="c1"># Copy the list of dependencies so that the original dependency list is not modified, and</span>
+                <span class="c1"># using a set instead for faster lookup and removal</span>
+                <span class="n">rule_dependencies_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dependencies_ids</span><span class="p">)</span>
+                <span class="n">dependencies</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule_dependencies_set</span>
+                <span class="c1"># Only add dependencies to the set if they have not been processed yet.</span>
+                <span class="n">all_dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rule_dependencies_set</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">rule_ids</span><span class="p">))</span>
+
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="c1"># No dependencies, resolve it immediately</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolve_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+            <span class="n">resolved</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># First pass will resolve any rules without dependencies. Rules with dependencies will be added to</span>
+        <span class="c1"># the queue to be resolved once all its dependencies are resolved.</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_rule_fn</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_rule_fn</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+                    <span class="n">queue_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Check for dependencies and fetch them if specified</span>
+        <span class="k">if</span> <span class="n">fetch_dependencies</span> <span class="ow">or</span> <span class="n">fetch_dependencies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Keep processing dependencies until the set is empty - dependencies may be added during</span>
+            <span class="c1"># while iterating if a dependency and another dependency</span>
+            <span class="k">while</span> <span class="n">all_dependencies</span><span class="p">:</span>
+                <span class="n">dependency_rule_id</span> <span class="o">=</span> <span class="n">all_dependencies</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">dependency_rule_id</span> <span class="ow">in</span> <span class="n">rule_ids</span><span class="p">:</span>
+                    <span class="c1"># Dependency is already found</span>
+                    <span class="k">continue</span>
+
+                <span class="n">dependency_rule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rule</span><span class="p">(</span><span class="n">dependency_rule_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dependency_rule</span><span class="p">:</span>
+                    <span class="c1"># Skip dependenceis that the manager does not have</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># If not yet specified, prompt user to fetch missing dependencies</span>
+                <span class="k">if</span> <span class="n">fetch_dependencies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">about_to_open_msg_box</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+                    <span class="c1"># NOTE for now this is simplified by asking to fetch all or not - if requested this could ask</span>
+                    <span class="c1"># to only individual dependencies</span>
+                    <span class="n">answer</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                        <span class="s2">&quot;Fix Dependencies&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;This operation will apply additional fixes for dependencies.&quot;</span><span class="p">,</span>
+                        <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">fetch_dependencies</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">answer</span> <span class="o">==</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">msg_box_closed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">fetch_dependencies</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">process_rule</span><span class="p">(</span><span class="n">dependency_rule</span><span class="p">):</span>
+                        <span class="n">queue_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># The user canceled the operation</span>
+                    <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+                    <span class="k">return</span>
+
+        <span class="c1"># Now process the queue of rules, which have dependencies. For each rule, if all dependencies are</span>
+        <span class="c1"># resolved or ignored, then resolve it and add it to the resolved list, else add it back to the end</span>
+        <span class="c1"># of the queue to try again after all rules in the queue have been processed.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Detect cycles by calculating the max number of iterations it would take to empty the queue, if this</span>
+        <span class="c1"># count is exceeded, then there is a cycle. In the worst case, the each item depends on the item that</span>
+        <span class="c1"># comes after it, which means it&#39;ll take n + (n-1) + (n-2) + ... + 2 + 1</span>
+        <span class="n">max_iters</span> <span class="o">=</span> <span class="n">queue_count</span> <span class="o">+</span> <span class="p">(</span><span class="n">queue_count</span> <span class="o">*</span> <span class="p">(</span><span class="n">queue_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">iter_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">queue</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iter_count</span> <span class="o">&gt;</span> <span class="n">max_iters</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RecursionError</span><span class="p">(</span><span class="s2">&quot;Detected cycle in Validation Rule dependencies.&quot;</span><span class="p">)</span>
+            <span class="n">iter_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Get the next rule to process from the queue</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="c1"># Determine if dependencies have been resolved</span>
+            <span class="n">has_dependencies</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">rule_dependencies</span> <span class="o">=</span> <span class="n">dependencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">while</span> <span class="n">rule_dependencies</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_dependencies</span><span class="p">:</span>
+                <span class="n">dependency_rule_id</span> <span class="o">=</span> <span class="n">rule_dependencies</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">dependency_rule_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rule_ids</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fetch_dependencies</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                            <span class="s2">&quot;Dependency not resolved &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dependency_rule_id</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="c1"># Dependency is ignored</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">dependency_rule_id</span> <span class="ow">in</span> <span class="n">resolved</span><span class="p">:</span>
+                    <span class="c1"># Dependency has already been resolved</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># This dependency is not resolved yet, add it back to the set</span>
+                <span class="n">has_dependencies</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">rule_dependencies</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dependency_rule_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">has_dependencies</span><span class="p">:</span>
+                <span class="c1"># Still unresolved dependencies, add it back to the end of the queue</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resolve_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+                <span class="n">resolved</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">emit_signals</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationManager.resolve_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve_rule">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve the validation rule.</span>
+
+<span class="sd">        :param rule: The validation rule to resolve</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Resolving Rule: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Dependencies: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">get_dependency_names</span><span class="p">()])</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_rule_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+        <span class="n">rule</span><span class="o">.</span><span class="n">exec_fix</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span><span class="o">.</span><span class="n">resolve_rule_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.data.validation_rule_type &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.data.validation_rule_type</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.data.validation_rule_type</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">from</span> <span class="nn">..utils.framework_qtwidgets</span> <span class="kn">import</span> <span class="n">SGQIcon</span>
+
+
+<div class="viewcode-block" id="ValidationRuleType"><a class="viewcode-back" href="../../../data.html#tk_multi_data_validation.data.ValidationRuleType">[docs]</a><span class="k">class</span> <span class="nc">ValidationRuleType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A validation rule type categorizes a :class:`ValidationRule`.</span>
+
+<span class="sd">    **Default Rule Types**</span>
+<span class="sd">        none</span>
+<span class="sd">            :id none: 0</span>
+<span class="sd">            :name none: &quot;All&quot;</span>
+<span class="sd">            :description none: A placeholder type to give to a validation rule that has no type.</span>
+<span class="sd">        auto</span>
+<span class="sd">            :id auto: 1</span>
+<span class="sd">            :name auto: &quot;Auto&quot;</span>
+<span class="sd">            :description auto: A rule of this type will automatically be applied to the data for validation.</span>
+<span class="sd">        required</span>
+<span class="sd">            :id required: 2</span>
+<span class="sd">            :name required: &quot;Required&quot;</span>
+<span class="sd">            :description required: A rule of this type is required to be applied to the data for validation.</span>
+<span class="sd">        optional</span>
+<span class="sd">            :id optional: 3</span>
+<span class="sd">            :name optional: &quot;Optional&quot;</span>
+<span class="sd">            :description optional: A rule of this type is not required to be applied to the data for validation.</span>
+<span class="sd">        manual</span>
+<span class="sd">            :id manual: 4</span>
+<span class="sd">            :name manual: &quot;Manual&quot;</span>
+<span class="sd">            :description manual: A rule of this type is required but must be manually checked (cannot be automated).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Validation rule type ids</span>
+    <span class="c1"># TODO allow user to create on demand rule types as they wish</span>
+    <span class="p">(</span>
+        <span class="n">RULE_TYPE_NONE</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_AUTO</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_REQUIRED</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_OPTIONAL</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_MANUAL</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_ACTIVE</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_type_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a ValidationRuleType object.</span>
+
+<span class="sd">        :param rule_type_id: The unique identifier for this rule type.</span>
+<span class="sd">        :type rule_type: int (see RULE_TYPES for supported type ids)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">rule_type_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_for_type</span><span class="p">(</span><span class="n">rule_type_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icon&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checkbox_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkbox_icon&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">RULE_TYPE_ACTIVE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">rule</span><span class="p">:</span> <span class="n">rule</span><span class="o">.</span><span class="n">required</span> <span class="ow">or</span> <span class="n">rule</span><span class="o">.</span><span class="n">checked</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_func</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement the equal operator for ValidationRuleType objects.</span>
+
+<span class="sd">        The rule types are equal if their ids are equal.</span>
+
+<span class="sd">        :param other: The other validation rule type to compare with</span>
+<span class="sd">        :type other: ValidationRuleType</span>
+
+<span class="sd">        :return: True if this rule type is equal to other, else False.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">id</span>
+
+<div class="viewcode-block" id="ValidationRuleType.get_data_for_type"><a class="viewcode-back" href="../../../data.html#tk_multi_data_validation.data.ValidationRuleType.get_data_for_type">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_data_for_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the validation rule type data for the given type.</span>
+
+<span class="sd">        :param type_id: The rule type id to get the data for.</span>
+<span class="sd">        :type type_id: int</span>
+
+<span class="sd">        :return: The validation rule type data.</span>
+<span class="sd">        :rtype: dict</span>
+
+<span class="sd">        **Return dict format**</span>
+<span class="sd">            name</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The display name for the validation rule type.</span>
+<span class="sd">            icon</span>
+<span class="sd">                :type: QtGui.QIcon</span>
+<span class="sd">                :description: The display icon for the validation rule type.</span>
+<span class="sd">            checkbox_icon</span>
+<span class="sd">                :type: QtGui.QIcon</span>
+<span class="sd">                :description: The icon to use to display a checkbox for the rule type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO let this icons be configurable</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_NONE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;All&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">Info</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_AUTO</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Automated&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">GreenCheckMark</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_REQUIRED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Required&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">GreenCheckMark</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_OPTIONAL</span><span class="p">:</span>
+            <span class="c1"># Toggle icon to display a toggle button since Qt does not have a wiget for this.</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Optional&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">Lock</span><span class="p">(),</span>
+                <span class="s2">&quot;checkbox_icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">Info</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_MANUAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Manual&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">RedRefresh</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_ACTIVE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Active&quot;</span><span class="p">,</span>
+                <span class="c1"># TODO Design icon</span>
+                <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">RedRefresh</span><span class="p">(),</span>
+            <span class="p">}</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ValidationRuleType.get_type_for_rule"><a class="viewcode-back" href="../../../data.html#tk_multi_data_validation.data.ValidationRuleType.get_type_for_rule">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_for_rule</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a ValidationRuleType object for the given rule.</span>
+
+<span class="sd">        :param rule: The rule to get the type object for</span>
+<span class="sd">        :type rule: ValidationRule</span>
+
+<span class="sd">        :return: The type object for the rule.</span>
+<span class="sd">        :rtype: ValidationRuleType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_REQUIRED</span><span class="p">)</span>
+
+        <span class="c1"># Else optional</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">RULE_TYPE_OPTIONAL</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the id for this validaiton rule type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the display name for this validation rule type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the icon for this validation rule type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_icon</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">checkbox_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the checkbox icon for this validation rule type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkbox_icon</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the property indicating if this rule type obejct is valid.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ValidationRuleType.is_rule_accepted"><a class="viewcode-back" href="../../../data.html#tk_multi_data_validation.data.ValidationRuleType.is_rule_accepted">[docs]</a>    <span class="k">def</span> <span class="nf">is_rule_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the rule type accepts this rule into its grouping.</span>
+
+<span class="sd">        Default behaviour is this rule type will accept a rule if the rule&#39;s type matches the this rule type.</span>
+<span class="sd">        A rule type may define a custom acceptance function to accept rules across different types, for</span>
+<span class="sd">        example, see RULE_TYPE_ACTIVE.</span>
+
+<span class="sd">        :param rule: The rule to check if it is accepted by this type</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rule</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_func</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

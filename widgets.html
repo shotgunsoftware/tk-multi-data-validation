@@ -1,0 +1,737 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Widgets &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Models" href="models.html" />
+    <link rel="prev" title="API Reference" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Widgets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#validation-widget">Validation Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validation-details-widget">Validation Details Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-view-auto-adjust-height">List View Auto Adjust Height</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Widgets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="widgets">
+<span id="validation-widgets"></span><h1>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="validation-widget">
+<span id="validation-widgets-main-widget"></span><h2>Validation Widget<a class="headerlink" href="#validation-widget" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget">
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.widgets.</code><code class="descname">ValidationWidget</code><span class="sig-paren">(</span><em>parent</em>, <em>group_rules_by=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The main widget for the Data Validation App.</p>
+<p>This widget displays the provided data validation rules, and provides the user interface to execute the
+rule check and fix functions. When data violations are found, a details widget will display the
+individual data items that violate the rules.</p>
+<p>Create the validation widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<em>QWidget</em>) – The parent widget</li>
+<li><strong>group_rules_by</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The validation rule field that the view will group rules by</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.view_mode">
+<code class="descname">view_mode</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.view_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the current view mode.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.group_rules_by">
+<code class="descname">group_rules_by</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.group_rules_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the field to group the validation rules by in the main view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_button">
+<code class="descname">validate_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the validate all button.</p>
+<p>This may be useful to disconnect the default callback for the fix all button clicked signal, to
+execute a custom validate all operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_button">
+<code class="descname">fix_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the fix all button.</p>
+<p>This may be useful to disconnect the default callback for the fix all button clicked signal, to
+execute a custom fix all operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.publish_button">
+<code class="descname">publish_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.publish_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the publish button.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rule_callback">
+<code class="descname">validate_rule_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the validate button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_callback">
+<code class="descname">validate_all_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the validate button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_all_callback">
+<code class="descname">fix_all_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_all_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the fix button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rule_callback">
+<code class="descname">fix_rule_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the fix button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.save_state">
+<code class="descname">save_state</code><span class="sig-paren">(</span><em>user_settings</em>, <em>qsettings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.save_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the widget state in the settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_settings</strong> (<em>UserSettings</em>) – The Toolkit settings object to save the widget settings to.</li>
+<li><strong>qsettings</strong> – The Qt settings for the App to save the widget settings to. The Toolkit settings
+has some limitations to storing byte array objects, so the Qt settings are required for saving
+those unsupported data types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.restore_state">
+<code class="descname">restore_state</code><span class="sig-paren">(</span><em>user_settings</em>, <em>qsettings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.restore_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.restore_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the widget state from the settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_settings</strong> (<em>UserSettings</em>) – The Toolkit settings object to restore the widget settings to.</li>
+<li><strong>qsettings</strong> – The Qt settings for the App to restore the widget settings to. The Toolkit
+settings has some limitations to storing byte array objects, so the Qt settings are required for
+saving those unsupported data types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.turn_on_details">
+<code class="descname">turn_on_details</code><span class="sig-paren">(</span><em>on</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.turn_on_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.turn_on_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn details on to show the right-hand side details panel widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>on</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to turn on, or False to turn off.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.turn_on_rule_type_filter">
+<code class="descname">turn_on_rule_type_filter</code><span class="sig-paren">(</span><em>on</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.turn_on_rule_type_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.turn_on_rule_type_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn rule type filter on to show the left-hand side filter widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>on</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to turn on, or False to turn off.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.set_validation_rules">
+<code class="descname">set_validation_rules</code><span class="sig-paren">(</span><em>validation_rules</em>, <em>validation_rule_types=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.set_validation_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.set_validation_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the validation rule types and data for the widget.</p>
+<p>This will reinitialize the validation rule models with the given data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>validation_rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The validation rules data</li>
+<li><strong>validation_rule_types</strong> (<em>list&lt;ValidationRuleType&gt;</em>) – The type of validation rules to group the data by</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.get_active_rules">
+<code class="descname">get_active_rules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.get_active_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.get_active_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of the validation rules that are currently active.</p>
+<p>A validation rule is considered to be active if it is visible in the current view. Validation
+operations, like “Validate” and “Fix All”, may only be applied to active rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The list of validation rules.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list&lt;ValidationRule&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_validate_all">
+<code class="descname">on_validate_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_validate_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_validate_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered when the validation all button has been triggered.</p>
+<p>If the custom validate all callback is set, then get all rules from the model to resolve and pass it
+to the custom callback, else call the default validate all operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_fix_all">
+<code class="descname">on_fix_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_fix_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_fix_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered when the fix all button has been triggered.</p>
+<p>If the custom fix all callback is set, then get all rules from the model to resolve and pass it to
+the custom callback, else call the default fix all operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_validate_rule">
+<code class="descname">on_validate_rule</code><span class="sig-paren">(</span><em>rule</em>, <em>refresh_details=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_validate_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_validate_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered to validate a specific rule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rule</strong> (<em>VaildationRule</em>) – The validation rule to run the check function for.</li>
+<li><strong>refresh_details</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to refresh the details widget after the validation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_fix_rule">
+<code class="descname">on_fix_rule</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_fix_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_fix_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered to fix a specific rule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<em>VaildationRule</em>) – The validation rule to run the fix function for.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rule_begin">
+<code class="descname">validate_rule_begin</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_rule_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before a validaiton rule is check function is executed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that is about to start executing its check function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished">
+<code class="descname">validate_rule_finished</code><span class="sig-paren">(</span><em>rule</em>, <em>update_rule_type=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_rule_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after a validation rule check function has finished executing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that finished executing its check function.</li>
+<li><strong>update_rule_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will update the rule type model data based on the updated rule.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">
+<code class="descname">validate_all_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before all validation rules are checked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished">
+<code class="descname">validate_all_finished</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after all validation rules have been checked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin">
+<code class="descname">fix_rule_begin</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_rule_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before a validaiton rule is fix function is executed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that is about to start executing its fix function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished">
+<code class="descname">fix_rule_finished</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_rule_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after a validation rule fix function has finished executing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that finished executing its fix function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_show_actions_callback">
+<code class="descname">rule_show_actions_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_show_actions_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_show_actions_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to show the list of action items was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback">
+<code class="descname">rule_check_action_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_check_action_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to execute the rule check function was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback">
+<code class="descname">rule_fix_action_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_fix_action_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to execute the rule fix function was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="validation-details-widget">
+<span id="validation-widgets-details-widget"></span><h2>Validation Details Widget<a class="headerlink" href="#validation-details-widget" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tk_multi_data_validation.widgets.ValidationDetailsWidget">
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.widgets.</code><code class="descname">ValidationDetailsWidget</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_details_widget.html#ValidationDetailsWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationDetailsWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Widget displays the individual data items that violate a validation rule.</p>
+<p>Create the validation details widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>QtGui.QWidget</em>) – The parent widget</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationDetailsWidget.rule">
+<code class="descname">rule</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationDetailsWidget.rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the validation rule that this details widget displays data for.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationDetailsWidget.show_description">
+<code class="descname">show_description</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationDetailsWidget.show_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the flag indicating to display the validation rule description in the details text.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationDetailsWidget.set_data">
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_details_widget.html#ValidationDetailsWidget.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationDetailsWidget.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the details data for the given validation rule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The validation rule that the details is showing information for.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationDetailsWidget.refresh">
+<code class="descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_details_widget.html#ValidationDetailsWidget.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationDetailsWidget.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the current data in the widget.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="list-view-auto-adjust-height">
+<span id="validation-widgets-list-view-auto-height"></span><h2>List View Auto Adjust Height<a class="headerlink" href="#list-view-auto-adjust-height" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tk_multi_data_validation.widgets.ListViewAutoHeight">
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.widgets.</code><code class="descname">ListViewAutoHeight</code><span class="sig-paren">(</span><em>parent=None</em>, <em>height_padding=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/list_view_auto_height.html#ListViewAutoHeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ListViewAutoHeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A QListView subclass to create a view whose height auto adjusts to the view contents.</p>
+<p>Create the ListViewAutoHeight widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<em>QtGui.QWidget</em>) – The parent widget</li>
+<li><strong>height_padding</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – The padding to add to the size hint height.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ListViewAutoHeight.height_padding">
+<code class="descname">height_padding</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ListViewAutoHeight.height_padding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the vertical padding to add to the height returned by the size hint method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ListViewAutoHeight.sizeHint">
+<code class="descname">sizeHint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/list_view_auto_height.html#ListViewAutoHeight.sizeHint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ListViewAutoHeight.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the QListView method.</p>
+<p>Calculate the height of the view contents and return this value as the height size hint. This assumes
+that the rows of the view are uniform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The size hint for the view.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">QtCore.QSize</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models.html" class="btn btn-neutral float-right" title="Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="api.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

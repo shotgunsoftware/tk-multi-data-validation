@@ -1,0 +1,792 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.widgets.validation_details_widget &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.widgets.validation_details_widget</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.widgets.validation_details_widget</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">import</span> <span class="nn">sgtk</span>
+<span class="kn">from</span> <span class="nn">sgtk.platform.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+
+<span class="kn">from</span> <span class="nn">..data.validation_rule</span> <span class="kn">import</span> <span class="n">ValidationRule</span>
+<span class="kn">from</span> <span class="nn">..models.validation_rule_details_model</span> <span class="kn">import</span> <span class="n">ValidationRuleDetailsModel</span>
+<span class="kn">from</span> <span class="nn">..utils.framework_qtwidgets</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroupedItemView</span><span class="p">,</span>
+    <span class="n">ViewItemDelegate</span><span class="p">,</span>
+    <span class="n">ViewItemAction</span><span class="p">,</span>
+    <span class="n">ShotgunOverlayWidget</span><span class="p">,</span>
+    <span class="n">SGQWidget</span><span class="p">,</span>
+    <span class="n">SGQLabel</span><span class="p">,</span>
+    <span class="n">SGQGroupBox</span><span class="p">,</span>
+    <span class="n">SGQPushButton</span><span class="p">,</span>
+    <span class="n">SGQMenu</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="ValidationDetailsWidget"><a class="viewcode-back" href="../../../widgets.html#tk_multi_data_validation.widgets.ValidationDetailsWidget">[docs]</a><span class="k">class</span> <span class="nc">ValidationDetailsWidget</span><span class="p">(</span><span class="n">SGQWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Widget displays the individual data items that violate a validation rule.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Emit signal to request to validate data according to the validateion rule</span>
+    <span class="n">request_validate_data</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+
+    <span class="c1"># Emit signal to request to fix data according to the validation rule</span>
+    <span class="n">request_fix_data</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">)</span>
+
+    <span class="c1"># Emit signals to indicate that an action is about to run, and when it has finished (this is useful to</span>
+    <span class="c1"># show a busy indicator, if the operation takes some time)</span>
+    <span class="n">about_to_execute_action</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">execute_action_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the validation details widget.</span>
+
+<span class="sd">        :param parent: The parent widget</span>
+<span class="sd">        :type parent: QtGui.QWidget</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ValidationDetailsWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">parent</span><span class="p">,</span> <span class="n">layout_direction</span><span class="o">=</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_model</span> <span class="o">=</span> <span class="n">ValidationRuleDetailsModel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_description</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connect_signals</span><span class="p">()</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the validation rule that this details widget displays data for.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">show_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get or set the flag indicating to display the validation rule description in the details text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_description</span>
+
+    <span class="nd">@show_description</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">show_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_description</span> <span class="o">=</span> <span class="n">show</span>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Public methods</span>
+
+<div class="viewcode-block" id="ValidationDetailsWidget.set_data"><a class="viewcode-back" href="../../../widgets.html#tk_multi_data_validation.widgets.ValidationDetailsWidget.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up the details data for the given validation rule.</span>
+
+<span class="sd">        :param rule: The validation rule that the details is showing information for.</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="n">rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationDetailsWidget.refresh"><a class="viewcode-back" href="../../../widgets.html#tk_multi_data_validation.widgets.ValidationDetailsWidget.refresh">[docs]</a>    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refresh the current data in the widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="p">:</span>
+            <span class="c1"># No data to refresh</span>
+            <span class="k">return</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Set up details info</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">dependencies_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">get_dependency_names</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dependencies_names</span><span class="p">:</span>
+            <span class="n">dependencies_text</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Dependencies that will run with this fix:&lt;ul&gt;</span><span class="si">{deps}</span><span class="s2">&lt;/ul&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">deps</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;li&gt;</span><span class="si">{}</span><span class="s2">&lt;/li&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dependencies_names</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dependencies_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&lt;html&gt;</span><span class="si">{desc}{space}{dependencies}</span><span class="s2">&lt;/html&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">desc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">description</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_description</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">space</span><span class="o">=</span><span class="s2">&quot;&lt;br/&gt;&lt;br/&gt;&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_description</span> <span class="ow">and</span> <span class="n">dependencies_text</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies_text</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_description</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_model</span><span class="o">.</span><span class="n">initialize_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Set up details action items</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="o">.</span><span class="n">add_stretch</span><span class="p">()</span>
+
+        <span class="c1"># Add check action</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">check_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">check_name</span>
+
+            <span class="c1"># Check if the rule has already run its validation once, if so, modify the name to</span>
+            <span class="c1"># prepend &quot;Re&quot;, e.g. Validate -&gt; Revalidate</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">valid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Re</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+            <span class="n">check_button</span> <span class="o">=</span> <span class="n">SGQPushButton</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="p">)</span>
+
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">check_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_validate_rule</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">check_button</span><span class="p">)</span>
+
+        <span class="c1"># Add fix action</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">fix_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">fix_name</span>
+            <span class="n">fix_button</span> <span class="o">=</span> <span class="n">SGQPushButton</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="p">)</span>
+
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">fix_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_fix_rule</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">fix_button</span><span class="p">)</span>
+
+        <span class="c1"># Add generic actions</span>
+        <span class="k">for</span> <span class="n">rule_action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+            <span class="n">action_cb</span> <span class="o">=</span> <span class="n">rule_action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;callback&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">action_cb</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">args</span> <span class="o">=</span> <span class="n">rule_action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">get_error_item_ids</span><span class="p">()}</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">SGQPushButton</span><span class="p">(</span><span class="n">rule_action</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">cb</span><span class="o">=</span><span class="n">action_cb</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">cb</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Show/hide the overlay message</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view_overlay</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">manual</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view_overlay</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                    <span class="s2">&quot;Validation rule must be manually checked.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">valid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view_overlay</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                    <span class="s2">&quot;Check passed. No errors found.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view_overlay</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span>
+                    <span class="s2">&quot;Run this Check to validate the scene data.&quot;</span>
+                <span class="p">)</span></div>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Protected methods</span>
+
+    <span class="k">def</span> <span class="nf">_setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up the widget UI.</span>
+
+<span class="sd">        This should be called once when creating the widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details</span> <span class="o">=</span> <span class="n">SGQGroupBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span>
+            <span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Preferred</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_description</span> <span class="o">=</span> <span class="n">SGQLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_description</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">details_vlayout</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">details_vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_details_description</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">details_vlayout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span> <span class="o">=</span> <span class="n">SGQWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span> <span class="o">=</span> <span class="n">GroupedItemView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">setMouseTracking</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span>
+            <span class="n">QtGui</span><span class="o">.</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SingleSelection</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_details_item_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_view_item_delegate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_delegate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view_overlay</span> <span class="o">=</span> <span class="n">ShotgunOverlayWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_widgets</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_details</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_toolbar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_connect_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up and connect signal slots between widgets.</span>
+
+<span class="sd">        This should be called once when creating the widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_details_item_context_menu_requested</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_details_item_double_clicked</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_delegate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the delegate for the details item view and set it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">delegate</span> <span class="o">=</span> <span class="n">ViewItemDelegate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="p">)</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">item_padding</span> <span class="o">=</span> <span class="n">ViewItemDelegate</span><span class="o">.</span><span class="n">Padding</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">text_padding</span> <span class="o">=</span> <span class="n">ViewItemDelegate</span><span class="o">.</span><span class="n">Padding</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">text_rect_valign</span> <span class="o">=</span> <span class="n">ViewItemDelegate</span><span class="o">.</span><span class="n">CENTER</span>
+
+        <span class="n">delegate</span><span class="o">.</span><span class="n">header_role</span> <span class="o">=</span> <span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">VIEW_ITEM_HEADER_ROLE</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">subtitle_role</span> <span class="o">=</span> <span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">VIEW_ITEM_SUBTITLE_ROLE</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">text_role</span> <span class="o">=</span> <span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">VIEW_ITEM_TEXT_ROLE</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">separator_role</span> <span class="o">=</span> <span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">VIEW_ITEM_SEPARATOR_ROLE</span>
+
+        <span class="c1"># Action button - convenience button for the first button that appears in the item&#39;s actions list</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">ViewItemAction</span><span class="o">.</span><span class="n">TYPE_PUSH_BUTTON</span><span class="p">,</span>
+                <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;get_data&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_details_item_data</span><span class="p">,</span>
+                <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_action_callback</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">ViewItemDelegate</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Action button for footer item to show more/less items. Button is centered and spans width of row.</span>
+        <span class="n">delegate</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">ViewItemAction</span><span class="o">.</span><span class="n">TYPE_PUSH_BUTTON</span><span class="p">,</span>
+                <span class="s2">&quot;show_always&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QStyleOptionButton</span><span class="o">.</span><span class="n">Flat</span><span class="p">,</span>
+                <span class="s2">&quot;get_data&quot;</span><span class="p">:</span> <span class="n">get_details_item_show_more_data</span><span class="p">,</span>
+                <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">details_item_show_more_callback</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">ViewItemDelegate</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">setItemDelegate</span><span class="p">(</span><span class="n">delegate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">delegate</span>
+
+    <span class="k">def</span> <span class="nf">_show_context_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show a context menu for the selected items.</span>
+
+<span class="sd">        :param widget: The source widget.</span>
+<span class="sd">        :type widget: QtGui.QWidget</span>
+<span class="sd">        :param pos: The position for the context menu relative to the source widget.</span>
+<span class="sd">        :type pos: QtCore.QPoint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selection_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_details_item_view</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection_model</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">selection_model</span><span class="o">.</span><span class="n">selectedIndexes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">indexes</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rule_model_item</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">itemFromIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">rule_actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_details_item_actions</span><span class="p">(</span><span class="n">rule_model_item</span><span class="p">)</span>
+
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">rule_action</span> <span class="ow">in</span> <span class="n">rule_actions</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="n">rule_action</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">checked</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">rule_action</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_action</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">SGQMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">addActions</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_details_item_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_or_item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of actions for the details item.</span>
+
+<span class="sd">        :param index_or_item: The model index or item of the details item.</span>
+<span class="sd">        :type index_or_item: QModelIndex | QStandardItem</span>
+
+<span class="sd">        :return: The list of actions for the details item.</span>
+<span class="sd">        :rtype: list&lt;dict&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">index_or_item</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">item_id</span> <span class="o">=</span> <span class="n">index_or_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">DETAILS_ITEM_ID_ROLE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">item_id</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">item_actions</span><span class="p">:</span>
+            <span class="n">action</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">item_id</span><span class="p">]</span>
+            <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">actions</span>
+
+    <span class="k">def</span> <span class="nf">_get_details_item_first_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the actions for the details item that corresponds to the given index, and return the</span>
+<span class="sd">        first action in the list.</span>
+
+<span class="sd">        :param index: The details item index.</span>
+<span class="sd">        :type index: QModelIndex</span>
+
+<span class="sd">        :return: The first action for the details item.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_details_item_actions</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="n">actions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_execute_details_item_first_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the actions for the details item that corresponds to the given index, and execute the</span>
+<span class="sd">        first action in the list.</span>
+
+<span class="sd">        :param index: The details item index.</span>
+<span class="sd">        :type index: QModelIndex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_details_item_first_action</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_execute_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute an action.</span>
+
+<span class="sd">        Get the data from the action to execute it. Emit signals to indicate when the action is about to run</span>
+<span class="sd">        and after it has finished.</span>
+
+<span class="sd">        :parm action: The action to execute.</span>
+<span class="sd">        :type action: dict</span>
+
+<span class="sd">        :return: The value returned by the action.</span>
+<span class="sd">        :rtype: any</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">action</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">callback_fn</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;callback&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callback_fn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">about_to_execute_action</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">callback_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute_action_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Callback methods</span>
+
+    <span class="k">def</span> <span class="nf">_on_details_item_context_menu_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback triggered when an error item from the view has been right-clicked.</span>
+
+<span class="sd">        :param pos: The mouse position, relative to the sender (widget), captured when triggering this</span>
+<span class="sd">            callback.</span>
+<span class="sd">        :type pos: QtCore.QPoint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_context_menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">(),</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_details_item_double_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback triggered when an error item from the view has been right-clicked.</span>
+
+<span class="sd">        :param index: The index the mouse double-clicked on.</span>
+<span class="sd">        :type index: QModelIndex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute_details_item_first_action</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_request_validate_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to execute the rule check function.</span>
+
+<span class="sd">        :param rule: The rule to execute the check function for</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_validate_data</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_request_fix_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to execute the rule fix function.</span>
+
+<span class="sd">        :param rule: The rule to execute the fix function for</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_fix_data</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="p">)</span>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># ViewItemDelegate callback functions</span>
+
+    <span class="k">def</span> <span class="nf">_get_details_item_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback function triggered by the ViewItemDelegate.</span>
+
+<span class="sd">        Get the data for displaying the details item action.</span>
+
+<span class="sd">        :param parent: The parent of the ViewItemDelegate which triggered this callback</span>
+<span class="sd">        :type parent: QAbstractItemView</span>
+<span class="sd">        :param index: The index the action is for.</span>
+<span class="sd">        :type index: :class:`sgtk.platform.qt.QtCore.QModelIndex`</span>
+
+<span class="sd">        :return: The data for the action and index.</span>
+<span class="sd">        :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_details_item_first_action</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">action</span><span class="p">:</span>
+            <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">action</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;visible&quot;</span><span class="p">:</span> <span class="n">visible</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_details_item_action_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The details item action was triggered.</span>
+
+<span class="sd">        Get the first action item in the actions list and execute it.</span>
+
+<span class="sd">        :param view: The view the index belongs to.</span>
+<span class="sd">        :type view: QAbstractItemView</span>
+<span class="sd">        :param index: The index to act on</span>
+<span class="sd">        :type index: :class:`sgtk.platform.qt.QtCore.QModelIndex`</span>
+<span class="sd">        :param pos: The mouse position captured on triggered this callback</span>
+<span class="sd">        :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execute_details_item_first_action</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<span class="c1">######################################################################################################</span>
+<span class="c1"># ViewItemDelegate callback functions (independent of the ValidationDetailsWidget)</span>
+<span class="c1">#</span>
+
+
+<span class="k">def</span> <span class="nf">get_details_item_show_more_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
+
+<span class="sd">    Get the data for displaying the footer action to show more items.</span>
+
+<span class="sd">    :param parent: The parent of the ViewItemDelegate which triggered this callback</span>
+<span class="sd">    :type parent: QAbstractItemView</span>
+<span class="sd">    :param index: The index the action is for.</span>
+<span class="sd">    :type index: :class:`sgtk.platform.qt.QtCore.QModelIndex`</span>
+
+<span class="sd">    :return: The data for the action and index.</span>
+<span class="sd">    :rtype: dict (see the ViewItemAction class attribute `get_data` for more details)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">is_footer</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">IS_FOOTER_ROLE</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_footer</span><span class="p">:</span>
+        <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">FOOTER_TEXT_ROLE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;visible&quot;</span><span class="p">:</span> <span class="n">visible</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="s2">&quot;100%&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">details_item_show_more_callback</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The details item action was triggered.</span>
+
+<span class="sd">    Show more items in the view, if not all are currently displayed.</span>
+
+<span class="sd">    :param view: The view the index belongs to.</span>
+<span class="sd">    :type view: QAbstractItemView</span>
+<span class="sd">    :param index: The index to act on</span>
+<span class="sd">    :type index: :class:`sgtk.platform.qt.QtCore.QModelIndex`</span>
+<span class="sd">    :param pos: The mouse position captured on triggered this callback</span>
+<span class="sd">    :type pos: :class:`sgtk.platform.qt.QtCore.QPoint`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">index</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleDetailsModel</span><span class="o">.</span><span class="n">IS_FOOTER_ROLE</span><span class="p">):</span>
+        <span class="n">index</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">toggle_display_items</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.models.validation_rule_proxy_model &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.models.validation_rule_proxy_model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.models.validation_rule_proxy_model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">from</span> <span class="nn">.validation_rule_model</span> <span class="kn">import</span> <span class="n">ValidationRuleModel</span>
+<span class="kn">from</span> <span class="nn">..utils.framework_qtwidgets</span> <span class="kn">import</span> <span class="n">FilterItem</span><span class="p">,</span> <span class="n">FilterItemTreeProxyModel</span>
+
+
+<div class="viewcode-block" id="ValidationRuleProxyModel"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel">[docs]</a><span class="k">class</span> <span class="nc">ValidationRuleProxyModel</span><span class="p">(</span><span class="n">FilterItemTreeProxyModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A filter proxy model for the ValidationRuleModel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the validation rule proxy model.</span>
+
+<span class="sd">        :param args: The arguments to pass to the base class constructor.</span>
+<span class="sd">        :type args: list</span>
+<span class="sd">        :param kwargs: The keyword arguments to pass to the base class constructor.</span>
+<span class="sd">        :type kwargs: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleProxyModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Additional FiltItem objects (to the `_filter_items` list) that are apply to the model data when to</span>
+        <span class="c1"># check acceptance</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter_role</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter_active</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter</span> <span class="o">=</span> <span class="n">FilterItem</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">FilterItem</span><span class="o">.</span><span class="n">FilterType</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span>
+            <span class="n">FilterItem</span><span class="o">.</span><span class="n">FilterOp</span><span class="o">.</span><span class="n">IS_TRUE</span><span class="p">,</span>
+            <span class="n">filter_role</span><span class="o">=</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Public methods</span>
+
+<div class="viewcode-block" id="ValidationRuleProxyModel.set_text_filter_value"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel.set_text_filter_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_text_filter_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">filter_role</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the text to filter the model data by.</span>
+
+<span class="sd">        :param text: The text filter value</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        :param filter_role: The filter role to get the model data by, to compare with the text filter value.</span>
+<span class="sd">        :type filter_role: int</span>
+<span class="sd">        :param data_func: The callback to get the model data by, to compare with the text filter value.</span>
+<span class="sd">            NOTE: if `filter_role` is specified then `data_func` will be ignored.</span>
+<span class="sd">        :type data_func: function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="o">.</span><span class="n">filter_role</span> <span class="o">=</span> <span class="n">filter_role</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="o">.</span><span class="n">data_func</span> <span class="o">=</span> <span class="n">data_func</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span> <span class="o">=</span> <span class="n">FilterItem</span><span class="p">(</span>
+                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># id field is not necessary</span>
+                <span class="n">FilterItem</span><span class="o">.</span><span class="n">FilterType</span><span class="o">.</span><span class="n">STR</span><span class="p">,</span>
+                <span class="n">FilterItem</span><span class="o">.</span><span class="n">FilterOp</span><span class="o">.</span><span class="n">IN</span><span class="p">,</span>
+                <span class="n">filter_role</span><span class="o">=</span><span class="n">filter_role</span><span class="p">,</span>
+                <span class="n">data_func</span><span class="o">=</span><span class="n">data_func</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="o">.</span><span class="n">filter_value</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleProxyModel.set_rule_type"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel.set_rule_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_rule_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">filter_role</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the rule type to filter the model data by.</span>
+
+<span class="sd">        :param rule_type: The validation rule type filter value</span>
+<span class="sd">        :type rule_type: int</span>
+<span class="sd">        :param filter_role: The filter role to get the model data by, to compare with the text filter value.</span>
+<span class="sd">        :type filter_role: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter</span> <span class="o">=</span> <span class="n">rule_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter_role</span> <span class="o">=</span> <span class="n">filter_role</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleProxyModel.remove_text_filter"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel.remove_text_filter">[docs]</a>    <span class="k">def</span> <span class="nf">remove_text_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the text filter from the proxy model. The text filter will no longer be applied when checking</span>
+<span class="sd">        acceptance of model data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleProxyModel.remove_rule_type_filter"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel.remove_rule_type_filter">[docs]</a>    <span class="k">def</span> <span class="nf">remove_rule_type_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the rule type filter from the proxy model. The text filter will no longer be applied when</span>
+<span class="sd">        checking acceptance of model data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter_role</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleProxyModel.turn_on_error_filter"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleProxyModel.turn_on_error_filter">[docs]</a>    <span class="k">def</span> <span class="nf">turn_on_error_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Turn on or off the error filter.</span>
+
+<span class="sd">        :param on: Set to True to turn on the error filter, False to turn off, and None to toggle the current</span>
+<span class="sd">            filter state (if on then it will be off, and vice-versa)</span>
+<span class="sd">        :param on: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">on</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">on</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter_active</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter_active</span> <span class="o">=</span> <span class="n">on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Protected methods</span>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Invalidate the proxy model filter to re-evaluate the source model data. Each item in the source model</span>
+<span class="sd">        will be checked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layoutAboutToBeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalidateFilter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layoutChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_is_row_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_row</span><span class="p">,</span> <span class="n">src_parent_idx</span><span class="p">,</span> <span class="n">parent_accepted</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the base class method.</span>
+
+<span class="sd">        Apply each filter to the data pertaining to the given model item to check if the data is accepted by</span>
+<span class="sd">        the filters.</span>
+
+<span class="sd">        :param src_row: The row in the source model to filter.</span>
+<span class="sd">        :type src_row: int</span>
+<span class="sd">        :param src_parent_idx: The parent index of the source model&#39;s row to filter.</span>
+<span class="sd">        :type src_parent_idx: :class:`sgtk.platform.qt.QModelIndex`</span>
+<span class="sd">        :param parent_accepted: True if the parent is known already to be accepted, else False.</span>
+<span class="sd">        :type parent_accepted: bool</span>
+
+<span class="sd">        :return: True if the row is accepted, else False.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Call the base class method to check against the `_filter_items` list of filters</span>
+        <span class="n">base_model_accepts</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleProxyModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_is_row_accepted</span><span class="p">(</span>
+            <span class="n">src_row</span><span class="p">,</span> <span class="n">src_parent_idx</span><span class="p">,</span> <span class="n">parent_accepted</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">base_model_accepts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">src_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sourceModel</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">src_row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">src_parent_idx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">src_idx</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Check the proxy model specific filter items for rule type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter</span><span class="p">:</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">src_idx</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter_role</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter</span><span class="o">.</span><span class="n">is_rule_accepted</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Check the proxy model specific filter items for text</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_filter</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">src_idx</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter_active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_filter</span><span class="o">.</span><span class="n">accepts</span><span class="p">(</span><span class="n">src_idx</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># All good, accepted!</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,1211 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.models.validation_rule_model &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../hooks.html">Data Validation Hooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Models</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.models.validation_rule_model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.models.validation_rule_model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">import</span> <span class="nn">sgtk</span>
+<span class="kn">from</span> <span class="nn">sgtk.platform.qt</span> <span class="kn">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
+
+<span class="kn">from</span> <span class="nn">.validation_rule_type_model</span> <span class="kn">import</span> <span class="n">ValidationRuleTypeModel</span>
+<span class="kn">from</span> <span class="nn">..data.validation_rule</span> <span class="kn">import</span> <span class="n">ValidationRule</span>
+<span class="kn">from</span> <span class="nn">..utils.framework_qtwidgets</span> <span class="kn">import</span> <span class="n">SGQIcon</span><span class="p">,</span> <span class="n">ViewItemRolesMixin</span>
+
+
+<div class="viewcode-block" id="ValidationRuleModel"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel">[docs]</a><span class="k">class</span> <span class="nc">ValidationRuleModel</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QStandardItemModel</span><span class="p">,</span> <span class="n">ViewItemRolesMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A model to manage validation rules data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Additional data roles defined for the model</span>
+    <span class="n">_BASE_ROLE</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">UserRole</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">(</span>
+        <span class="n">CHECKBOX_ICON_ROLE</span><span class="p">,</span>  <span class="c1"># Icon used to draw the checkbox (e.g. for toggle buttons that Qt does not support)</span>
+        <span class="n">IS_GROUP_ITEM_ROLE</span><span class="p">,</span>
+        <span class="n">IS_RULE_ITEM_ROLE</span><span class="p">,</span>
+        <span class="n">GROUP_ITEM_ID_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_ID_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_TYPE_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_ITEM_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_ITEM_ID_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_CHECK_NAME_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_CHECK_FUNC_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_FIX_NAME_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_FIX_FUNC_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_VALIDATION_RAN</span><span class="p">,</span>  <span class="c1"># False if the rule check function has never been executed, else True</span>
+        <span class="n">RULE_FIX_RAN</span><span class="p">,</span>  <span class="c1"># False if the rule fix function has never been executed, else True</span>
+        <span class="n">RULE_VALID_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_ACTIONS_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_ITEM_ACTIONS_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_ERROR_ITEMS_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_MANUAL_CHECK_STATE_ROLE</span><span class="p">,</span>
+        <span class="n">RULE_STATUS_ICON_ROLE</span><span class="p">,</span>
+        <span class="n">NEXT_AVAILABLE_ROLE</span><span class="p">,</span>  <span class="c1"># Keep track of the next available custome role. Insert new roles above.</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">_BASE_ROLE</span><span class="p">,</span> <span class="n">_BASE_ROLE</span> <span class="o">+</span> <span class="mi">22</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Signals</span>
+    <span class="c1">#</span>
+    <span class="c1"># Emit when the validation rule model item check state has changed</span>
+    <span class="n">rule_check_state_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">ValidationRule</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CheckState</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ValidationRuleModel.ValidationRuleGroupModelItem"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.ValidationRuleGroupModelItem">[docs]</a>    <span class="k">class</span> <span class="nc">ValidationRuleGroupModelItem</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QStandardItem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A group header item for a validation rule in the ValidationRulemodel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Create the ValidationRuleGroupModelItem.</span>
+
+<span class="sd">            :param group_id: The unique id for this group item.</span>
+<span class="sd">            :type group_id: str</span>
+<span class="sd">            :param group_name: The display name for this group</span>
+<span class="sd">            :type group_name: str</span>
+<span class="sd">            :param args: The arguments list to pass to the base QtGui.QStandardItem class.</span>
+<span class="sd">            :type args: list</span>
+<span class="sd">            :param kwargs: The keyword arguments dict to pass to the base QtGui.QStandardItem class.</span>
+<span class="sd">            :type kwargs: dict</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleGroupModelItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">group_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">group_name</span>
+
+<div class="viewcode-block" id="ValidationRuleModel.ValidationRuleGroupModelItem.data"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.ValidationRuleGroupModelItem.data">[docs]</a>        <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.</span>
+
+<span class="sd">            Return the data for the item for the specified role.</span>
+
+<span class="sd">            :param role: The :class:`sgtk.platform.qt.QtCore.Qt.ItemDataRole` role.</span>
+<span class="sd">            :return: The data for the specified roel.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_GROUP_ITEM_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">GROUP_ITEM_ID_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_HEADER_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_SUBTITLE_ROLE</span><span class="p">:</span>
+                <span class="n">num_errors</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+                    <span class="n">child_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">child_item</span><span class="p">:</span>
+                        <span class="n">executed</span> <span class="o">=</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                            <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">executed</span><span class="p">:</span>
+                            <span class="n">valid</span> <span class="o">=</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+                                <span class="n">num_errors</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">num_errors</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> ERROR</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">num_errors</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span> <span class="k">if</span> <span class="n">num_errors</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> TOTAL&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_SEPARATOR_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_HEIGHT_ROLE</span><span class="p">:</span>
+                <span class="c1"># Fix the group header row height to a single line</span>
+                <span class="k">return</span> <span class="mi">20</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_LOADING_ROLE</span><span class="p">:</span>
+                <span class="c1"># Do not show a loading icon for the group item</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleGroupModelItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                <span class="n">role</span>
+            <span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.ValidationRuleModelItem"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.ValidationRuleModelItem">[docs]</a>    <span class="k">class</span> <span class="nc">ValidationRuleModelItem</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QStandardItem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An item for validation rule data in the ValidationRuleModel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Create the ValidationRuleModelItem.</span>
+
+<span class="sd">            :param rule: The rule that this item represents</span>
+<span class="sd">            :type rule: ValidationRule</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># Call the base QStandardItem constructor</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleModelItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+            <span class="c1"># Initialize our file mode item data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="n">rule</span>
+
+            <span class="c1"># UI properties</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_loading</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="ValidationRuleModel.ValidationRuleModelItem.data"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.ValidationRuleModelItem.data">[docs]</a>        <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.</span>
+
+<span class="sd">            Return the data for the item for the specified role.</span>
+
+<span class="sd">            :param role: The :class:`sgtk.platform.qt.QtCore.Qt.ItemDataRole` role.</span>
+<span class="sd">            :return: The data for the specified role.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">BackgroundRole</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">palette</span><span class="p">()</span><span class="o">.</span><span class="n">midlight</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CheckStateRole</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checked</span> <span class="k">else</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Unchecked</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_SEPARATOR_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_LOADING_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_loading</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_HEIGHT_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_GROUP_ITEM_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ERROR_ITEMS_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[]</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">errors</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ID_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_HEADER_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;b&gt;</span><span class="si">{}</span><span class="s2">&lt;/b&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_TEXT_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checked</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s2">&quot;&lt;div style=&#39;line-height:1.2;&#39;&gt;</span><span class="si">{}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">description</span>
+                    <span class="p">)</span>
+
+                <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">error_message</span>
+                <span class="p">):</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;&lt;span style=&#39;color:#EB5555;&#39;&gt;</span><span class="si">{}</span><span class="s2">&lt;/span&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">error_message</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual_checked</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">check_func</span><span class="p">)</span>
+                <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">warn_message</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;&lt;span style=&#39;color:#FBB549;&#39;&gt;</span><span class="si">{}</span><span class="s2">&lt;/span&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">warn_message</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;div style=&#39;line-height:1.2;&#39;&gt;</span><span class="si">{}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">&quot;&lt;br/&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_TYPE_ID_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_TYPE_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">type</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_CHECK_NAME_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">check_name</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_CHECK_FUNC_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">check_func</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_FIX_NAME_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">fix_name</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_FIX_FUNC_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">fix_func</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">valid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_FIX_RAN</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">fix_executed</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">valid</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checked</span><span class="p">:</span>
+                    <span class="c1"># Optional rules that are not active do not have errors</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span><span class="p">):</span>
+                    <span class="c1"># Do not report errors until validation has run at least once</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">check_func</span><span class="p">:</span>
+                    <span class="c1"># Special case for rule that do not have a check func, but have a fix func:</span>
+                    <span class="c1"># Show as an error if its fix has never been executed</span>
+                    <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">fix_executed</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual_checked</span><span class="p">:</span>
+                    <span class="c1"># Manual rules that are not checked are an error</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+
+                <span class="c1"># Rule is active and has been executed, check its valid status.</span>
+                <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_STATUS_ICON_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checked</span><span class="p">:</span>
+                    <span class="c1"># Optional rules that are not active do not have errors</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+                <span class="c1"># TODO revist this special case handling for rules that do not have an automated validate</span>
+                <span class="c1"># function, but do have an autoamted fix (semi-automated)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">check_func</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">fix_executed</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">ok_status_icon</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">warning_status_icon</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual_checked</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">ok_status_icon</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">warning_status_icon</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">ok_status_icon</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">error_status_icon</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">CHECKBOX_ICON_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checkbox_icon</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ACTIONS_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+                    <span class="n">action</span><span class="p">[</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">get_error_item_ids</span><span class="p">()}</span>
+                    <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">actions</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_MANUAL_CHECK_STATE_ROLE</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual_checked</span>
+                    <span class="k">else</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Unchecked</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleModelItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">role</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.ValidationRuleModelItem.setData"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.ValidationRuleModelItem.setData">[docs]</a>        <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Override the base class method.</span>
+
+<span class="sd">            Set the data for the item&#39;s role. Ensure to call emitDataChanged signal if the data has been</span>
+<span class="sd">            updated, to notify any listeners.</span>
+
+<span class="sd">            :param value: The data value to set for the item&#39;s role.</span>
+<span class="sd">            :type value: any</span>
+<span class="sd">            :param role: The model role</span>
+<span class="sd">            :type role: int</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CheckStateRole</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">checked</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+
+                <span class="c1"># Emit signal indicating the updated check state for this rule type group</span>
+                <span class="n">check_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">get_check_state_for_rule_type</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">type</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">rule_check_state_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="p">,</span> <span class="n">check_state</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_MANUAL_CHECK_STATE_ROLE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span><span class="o">.</span><span class="n">manual_checked</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">VIEW_ITEM_LOADING_ROLE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_is_loading</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleModelItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span>
+                    <span class="n">value</span><span class="p">,</span> <span class="n">role</span>
+                <span class="p">)</span></div></div>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># ValidationRuleModel methods</span>
+    <span class="c1">#</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">group_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the ValidationRuleModel.</span>
+
+<span class="sd">        :param parent: The parent widget of this model</span>
+<span class="sd">        :type parent: QtGui.QWidget</span>
+<span class="sd">        :param group_by: (optional) The field to group the model items by</span>
+<span class="sd">        :type group_by: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">QtGui</span><span class="o">.</span><span class="n">QStandardItemModel</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span> <span class="o">=</span> <span class="n">group_by</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchical</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Status icons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_status_icon</span> <span class="o">=</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warning_status_icon</span> <span class="o">=</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">ValidationWarning</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ok_status_icon</span> <span class="o">=</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">ValidationOk</span><span class="p">()</span>
+
+        <span class="c1"># Add additional roles defined by the ViewItemRolesMixin class.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NEXT_AVAILABLE_ROLE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_roles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NEXT_AVAILABLE_ROLE</span><span class="p">)</span>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Properties</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of validation rules that this model represnets.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get or set the group by field to create rule groupings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span>
+
+    <span class="nd">@group_by</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hierarchical</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get or set the flag indicating if the model is hierarchical or not (e.g. flat).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchical</span>
+
+    <span class="nd">@hierarchical</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">hierarchical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hierarchical</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_status_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the error status icon.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_status_icon</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">warning_status_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the warning status icon.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warning_status_icon</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ok_status_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the ok status icon.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ok_status_icon</span>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1">#</span>
+
+<div class="viewcode-block" id="ValidationRuleModel.destroy"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.destroy">[docs]</a>    <span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the base method.</span>
+
+<span class="sd">        Clear the model before destroying it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.clear"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the base class method.</span>
+
+<span class="sd">        Clear the model and reset its properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.initialize_data"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.initialize_data">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the model with the set of rules given.</span>
+
+<span class="sd">        The model will be cleared, all items removed, and new model items added for the rules.</span>
+
+<span class="sd">        :param rules: The set of rule to initialize with</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">beginResetModel</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No rules provided, this will refresh the model. Save the current rules before resetting them.</span>
+            <span class="n">rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span> <span class="o">=</span> <span class="n">rules</span>
+
+        <span class="c1"># Set up the groupings for hierarchical model mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hierarchical</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_by</span><span class="p">:</span>
+            <span class="n">group_items</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_by</span><span class="p">):</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span><span class="p">}</span>
+
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">group_items</span><span class="p">:</span>
+                <span class="c1"># Create the &quot;Ungrouped&quot; item for any rules that may not define a grouping</span>
+                <span class="n">group_items</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleGroupModelItem</span><span class="p">(</span>
+                    <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_items</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Flag to indicate if there are ungrouped items to add to the model</span>
+        <span class="n">append_ungrouped_item</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules</span><span class="p">:</span>
+            <span class="n">rule_model_item</span> <span class="o">=</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleModelItem</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_by</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">group_items</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">append_ungrouped_item</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">rule_model_group_item</span> <span class="o">=</span> <span class="n">group_items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rule_model_group_item</span><span class="p">:</span>
+                    <span class="n">rule_model_group_item</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">rule_model_item</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">group_item</span> <span class="o">=</span> <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">ValidationRuleGroupModelItem</span><span class="p">(</span>
+                        <span class="n">group_name</span><span class="p">,</span> <span class="n">group_name</span>
+                    <span class="p">)</span>
+                    <span class="n">group_items</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_item</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">invisibleRootItem</span><span class="p">()</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">group_item</span><span class="p">)</span>
+                    <span class="n">group_item</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">rule_model_item</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This rule does not have a group, add it to the root item.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">invisibleRootItem</span><span class="p">()</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">rule_model_item</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">append_ungrouped_item</span><span class="p">:</span>
+            <span class="c1"># There were ungrouped rules, add the &quot;Ungrouped&quot; group item to the model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invisibleRootItem</span><span class="p">()</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">group_items</span><span class="p">[</span><span class="kc">None</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">endResetModel</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.emit_all_data_changed"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.emit_all_data_changed">[docs]</a>    <span class="k">def</span> <span class="nf">emit_all_data_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Emit the data changed signal for each item in the model.</span>
+
+<span class="sd">        NOTE that using the model&#39;s dataChanged signal to emit one signal for all items does not seem to work</span>
+<span class="sd">        as expected, so for now just emit the model item signal for each item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">model_item</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+            <span class="n">row_count</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">row_count</span><span class="p">):</span>
+                <span class="n">child</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.get_group_item_by_id"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_group_item_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_item_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the group header model item for the given group id.</span>
+
+<span class="sd">        :param group_id: The id to get the group header item by.</span>
+<span class="sd">        :type group_id: str</span>
+
+<span class="sd">        :return: The group header item.</span>
+<span class="sd">        :rtype: QtGui.QStandardItem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">group_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">group_id</span> <span class="o">==</span> <span class="n">group_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">GROUP_ITEM_ID_ROLE</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">group_item</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="c1">######################################################################################################</span>
+    <span class="c1"># Methods iterating over items in the model assume that the model data structure is flat (single level</span>
+    <span class="c1"># hierarchy) or two-level hierarchy (parent-&gt;child, does not go further nested than that)</span>
+    <span class="c1">#</span>
+<div class="viewcode-block" id="ValidationRuleModel.get_item_for_rule"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_item_for_rule">[docs]</a>    <span class="k">def</span> <span class="nf">get_item_for_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items to find the item representing the given rule.</span>
+
+<span class="sd">        :param rule: The rule id to get the model item for.</span>
+<span class="sd">        :type rule: int</span>
+
+<span class="sd">        :return: The model item found for the rule. None if not found.</span>
+<span class="sd">        :rtype: QtGui.QStandardItem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span>
+            <span class="p">)</span> <span class="ow">and</span> <span class="n">rule</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ID_ROLE</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">model_item</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                    <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span>
+                <span class="p">)</span> <span class="ow">and</span> <span class="n">rule</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ID_ROLE</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">child_item</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.get_errors"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_errors">[docs]</a>    <span class="k">def</span> <span class="nf">get_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items to find all items with errors.</span>
+
+<span class="sd">        :return: The list of items with errors.</span>
+<span class="sd">        :rtype: list&lt;QtGui.QStandardItem&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span>
+            <span class="p">)</span> <span class="ow">and</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">):</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_item</span><span class="p">)</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span>
+                    <span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span>
+                <span class="p">)</span> <span class="ow">and</span> <span class="n">child_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_HAS_ERROR_ROLE</span><span class="p">):</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_item</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">errors</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.get_check_state_for_rule_type"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_check_state_for_rule_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_check_state_for_rule_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items to compute the check state for the rule type.</span>
+
+<span class="sd">        The check state for the rule type is dependent on all ValidationRuleModelItem that are of the given</span>
+<span class="sd">        rule type.</span>
+
+<span class="sd">        The check state for the rule type will be checked if all ValidationRuleModelItem items with the rule</span>
+<span class="sd">        type are checked, unchecked if not one item with the rule type is checked, and partially checked if</span>
+<span class="sd">        some but not all the items are checked.</span>
+
+<span class="sd">        :param rule_type: The rule type to get the check state for</span>
+<span class="sd">        :type rule_type: ValidationRuleType</span>
+<span class="sd">        :return: The check state for the rule type:</span>
+<span class="sd">                    QtCore.Qt.Checked - all rules are checked for the rule type</span>
+<span class="sd">                    QtCore.Qt.PartiallyChecked - some rules are checked for the rule type</span>
+<span class="sd">                    QtCore.Qt.Unchecked - no rules are checked for the rule type</span>
+<span class="sd">        :rtype: QtCore.Qt.CheckState</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_check_status</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to get the check status for the rule type.</span>
+
+<span class="sd">            :param model_item: The model item that affects the checked status</span>
+<span class="sd">            :type model_item: QtGui.QStandardItem</span>
+<span class="sd">            :param rule_type: The rule type to get the checked status for</span>
+<span class="sd">            :type rule_type: ValidationRuleType</span>
+<span class="sd">            :param has_checked: True if another model item has already been processed that is checked, else</span>
+<span class="sd">                no other model item has been processed yet that is checked.</span>
+<span class="sd">            :type has_checked: bool</span>
+<span class="sd">            :param has_unchecked: True if another model item has already been processed that is not checked,</span>
+<span class="sd">                else no other model item has been processed yet that is not checked.</span>
+<span class="sd">            :type has_unchecked: bool</span>
+
+<span class="sd">            :return: A tuple containing (1) the updated has_checked value (2) the updated has_unchecked value</span>
+<span class="sd">                (3) True if the checked status partial, else False</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">is_partial</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span><span class="p">)</span>
+
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">rule_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span><span class="p">)</span>
+
+            <span class="n">checked</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+                <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CheckStateRole</span><span class="p">)</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">checked</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">has_unchecked</span><span class="p">:</span>
+                    <span class="n">is_partial</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">has_checked</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">has_checked</span><span class="p">:</span>
+                    <span class="n">is_partial</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">has_unchecked</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span><span class="p">)</span>
+
+        <span class="n">has_checked</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">has_unchecked</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span> <span class="o">=</span> <span class="n">get_check_status</span><span class="p">(</span>
+                <span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_partial</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">PartiallyChecked</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span><span class="p">,</span> <span class="n">is_partial</span> <span class="o">=</span> <span class="n">get_check_status</span><span class="p">(</span>
+                    <span class="n">child_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">has_checked</span><span class="p">,</span> <span class="n">has_unchecked</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_partial</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">PartiallyChecked</span>
+
+        <span class="c1"># No partial check found, either all checked or all unchecked</span>
+        <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span> <span class="k">if</span> <span class="n">has_checked</span> <span class="k">else</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Unchecked</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.set_check_state_for_rule_type"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.set_check_state_for_rule_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_check_state_for_rule_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">,</span> <span class="n">emit_checked_signal</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items to update ValidationRuleModelItem check states.</span>
+
+<span class="sd">        :param rule_type: The type of rules to update</span>
+<span class="sd">        :type rule_type: ValidationRuleType</span>
+<span class="sd">        :param check_state: The check state to update the rule to</span>
+<span class="sd">        :type check_state: QtCore.Qt.CheckState</span>
+<span class="sd">        :param emit_checked_signal: True will emit the specific signal for check state changed.</span>
+<span class="sd">            NOTE that the generic model item data changed signal will be emitted regardless.</span>
+<span class="sd">        :type emit_checked_signal: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">update_check_state</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">,</span> <span class="n">emit_checked_signal</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to update the check state for the model item.</span>
+
+<span class="sd">            :param model_item: The model item to update</span>
+<span class="sd">            :type model_item: QtGui.QStandardItem</span>
+<span class="sd">            :param rule_type: Only model items with rule type will be updated.</span>
+<span class="sd">            :type rule_type: ValidationRuleType</span>
+<span class="sd">            :param check_state: The check state value to update to.</span>
+<span class="sd">            :type check_state: QtCore.Qt.CheckState</span>
+<span class="sd">            :param emit_checked_signal: True will emit signal specific to check state change.</span>
+<span class="sd">            :type emit_checked_signal: bool</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">rule_type</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="n">emit_checked_signal</span><span class="p">:</span>
+                <span class="n">model_item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">check_state</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CheckStateRole</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rule</span><span class="o">.</span><span class="n">checked</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">check_state</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+                <span class="n">model_item</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">update_check_state</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">,</span> <span class="n">emit_checked_signal</span><span class="p">)</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="n">update_check_state</span><span class="p">(</span>
+                    <span class="n">child_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">,</span> <span class="n">emit_checked_signal</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.get_status_for_rule_type"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_status_for_rule_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_status_for_rule_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items and compute the status for the rule type.</span>
+
+<span class="sd">        The status is computed by checking each ValidationRuleModelItem:</span>
+<span class="sd">            - An incomplete status is returned if any of the model items for the rule type have not been run</span>
+<span class="sd">            - An error status is returend if all model items for the ruel have run, but not all passed</span>
+<span class="sd">            - A success status is returend if all model items for the ruel have run and all passed</span>
+
+<span class="sd">        :return: The rule type status:</span>
+<span class="sd">                     ValidationRuleTypeModel.RULE_TYPE_STATUS_INCOMPLETE - not all rules have been checked</span>
+<span class="sd">                     ValidationRuleTypeModel.RULE_TYPE_STATUS_ERROR - all rules checked but not all passed</span>
+<span class="sd">                     ValidationRuleTypeModel.RULE_TYPE_STATUS_OK - all rules checked and passed</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to get the status for the rule type based on the model item.</span>
+
+<span class="sd">            :param model_item: The model item that affects the status of the rule type</span>
+<span class="sd">            :type model_item: QtGui.QStandardItem</span>
+<span class="sd">            :param rule_type: Only model items with rule type will be checked.</span>
+<span class="sd">            :type rule_type: ValidationRuleType</span>
+
+<span class="sd">            :return: The status:</span>
+<span class="sd">                ValidationRuleModelItem.RULE_TYPE_STATUS_INCOMPLETE - the rule was not checked but did not passed</span>
+<span class="sd">                ValidationRuleModelItem.RULE_TYPE_STATUS_ERROR - the rule was checked but did not passed</span>
+<span class="sd">                ValidationRuleModelItem.RULE_TYPE_STATUS_OK - the rule was checked and passed</span>
+<span class="sd">            :rtype: int</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">rule_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rule</span><span class="o">.</span><span class="n">checked</span><span class="p">:</span>
+                <span class="c1"># Optional checks that are not turned on are trivally OK</span>
+                <span class="k">return</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_OK</span>
+
+            <span class="n">executed</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">executed</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_INCOMPLETE</span>
+
+            <span class="n">is_valid</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_ERROR</span>
+
+            <span class="k">return</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_OK</span>
+
+        <span class="n">has_errors</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">get_status</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_INCOMPLETE</span><span class="p">:</span>
+                <span class="c1"># Incomplete status takes precedence - return immediately</span>
+                <span class="k">return</span> <span class="n">status</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_ERROR</span><span class="p">:</span>
+                <span class="n">has_errors</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="n">get_status</span><span class="p">(</span><span class="n">child_item</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_INCOMPLETE</span><span class="p">:</span>
+                    <span class="c1"># Incomplete status takes precedence - return immediately</span>
+                    <span class="k">return</span> <span class="n">status</span>
+
+                <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_ERROR</span><span class="p">:</span>
+                    <span class="n">has_errors</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_ERROR</span>
+            <span class="k">if</span> <span class="n">has_errors</span>
+            <span class="k">else</span> <span class="n">ValidationRuleTypeModel</span><span class="o">.</span><span class="n">RULE_TYPE_STATUS_OK</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationRuleModel.get_statuses_for_rule_type"><a class="viewcode-back" href="../../../models.html#tk_multi_data_validation.models.ValidationRuleModel.get_statuses_for_rule_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_statuses_for_rule_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate over the model items and compute the statuses for each rule type.</span>
+
+<span class="sd">        :return: A tuple with</span>
+<span class="sd">            (1) the set of rule types where all rules have been checked and are vald</span>
+<span class="sd">            (2) the set of rule tyeps where all rules have been checked but some have errors</span>
+<span class="sd">            (3) the set of rule tyeps where not all rules have been checked</span>
+<span class="sd">        :rtype: tupel&lt;set,set,set&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">update_status</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">all_types</span><span class="p">,</span> <span class="n">incomplete</span><span class="p">,</span> <span class="n">errors</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Helper function to update the status sets.</span>
+
+<span class="sd">            :param model_item: The model item to update the status sets with.</span>
+<span class="sd">            :type model_item: QtGui.QStandardItem</span>
+<span class="sd">            :param all_types: The set of all validation rule types in the model.</span>
+<span class="sd">            :type all_types: set&lt;int&gt;</span>
+<span class="sd">            :param incomplete: The set of rule types that have rules that have not been checked yet.</span>
+<span class="sd">            :type incomplete: set&lt;int&gt;</span>
+<span class="sd">            :param errors: The set of rule types that have rules that have errors.</span>
+<span class="sd">            :type errors: set&lt;int&gt;</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">IS_RULE_ITEM_ROLE</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_ITEM_ROLE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="n">all_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">optional</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rule</span><span class="o">.</span><span class="n">checked</span><span class="p">:</span>
+                <span class="c1"># Optional checks that are not turned on are skipped</span>
+                <span class="k">return</span>
+
+            <span class="n">executed</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALIDATION_RAN</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">executed</span><span class="p">:</span>
+                <span class="n">incomplete</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_valid</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">ValidationRuleModel</span><span class="o">.</span><span class="n">RULE_VALID_ROLE</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="n">all_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">incomplete</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">model_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">update_status</span><span class="p">(</span><span class="n">model_item</span><span class="p">,</span> <span class="n">all_types</span><span class="p">,</span> <span class="n">incomplete</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+
+            <span class="n">child_rows</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">child_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">child_rows</span><span class="p">):</span>
+                <span class="n">child_item</span> <span class="o">=</span> <span class="n">model_item</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="n">child_row</span><span class="p">)</span>
+                <span class="n">update_status</span><span class="p">(</span><span class="n">child_item</span><span class="p">,</span> <span class="n">all_types</span><span class="p">,</span> <span class="n">incomplete</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">all_types</span> <span class="o">-</span> <span class="n">errors</span> <span class="o">-</span> <span class="n">incomplete</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">incomplete</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>
