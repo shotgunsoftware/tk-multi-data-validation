@@ -32,6 +32,7 @@ class ValidationManager(object):
 
     def __init__(
         self,
+        bundle=None,
         rule_settings=None,
         include_rules=None,
         exclude_rules=None,
@@ -42,6 +43,8 @@ class ValidationManager(object):
         """
         Initialize the validation manager from the settings data.
 
+        :param bundle: The bundle instance for the app.
+        :type bundle: TankBundle
         :param rule_settings: The rule settings to use for this manager. Default is to use the
                               current bunlde's settings.
         :type rule_settings: dict
@@ -63,7 +66,7 @@ class ValidationManager(object):
             check function is executed. The returned parameter is the validation rule.
         """
 
-        self._bundle = sgtk.platform.current_bundle()
+        self._bundle = bundle or sgtk.platform.current_bundle()
         self._logger = logger or self._bundle.logger
         self._notifier = notifier
         self._has_ui = has_ui
