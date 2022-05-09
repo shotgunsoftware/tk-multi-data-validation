@@ -309,22 +309,19 @@ class ValidationManager(object):
             # First run the validate method to check for data violations.
             self.validate()
 
-        if not self.errors:
-            # There are no data violations to resolve.
-            return success
+        if self.errors:
+            # Resolve the data violations. Explicitly say not to fetch dependencies because this function
+            # has validated all rules and all rules will be passed to resolve that will be fixed - if
+            # dependencies are not included, then that means they have no errors and thus, do not need to
+            # run their fix action to modify the data. Basically, this means dependencies can be ignored
+            # as they will have no effect on the data.
+            self.resolve_rules(
+                self.errors.values(), fetch_dependencies=False, emit_signals=False
+            )
 
-        # Resolve the data violations. Explicitly say not to fetch dependencies because this function
-        # has validated all rules and all rules will be passed to resolve that will be fixed - if
-        # dependencies are not included, then that means they have no errors and thus, do not need to
-        # run their fix action to modify the data. Basically, this means dependencies can be ignored
-        # as they will have no effect on the data.
-        self.resolve_rules(
-            self.errors.values(), fetch_dependencies=False, emit_signals=False
-        )
-
-        if post_validate:
-            # Run validation step once all resolution actions compelted to ensure everything was fixed.
-            success = self.validate()
+            if post_validate:
+                # Run validation step once all resolution actions compelted to ensure everything was fixed.
+                success = self.validate()
 
         if self.notifier:
             self.notifier.resolve_all_finished.emit()
