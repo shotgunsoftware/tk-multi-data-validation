@@ -94,7 +94,7 @@ class ValidationManager(object):
         self.__rules_by_id = {}
         self.__errors = {}
 
-        rule_settings = rule_settings or self._bundle.settings.get("rules") or []
+        rule_settings = rule_settings or self._bundle.get_setting("rules", [])
         for rule_item in rule_settings:
             rule_id = rule_item["id"]
 
