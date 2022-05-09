@@ -17,15 +17,6 @@ from tank.errors import TankHookMethodDoesNotExistError
 from tank_test.tank_test_base import setUpModule  # noqa
 
 
-import sys
-
-sys.path.append("/Users/oues/python_libs")
-import ptvsd
-
-ptvsd.enable_attach()
-ptvsd.wait_for_attach()
-
-
 class TestApplication(AppTestBase):
     """
     Test the Data Validation Application class methods. Note that
