@@ -94,7 +94,7 @@ class ValidationManager(object):
         self.__rules_by_id = {}
         self.__errors = {}
 
-        rule_settings = rule_settings or self._bundle.settings.get("rules")
+        rule_settings = rule_settings or self._bundle.settings.get("rules") or []
         for rule_item in rule_settings:
             rule_id = rule_item["id"]
 
@@ -163,6 +163,11 @@ class ValidationManager(object):
     @accept_rule_fn.setter
     def accept_rule_fn(self, fn):
         self._accept_rule_fn = fn
+
+    @property
+    def has_ui(self):
+        """Get the flag indicating if this manager is running with a User Interface."""
+        return self._has_ui
 
     #########################################################################################################
     # Public functions
@@ -456,7 +461,7 @@ class ValidationManager(object):
 
                     # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
                     # to only individual dependencies
-                    if self._has_ui:
+                    if self.has_ui:
                         from sgtk.platform.qt import QtGui
 
                         answer = QtGui.QMessageBox.question(
