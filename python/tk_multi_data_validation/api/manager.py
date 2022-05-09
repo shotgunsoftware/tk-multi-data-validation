@@ -12,7 +12,6 @@ import copy
 from collections import deque
 
 import sgtk
-from sgtk.platform.qt import QtCore, QtGui
 
 from ..data.validation_rule import ValidationRule
 from ..data.validation_rule_type import ValidationRuleType
@@ -31,26 +30,14 @@ class ValidationManager(object):
     It also coordinates the execution of validation rule check and fix functions.
     """
 
-    class ValidationNotifier(QtCore.QObject):
-        """Inner helper class to emit signals around validation operations."""
-
-        validate_rule_begin = QtCore.Signal(ValidationRule)
-        validate_rule_finished = QtCore.Signal(ValidationRule)
-        validate_all_begin = QtCore.Signal()
-        validate_all_finished = QtCore.Signal()
-        resolve_rule_begin = QtCore.Signal(ValidationRule)
-        resolve_rule_finished = QtCore.Signal(ValidationRule)
-        resolve_all_begin = QtCore.Signal()
-        resolve_all_finished = QtCore.Signal()
-        about_to_open_msg_box = QtCore.Signal()
-        msg_box_closed = QtCore.Signal()
-
     def __init__(
         self,
         rule_settings=None,
         include_rules=None,
         exclude_rules=None,
-        validation_logger=None,
+        logger=None,
+        notifier=None,
+        has_ui=False,
     ):
         """
         Initialize the validation manager from the settings data.
@@ -62,8 +49,13 @@ class ValidationManager(object):
         :type include_rules: list<str>
         :param exclude_rules: List of rule ids to exclude from the app's default rules list.
         :type exclude_rules: list<str>
-        :param validation_logger: This is a standard python logger to use during validation. A default logger
+        :param logger: This is a standard python logger to use during validation. A default logger
             will be provided if not supplied.
+        :type logger: A standard python logger.
+        :param notifier: A notifier object to emit Qt signals.
+        :type notifier: ValidationNotifer
+        :param has_ui: Set to True if the manager is being used with a UI, else False.
+        :type has_ui: bool
 
         :signal ValidationNotifier.validate_rule_begin(ValidationRule): Emits before a validation rule check
             function is executed. The returned parameter is the validation rule.
@@ -72,8 +64,9 @@ class ValidationManager(object):
         """
 
         self._bundle = sgtk.platform.current_bundle()
-        self._logger = validation_logger or self._bundle.logger
-        self._notifier = self.ValidationNotifier()
+        self._logger = logger or self._bundle.logger
+        self._notifier = notifier
+        self._has_ui = has_ui
 
         # Set the default rule types (in order). This can be set using the rule_types property.
         # TODO allow this to be config-based
@@ -204,14 +197,16 @@ class ValidationManager(object):
         :rtype: bool
         """
 
-        self._notifier.validate_all_begin.emit()
+        if self.notifier:
+            self.notifier.validate_all_begin.emit()
 
         try:
             # Reset the manager state before performing validation
             self.reset()
             self.validate_rules(self.rules, emit_signals=False)
         finally:
-            self._notifier.validate_all_finished.emit()
+            if self.notifier:
+                self.notifier.validate_all_finished.emit()
 
         return not self.__errors
 
@@ -226,15 +221,15 @@ class ValidationManager(object):
         :param emit_signals: bool
         """
 
-        if emit_signals:
-            self._notifier.validate_all_begin.emit()
+        if emit_signals and self.notifier:
+            self.notifier.validate_all_begin.emit()
 
         for rule in rules:
             if not self.accept_rule_fn or self.accept_rule_fn(rule):
                 self.validate_rule(rule)
 
-        if emit_signals:
-            self._notifier.validate_all_finished.emit()
+        if emit_signals and self.notifier:
+            self.notifier.validate_all_finished.emit()
 
     def validate_rule(self, rule, emit_signals=True):
         """
@@ -251,9 +246,9 @@ class ValidationManager(object):
         :rtype: bool
         """
 
-        if emit_signals:
+        if emit_signals and self.notifier:
             # Emit a signal to notify that a specifc rule has started validation
-            self._notifier.validate_rule_begin.emit(rule)
+            self.notifier.validate_rule_begin.emit(rule)
 
         # Run the validation rule check function
         self._logger.debug("Validating Rule: {}".format(rule.id))
@@ -270,9 +265,9 @@ class ValidationManager(object):
             # Add the rule to the error set
             self.__errors[rule.id] = rule
 
-        if emit_signals:
+        if emit_signals and self.notifier:
             # Emit a signal to notify that a specifc rule has finished validation
-            self._notifier.validate_rule_finished.emit(rule)
+            self.notifier.validate_rule_finished.emit(rule)
 
         return is_valid
 
@@ -297,7 +292,8 @@ class ValidationManager(object):
         :rtype: bool
         """
 
-        self._notifier.resolve_all_begin.emit()
+        if self.notifier:
+            self.notifier.resolve_all_begin.emit()
 
         success = True
 
@@ -322,7 +318,8 @@ class ValidationManager(object):
             # Run validation step once all resolution actions compelted to ensure everything was fixed.
             success = self.validate()
 
-        self._notifier.resolve_all_finished.emit()
+        if self.notifier:
+            self.notifier.resolve_all_finished.emit()
 
         return success
 
@@ -370,7 +367,7 @@ class ValidationManager(object):
             return
 
         if emit_signals:
-            self._notifier.resolve_all_begin.emit()
+            self.notifier.resolve_all_begin.emit()
 
         # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
         # through to check then check if the necessary dependencies are available to resolve first.
@@ -451,27 +448,35 @@ class ValidationManager(object):
 
                 # If not yet specified, prompt user to fetch missing dependencies
                 if fetch_dependencies is None:
-                    self.notifier.about_to_open_msg_box.emit()
+                    if self.notifier:
+                        self.notifier.about_to_open_msg_box.emit()
 
                     # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
                     # to only individual dependencies
-                    answer = QtGui.QMessageBox.question(
-                        None,
-                        "Fix Dependencies",
-                        "This operation will apply additional fixes for dependencies.",
-                        QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
-                    )
-                    fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
+                    if self._has_ui:
+                        from sgtk.platform.qt import QtGui
 
-                    self.notifier.msg_box_closed.emit()
+                        answer = QtGui.QMessageBox.question(
+                            None,
+                            "Fix Dependencies",
+                            "This operation will apply additional fixes for dependencies.",
+                            QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
+                        )
+                        fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
+                    else:
+                        # TODO allow headless mode to specify whether or not to fetch. Default to fetch
+                        fetch_dependencies = True
+
+                    if self.notifier:
+                        self.notifier.msg_box_closed.emit()
 
                 if fetch_dependencies:
                     if not process_rule(dependency_rule):
                         queue_count += 1
                 else:
                     # The user canceled the operation
-                    if emit_signals:
-                        self._notifier.resolve_all_finished.emit()
+                    if emit_signals and self.notifier:
+                        self.notifier.resolve_all_finished.emit()
                     return
 
         # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
@@ -520,8 +525,8 @@ class ValidationManager(object):
                 self.resolve_rule(rule)
                 resolved.add(rule.id)
 
-        if emit_signals:
-            self._notifier.resolve_all_finished.emit()
+        if emit_signals and self.notifier:
+            self.notifier.resolve_all_finished.emit()
 
     def resolve_rule(self, rule):
         """
@@ -537,6 +542,10 @@ class ValidationManager(object):
             )
         )
 
-        self._notifier.resolve_rule_begin.emit(rule)
+        if self.notifier:
+            self.notifier.resolve_rule_begin.emit(rule)
+
         rule.exec_fix()
-        self._notifier.resolve_rule_finished.emit(rule)
+
+        if self.notifier:
+            self.notifier.resolve_rule_finished.emit(rule)

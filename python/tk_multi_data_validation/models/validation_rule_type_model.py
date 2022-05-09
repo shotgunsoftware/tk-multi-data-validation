@@ -64,9 +64,19 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             super(ValidationRuleTypeModel.ValidationRuleTypeModelItem, self).__init__()
 
-            self._rule_type = rule_type
             self._status = None
             self._check_state = None
+            self._rule_type = rule_type
+
+            if self._rule_type.sg_icon:
+                if hasattr(SGQIcon, self._rule_type.sg_icon):
+                    self._rule_type.icon = getattr(SGQIcon, self._rule_type.sg_icon)()
+
+            if self._rule_type.sg_checkbox_icon:
+                if hasattr(SGQIcon, self._rule_type.sg_checkbox_icon):
+                    self._rule_type.checkbox_icon = getattr(
+                        SGQIcon, self._rule_type.sg_checkbox_icon
+                    )()
 
         def data(self, role):
             """

@@ -27,7 +27,6 @@ class DataValidation(sgtk.platform.Application):
         # the manager class provides the interface for validatin. We store a reference to it to enable the
         # create_validation_manager method exposed on the application itself
         self._manager_class = tk_multi_data_validation.ValidationManager
-        self._widget_class = tk_multi_data_validation.ValidationWidget
 
         cb = lambda: tk_multi_data_validation.show_dialog(self)
         self.engine.register_command(
@@ -45,24 +44,14 @@ class DataValidation(sgtk.platform.Application):
         tk_multi_data_validation = self.import_module("tk_multi_data_validation")
         tk_multi_data_validation.show_dialog(self, modal)
 
-    def create_validation_widget(self, parent, validation_manager=None):
-        """
-        Create a validation widget instance.
-
-        :param parent: The parent widget
-        :type parent: QtGui.QWidget
-        :param validation_manager: (optional) The ValidationManager to faciliate validating and fixing the
-            data violations.
-        :type validation_manager: ValidationManager
-        """
-
-        return self._widget_class(parent, validation_manager=validation_manager)
-
     def create_validation_manager(
         self,
         rule_settings=None,
         include_rules=None,
         exclude_rules=None,
+        logger=None,
+        notifier=None,
+        has_ui=False,
     ):
         """
         Create a validation manager instance.
@@ -73,6 +62,13 @@ class DataValidation(sgtk.platform.Application):
         :type include_rules: list<str>
         :param exclude_rules: The validation rule ids to not use from the settings
         :type exclude_rules: list<str>
+        :param logger: This is a standard python logger to use during validation. A default logger
+            will be provided if not supplied.
+        :type logger: A standard python logger.
+        :param notifier: A notifier object to emit Qt signals.
+        :type notifier: ValidationNotifer
+        :param has_ui: Set to True if the manager is being used with a UI, else False.
+        :type has_ui: bool
 
         :return: The validation manager.
         :rtype: :class:`tk_multi_data_validation.ValidationManager`
@@ -82,6 +78,9 @@ class DataValidation(sgtk.platform.Application):
             rule_settings=rule_settings,
             include_rules=include_rules,
             exclude_rules=exclude_rules,
+            logger=logger,
+            notifier=notifier,
+            has_ui=has_ui,
         )
 
     def _log_metric_viewed_app(self):

@@ -13,6 +13,7 @@ from sgtk.platform.qt import QtGui, QtCore
 
 from .api import ValidationManager
 from .widgets import ValidationWidget
+from .utils.validation_notifier import ValidationNotifier
 
 settings = sgtk.platform.import_framework("tk-framework-shotgunutils", "settings")
 
@@ -50,7 +51,7 @@ class AppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Create validation manager
 
-        self._manager = ValidationManager()
+        self._manager = ValidationManager(notifier=ValidationNotifier(), has_ui=True)
         self._manager.accept_rule_fn = lambda rule: not rule.optional or rule.checked
 
         # -----------------------------------------------------

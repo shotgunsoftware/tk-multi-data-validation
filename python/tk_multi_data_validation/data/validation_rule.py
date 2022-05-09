@@ -142,16 +142,6 @@ class ValidationRule(object):
         return self.type.name
 
     @property
-    def type_icon(self):
-        """Get the icon to represent the type of this rule."""
-        return self.type.icon
-
-    @property
-    def checkbox_icon(self):
-        """Get the icon to use to display checkboxes for this rule."""
-        return self.type.checkbox_icon
-
-    @property
     def data_type(self):
         """Get the data type that this rule peratins to."""
 
