@@ -15,7 +15,7 @@ from ..data.validation_rule import ValidationRule
 
 
 class ValidationNotifier(QtCore.QObject):
-    """Inner helper class to emit signals around validation operations."""
+    """Class to emit signals around validation operations."""
 
     validate_rule_begin = QtCore.Signal(ValidationRule)
     validate_rule_finished = QtCore.Signal(ValidationRule)
