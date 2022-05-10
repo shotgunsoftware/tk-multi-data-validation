@@ -8,14 +8,10 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
-import copy
 import os
-from ssl import HAS_SNI
 import sys
-from more_itertools import side_effect
 
 import pytest
-import mock
 from mock import call, MagicMock
 
 from validation_utils import CheckResult
@@ -23,9 +19,10 @@ from validation_utils import CheckResult
 # Manually add the app modules to the path in order to import them here.
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "python"))
 app_dir = os.path.abspath(os.path.join(base_dir, "tk_multi_data_validation"))
-data_dir = os.path.abspath(os.path.join(app_dir, "data"))
-sys.path.extend([base_dir, app_dir, data_dir])
-from tk_multi_data_validation.data import ValidationRule, ValidationRuleType
+api_dir = os.path.abspath(os.path.join(app_dir, "api"))
+data_dir = os.path.abspath(os.path.join(api_dir, "data"))
+sys.path.extend([base_dir, app_dir, api_dir, data_dir])
+from tk_multi_data_validation.api.data import ValidationRule, ValidationRuleType
 
 
 #########################################################################################################

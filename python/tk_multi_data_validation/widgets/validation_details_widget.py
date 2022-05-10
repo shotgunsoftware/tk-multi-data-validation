@@ -11,7 +11,7 @@
 import sgtk
 from sgtk.platform.qt import QtCore, QtGui
 
-from ..data.validation_rule import ValidationRule
+from ..api.data.validation_rule import ValidationRule
 from ..models.validation_rule_details_model import ValidationRuleDetailsModel
 from ..utils.framework_qtwidgets import (
     GroupedItemView,

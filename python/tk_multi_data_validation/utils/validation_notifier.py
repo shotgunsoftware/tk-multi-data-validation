@@ -11,7 +11,7 @@
 import sgtk
 from sgtk.platform.qt import QtCore
 
-from ..data.validation_rule import ValidationRule
+from ..api.data.validation_rule import ValidationRule
 
 
 class ValidationNotifier(QtCore.QObject):

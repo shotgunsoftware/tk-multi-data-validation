@@ -11,7 +11,7 @@
 import sgtk
 from sgtk.platform.qt import QtGui, QtCore
 
-from ..data.validation_rule_type import ValidationRuleType
+from ..api.data.validation_rule_type import ValidationRuleType
 from ..utils.framework_qtwidgets import ViewItemRolesMixin
 from ..utils.framework_qtwidgets import SGQIcon
 

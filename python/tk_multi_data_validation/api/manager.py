@@ -13,8 +13,8 @@ from collections import deque
 
 import sgtk
 
-from ..data.validation_rule import ValidationRule
-from ..data.validation_rule_type import ValidationRuleType
+from ..api.data.validation_rule import ValidationRule
+from ..api.data.validation_rule_type import ValidationRuleType
 
 
 class ValidationManager(object):

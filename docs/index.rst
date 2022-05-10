@@ -13,10 +13,9 @@ Customizations
 There is no default configuration since validating data is specific to each DCC. See :ref:`validation-hooks` to configure the App.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     hooks
-    data
     api
     widgets
     models

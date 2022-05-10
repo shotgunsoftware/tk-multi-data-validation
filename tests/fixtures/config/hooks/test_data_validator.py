@@ -25,7 +25,7 @@ class TestDataValidatorHook(HookBaseClass):
         This method must be implemented by the subclass.
 
         It is not enforced, but the dictionary returned by this function should be formated such that each
-        key-value pair can be passed to create a :class:`tk_multi_data_validation.data.ValidationRule`.
+        key-value pair can be passed to create a :class:`tk_multi_data_validation.api.data.ValidationRule`.
 
         :return: The validation data that can be used to validate the data.
         :rtype: dict

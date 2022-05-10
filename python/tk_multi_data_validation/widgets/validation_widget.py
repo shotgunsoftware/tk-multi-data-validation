@@ -13,7 +13,7 @@ from sgtk.platform.qt import QtCore, QtGui
 
 from .list_view_auto_height import ListViewAutoHeight
 from .validation_details_widget import ValidationDetailsWidget
-from ..data.validation_rule_type import ValidationRuleType
+from ..api.data.validation_rule_type import ValidationRuleType
 from ..models.validation_rule_model import ValidationRuleModel
 from ..models.validation_rule_type_model import ValidationRuleTypeModel
 from ..models.validation_rule_proxy_model import ValidationRuleProxyModel
