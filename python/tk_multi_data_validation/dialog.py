@@ -152,8 +152,8 @@ class AppDialog(QtGui.QWidget):
         self._manager.notifier.validate_rule_begin.connect(
             lambda rule: self.show_busy_popup(
                 "{}_{}".format(self.VALIDATE_ID, rule.id),
-                "Validating Rule '{}'...".format(rule.name),
-                "Please hold on.",
+                "Validating {}...".format(rule.name),
+                "This may take a few minutes. Thanks for waiting.",
             )
         )
         self._manager.notifier.validate_rule_finished.connect(
