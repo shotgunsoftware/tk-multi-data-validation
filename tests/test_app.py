@@ -12,6 +12,7 @@ import os
 import pytest
 
 from app_test_base import AppTestBase
+from tank_test.tank_test_base import setUpModule  # noqa
 
 
 class TestApplication(AppTestBase):
