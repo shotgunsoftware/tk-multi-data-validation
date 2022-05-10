@@ -414,25 +414,11 @@ class ValidationRule(object):
 
         func = self.fix_func
 
-        if func:
-            kwargs.update(self.kwargs)
+        if not func:
+            return
 
-            # The fix function should raise an exception if it failed
-            try:
-                func(*args, **kwargs)
-                if self.manual:
-                    # The fix was successful, set the manual check state to indicate it is now valid
-                    # FIXME if the data changes after this fix was executed, the manual check state may
-                    # become out of sync with the current data (e.g. the data might have errors after the
-                    # update but the manual check state will remain the same indicating that the data is
-                    # valid)
-                    self.manual_checked = True
-            except Exception as e:
-                # Intercept the exception to set the manaul check state, and re-raise the exception for the
-                # caller to handle
-                if self.manual:
-                    self.manual_checked = False
-                raise e
+        kwargs.update(self.kwargs)
+        func(*args, **kwargs)
 
-            # The fix function was executed - set the flag to True
-            self._fix_executed = True
+        # The fix function was executed - set the flag to True
+        self._fix_executed = True
