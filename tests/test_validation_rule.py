@@ -53,35 +53,6 @@ def rule_data():
     }
 
 
-# @pytest.fixture
-# def bundle(bundle_settings, bundle_hook_methods):
-#     """
-#     A mock Application object to use to create the ValidationManager object. Note that
-#     the mock Application does not provide the full functionality of the actual class
-#     it represents; any additional functionality required must be added here.
-#     """
-
-#     def mock_app_get_setting(name, default_value=None):
-#         """
-#         Mock the Application method 'get_settings'
-#         """
-#         return bundle_settings.get(name, default_value)
-
-#     def mock_app_execute_hook_method(hook_name, hook_method, **kwargs):
-#         """
-#         Mock the Application method 'execute_hook_method'.
-#         """
-#         return bundle_hook_methods.get(hook_name, {}).get(hook_method, None)
-
-#     # Set up the mock Application
-#     app = MagicMock()
-#     app.get_setting = mock_app_get_setting
-#     app.execute_hook_method = mock_app_execute_hook_method
-#     app.logger = Logger()
-
-#     return app
-
-
 #########################################################################################################
 # ValidationRule pytests
 
@@ -199,12 +170,6 @@ def test_validadtion_rule_exec_check():
         "check_func": MagicMock(return_value=error_rule_with_data_result)
     }
     manual_rule = {"name": "No check function provided"}
-
-    # import sys
-    # sys.path.append("/Users/oues/python_libs")
-    # import ptvsd
-    # ptvsd.enable_attach()
-    # ptvsd.wait_for_attach()
 
     rule = ValidationRule(success_rule)
     result = rule.exec_check()
