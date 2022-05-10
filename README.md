@@ -1,5 +1,6 @@
 [![Build Status](https://dev.azure.com/shotgun-ecosystem/Toolkit/_apis/build/status/Apps/tk-multi-data-validation?branchName=master)](https://dev.azure.com/shotgun-ecosystem/Toolkit/_build/latest?definitionId=104&branchName=master)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![codecov](https://codecov.io/gh/shotgunsoftware/tk-multi-data-validation/branch/main/graph/badge.svg?token=N3PUwDQQ2e)](https://codecov.io/gh/shotgunsoftware/tk-multi-data-validation)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/)
 
 ## Documentation
