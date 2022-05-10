@@ -14,11 +14,9 @@ import sys
 
 import pytest
 import mock
-from mock import call, patch, MagicMock
+from mock import call, MagicMock
 
-from app_test_base import AppTestBase
-
-from tank_test.tank_test_base import setUpModule  # noqa
+from validation_utils import CheckResult
 
 # Manually add the app modules to the path in order to import them here.
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "python"))
@@ -45,12 +43,6 @@ class Logger(object):
 
     def error(self, msg):
         pass
-
-
-class CheckResult(object):
-    def __init__(self, is_valid, errors=None):
-        self.is_valid = is_valid
-        self.errors = errors
 
 
 MOCK_GET_VALIDATOR_DATA = {
