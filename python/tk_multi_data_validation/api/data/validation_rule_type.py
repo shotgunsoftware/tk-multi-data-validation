@@ -8,8 +8,6 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
-from ..utils.framework_qtwidgets import SGQIcon
-
 
 class ValidationRuleType(object):
     """
@@ -60,8 +58,10 @@ class ValidationRuleType(object):
         self._id = rule_type_id
         self._data = self.get_data_for_type(rule_type_id)
         self._name = self._data.get("name")
-        self._icon = self._data.get("icon")
-        self._checkbox_icon = self._data.get("checkbox_icon")
+        self._sg_icon = self._data.get("sg_icon")
+        self._sg_checkbox_icon = self._data.get("sg_checkbox_icon")
+        self._icon = None
+        self._checkbox_icon = None
 
         if self.id == self.RULE_TYPE_ACTIVE:
             self._accept_rule_func = lambda rule: rule.required or rule.checked
@@ -112,21 +112,22 @@ class ValidationRuleType(object):
             return {
                 "name": "All",
                 # TODO Design icon
-                "icon": SGQIcon.Info(),
+                # "sg_icon": SGQIcon.Info(),
+                "sg_icon": "Info",
             }
 
         if type_id == cls.RULE_TYPE_AUTO:
             return {
                 "name": "Automated",
                 # TODO Design icon
-                "icon": SGQIcon.GreenCheckMark(),
+                "sg_icon": "GreenCheckMark",
             }
 
         if type_id == cls.RULE_TYPE_REQUIRED:
             return {
                 "name": "Required",
                 # TODO Design icon
-                "icon": SGQIcon.GreenCheckMark(),
+                "sg_icon": "GreenCheckMark",
             }
 
         if type_id == cls.RULE_TYPE_OPTIONAL:
@@ -134,22 +135,22 @@ class ValidationRuleType(object):
             return {
                 "name": "Optional",
                 # TODO Design icon
-                "icon": SGQIcon.Lock(),
-                "checkbox_icon": SGQIcon.Info(),
+                "sg_icon": "Lock",
+                "sg_checkbox_icon": "Info",
             }
 
         if type_id == cls.RULE_TYPE_MANUAL:
             return {
                 "name": "Manual",
                 # TODO Design icon
-                "icon": SGQIcon.RedRefresh(),
+                "sg_icon": "RedRefresh",
             }
 
         if type_id == cls.RULE_TYPE_ACTIVE:
             return {
                 "name": "Active",
                 # TODO Design icon
-                "icon": SGQIcon.RedRefresh(),
+                "sg_icon": "RedRefresh",
             }
 
         return None
@@ -183,14 +184,32 @@ class ValidationRuleType(object):
         return self._name
 
     @property
+    def sg_icon(self):
+        """Get the ShotGrid icon class name to create the icon for this validation rule type."""
+        return self._sg_icon
+
+    @property
+    def sg_checkbox_icon(self):
+        """Get the ShotGrid icon class name to create the checkbox icon for this validation rule type."""
+        return self._sg_checkbox_icon
+
+    @property
     def icon(self):
-        """Get the icon for this validation rule type."""
+        """Get or set the icon for this validation rule type."""
         return self._icon
+
+    @icon.setter
+    def icon(self, value):
+        self._icon = value
 
     @property
     def checkbox_icon(self):
-        """Get the checkbox icon for this validation rule type."""
+        """Get or set the checkbox icon for this validation rule type."""
         return self._checkbox_icon
+
+    @checkbox_icon.setter
+    def checkbox_icon(self, value):
+        self._checkbox_icon = value
 
     @property
     def is_valid(self):

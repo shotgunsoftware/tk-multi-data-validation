@@ -12,7 +12,7 @@ import sgtk
 from sgtk.platform.qt import QtGui, QtCore
 
 from .validation_rule_type_model import ValidationRuleTypeModel
-from ..data.validation_rule import ValidationRule
+from ..api.data.validation_rule import ValidationRule
 from ..utils.framework_qtwidgets import SGQIcon, ViewItemRolesMixin
 
 
@@ -159,6 +159,13 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             # Initialize our file mode item data
             self._rule = rule
+
+            self._checkbox_icon = None
+            if self._rule.type and self._rule.type.sg_checkbox_icon:
+                if hasattr(SGQIcon, self._rule.type.sg_checkbox_icon):
+                    self._checkbox_icon = getattr(
+                        SGQIcon, self._rule.type.sg_checkbox_icon
+                    )()
 
             # UI properties
             self._is_loading = False
@@ -344,9 +351,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 return self.model().error_status_icon
 
             if role == ValidationRuleModel.CHECKBOX_ICON_ROLE:
-                if not self._rule:
-                    return None
-                return self._rule.checkbox_icon
+                return self._checkbox_icon
 
             if role == ValidationRuleModel.RULE_ACTIONS_ROLE:
                 if not self._rule:
