@@ -116,7 +116,7 @@ class ValidationDetailsWidget(SGQWidget):
                 )
             )
         else:
-            dependencies_text = ""
+            dependencies_text = "No dependencies."
 
         description = "<html>{desc}{space}{dependencies}</html>".format(
             desc=self.rule.description if self.show_description else "",
