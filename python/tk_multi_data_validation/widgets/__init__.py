@@ -11,3 +11,4 @@
 from .validation_widget import ValidationWidget
 from .validation_details_widget import ValidationDetailsWidget
 from .list_view_auto_height import ListViewAutoHeight
+from .shotgrid_overlay_widget import ShotGridOverlayWidget

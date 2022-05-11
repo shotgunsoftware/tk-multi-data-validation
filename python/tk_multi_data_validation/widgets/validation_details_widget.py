@@ -17,13 +17,13 @@ from ..utils.framework_qtwidgets import (
     GroupedItemView,
     ViewItemDelegate,
     ViewItemAction,
-    ShotgunOverlayWidget,
     SGQWidget,
     SGQLabel,
     SGQGroupBox,
     SGQPushButton,
     SGQMenu,
 )
+from .shotgrid_overlay_widget import ShotGridOverlayWidget
 
 
 class ValidationDetailsWidget(SGQWidget):
@@ -234,7 +234,7 @@ class ValidationDetailsWidget(SGQWidget):
         )
         self._details_item_view.setModel(self._details_item_model)
         self._details_view_item_delegate = self._create_delegate()
-        self._details_item_view_overlay = ShotgunOverlayWidget(self._details_item_view)
+        self._details_item_view_overlay = ShotGridOverlayWidget(self._details_item_view)
 
         self.layout().setContentsMargins(10, 0, 0, 0)
         self.add_widgets(
