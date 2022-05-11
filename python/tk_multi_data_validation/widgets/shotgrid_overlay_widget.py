@@ -36,8 +36,11 @@ class ShotGridOverlayWidget(SGQWidget):
             parent, layout_direction=QtGui.QBoxLayout.TopToBottom
         )
 
-        # Set the default image size.
-        self._image_size = QtCore.QSize(80, 80)
+        # Set the default image size to None - no scaling will be applied.
+        self._image_size = None
+        self._title_alignment = None
+        self._title_word_wrap = None
+        self._title_max_width = None
 
         # Set up the layout and widgets
         self._setup_ui()
@@ -101,9 +104,7 @@ class ShotGridOverlayWidget(SGQWidget):
         title_layout.addStretch()
         title_layout.addWidget(self._image_label)
         title_layout.addWidget(self._title_label)
-
         title_layout.addWidget(self._spinner_label)
-
         title_layout.addStretch()
 
         # Add the details to a horizontal layout control alignment relative to other content
@@ -185,6 +186,33 @@ class ShotGridOverlayWidget(SGQWidget):
     @image_size.setter
     def image_size(self, size):
         self._image_size = size
+
+    @property
+    def title_alignment(self):
+        """Get or set the title text alignment."""
+        return self._title_alignment
+
+    @title_alignment.setter
+    def title_alignment(self, alignment):
+        self._title_alignment = alignment
+
+    @property
+    def title_word_wrap(self):
+        """Get or set the title text word wrap."""
+        return self._title_word_wrap
+
+    @title_word_wrap.setter
+    def title_word_wrap(self, wrap):
+        self._title_word_wrap = wrap
+
+    @property
+    def title_max_width(self):
+        """Get or set the title text maximum width."""
+        return self._title_max_width
+
+    @title_max_width.setter
+    def title_max_width(self, width):
+        self._title_max_width = width
 
     ##########################################################################################################
     # Qt overridden methods
@@ -295,29 +323,42 @@ class ShotGridOverlayWidget(SGQWidget):
         """
 
         if isinstance(image, QtGui.QIcon):
-            pixmap = image.pixmap(self._image_size)
+            if self.image_size:
+                pixmap = image.pixmap(self.image_size)
+            else:
+                size = image.availableSizes()[-1]
+                pixmap = image.pixmap(size)
         elif isinstance(image, QtGui.QPixmap):
             pixmap = image
         else:
             pixmap = None
 
-        if pixmap:
-            pixmap = pixmap.scaled(self._image_size, QtCore.Qt.KeepAspectRatio)
+        if pixmap and self.image_size:
+            pixmap = pixmap.scaled(self.image_size, QtCore.Qt.KeepAspectRatio)
 
         if title:
             if pixmap:
-                self._title_label.setMaximumWidth(250)
-                self._title_label.setWordWrap(True)
-                self._title_label.setAlignment(
-                    QtCore.Qt.AlignLeading
-                    | QtCore.Qt.AlignLeft
-                    | QtCore.Qt.AlignVCenter
-                    | QtCore.Qt.TextWordWrap
-                )
+                if self._title_max_width is None:
+                    self._title_label.setMaximumWidth(250)
+
+                if self.title_word_wrap is None:
+                    self._title_label.setWordWrap(True)
+
+                if self._title_alignment is None:
+                    self._title_label.setAlignment(
+                        QtCore.Qt.AlignLeading
+                        | QtCore.Qt.AlignLeft
+                        | QtCore.Qt.AlignVCenter
+                        | QtCore.Qt.TextWordWrap
+                    )
             else:
-                # Reset max width to the default Qt max value
-                self._title_label.setMaximumWidth(16777215)
-                self._title_label.setWordWrap(False)
+                if self._title_max_width is None:
+                    # Reset max width to the default Qt max value
+                    self._title_label.setMaximumWidth(16777215)
+
+                if self.title_word_wrap is None:
+                    self._title_label.setWordWrap(False)
+
                 self._title_label.setAlignment(
                     QtCore.Qt.AlignCenter
                     | QtCore.Qt.AlignVCenter

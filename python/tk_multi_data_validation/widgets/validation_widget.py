@@ -1046,7 +1046,6 @@ class ValidationWidget(SGQWidget):
                                 "<span style='font-size:14px;'>Success! No errors found. You're ready to publish.</span>",
                             ]
                         )
-                        title = "Placeholder to show a title"
                     else:
                         # There are errors but they are hidden by the current filters.
                         title = "No results. Clear filters to view data."
