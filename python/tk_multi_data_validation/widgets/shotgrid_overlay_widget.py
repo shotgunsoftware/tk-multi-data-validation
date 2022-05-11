@@ -37,7 +37,7 @@ class ShotGridOverlayWidget(SGQWidget):
         )
 
         # Set the default image size.
-        self._image_size = QtCore.QSize(96, 96)
+        self._image_size = QtCore.QSize(80, 80)
 
         # Set up the layout and widgets
         self._setup_ui()
