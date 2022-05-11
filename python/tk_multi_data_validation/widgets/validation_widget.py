@@ -18,14 +18,13 @@ from ..models.validation_rule_model import ValidationRuleModel
 from ..models.validation_rule_type_model import ValidationRuleTypeModel
 from ..models.validation_rule_proxy_model import ValidationRuleProxyModel
 from ..utils.framework_qtwidgets import SGQIcon
-
+from .shotgrid_overlay_widget import ShotGridOverlayWidget
 from ..utils.framework_qtwidgets import (
     FilterMenu,
     FilterMenuButton,
     GroupedItemView,
     ViewItemDelegate,
     ViewItemAction,
-    ShotgunOverlayWidget,
     SearchWidget,
     SGQToolButton,
     SGQWidget,
@@ -34,7 +33,6 @@ from ..utils.framework_qtwidgets import (
     SGQMenu,
     SGQLabel,
 )
-
 from ..utils.decorators import wait_cursor
 
 
@@ -52,6 +50,9 @@ class ValidationWidget(SGQWidget):
     #
     SETTINGS_PREFIX = "ValidationWidget"
     SETTINGS_VIEW_MODE = "{prefix}_view_mode".format(prefix=SETTINGS_PREFIX)
+    SETTINGS_SHOW_ONLY_ERRORS = "{prefix}_show_only_errors".format(
+        prefix=SETTINGS_PREFIX
+    )
     SETTINGS_DETAILS_VISIBILITY = "{prefix}_details_visibility".format(
         prefix=SETTINGS_PREFIX
     )
@@ -96,6 +97,8 @@ class ValidationWidget(SGQWidget):
         self._rule_type_filter_on = True
         self._group_rules_by = group_rules_by
 
+        # Flag indicating whether or not eiether of the Valdiate or Fix All button have been clicked yet.
+        self._validation_has_run = False
         # Flag indicating that we're in the middle of validating all rules
         self._is_validating_all = False
 
@@ -236,6 +239,9 @@ class ValidationWidget(SGQWidget):
         if user_settings:
             user_settings.store(self.SETTINGS_VIEW_MODE, self._view_mode)
             user_settings.store(
+                self.SETTINGS_SHOW_ONLY_ERRORS, self._errors_toggle.isChecked()
+            )
+            user_settings.store(
                 self.SETTINGS_DETAILS_VISIBILITY, self._details_widget.isVisible()
             )
 
@@ -269,6 +275,11 @@ class ValidationWidget(SGQWidget):
             self.view_mode = user_settings.retrieve(
                 self.SETTINGS_VIEW_MODE, self.VIEW_MODE_GROUPED
             )
+
+            show_only_errors = user_settings.retrieve(
+                self.SETTINGS_SHOW_ONLY_ERRORS, False
+            )
+            self._toggle_errors(show_only_errors)
 
             show_details = user_settings.retrieve(
                 self.SETTINGS_DETAILS_VISIBILITY, False
@@ -448,10 +459,10 @@ class ValidationWidget(SGQWidget):
         self._rules_view.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self._rules_view.setModel(self._rules_proxy_model)
         self._rules_delegate = self._create_rules_delegate()
-        self._view_overlay_widget = ShotgunOverlayWidget(self._rules_view)
+        self._view_overlay_widget = ShotGridOverlayWidget(self._rules_view)
 
         self._details_widget = ValidationDetailsWidget(self._view_details_splitter)
-        self._details_overlay_widget = ShotgunOverlayWidget(self._details_widget)
+        self._details_overlay_widget = ShotGridOverlayWidget(self._details_widget)
 
         # Place the splitter in a container widget so that the left hand rule types widget and the splitter
         # widget vertically align
@@ -1012,14 +1023,41 @@ class ValidationWidget(SGQWidget):
         """
 
         if self._rules_model.rowCount() <= 0:
-            self._view_overlay_widget.show_message("No validation data.")
+            self._view_overlay_widget.show_message("No data.")
 
         elif self._rules_proxy_model.rowCount() <= 0:
+            # There are no results showing, display an overlay message
+            icon = None
+            title = None
+            details_text = None
+
             if self._errors_toggle.isChecked():
-                msg = "No validation errors found."
+                # Showing only errors
+                if not self._validation_has_run:
+                    title = "Click Validate or Fix All to start."
+                else:
+                    num_errors = len(self._rules_model.get_errors())
+                    if num_errors <= 0:
+                        icon = SGQIcon.ValidationOk(size=SGQIcon.EXTRA_LARGE)
+                        details_text = "<br/>".join(
+                            [
+                                "<span style='font-size:24px; color:#309AFF;'>Awesome work!</span>",
+                                "",
+                                "<span style='font-size:14px;'>Success! No errors found. You're ready to publish.</span>",
+                            ]
+                        )
+                        title = "Placeholder to show a title"
+                    else:
+                        # There are errors but they are hidden by the current filters.
+                        title = "No results. Clear filters to view data."
             else:
-                msg = "No results. Clear filters to see validation data."
-            self._view_overlay_widget.show_message(msg)
+                # Showing all data
+                # The current filters must be hiding everything.
+                title = "No results. Clear filters to view data."
+
+            self._view_overlay_widget.show_message(
+                title=title, image=icon, details=details_text
+            )
 
         else:
             self._view_overlay_widget.hide()
@@ -1167,6 +1205,11 @@ class ValidationWidget(SGQWidget):
         ) = self._rules_model.get_statuses_for_rule_type()
         self._rule_types_model.set_statuses(valid, errors, incomplete)
 
+        # Update the flags around validation before emitting/triggering any signals/slots, in
+        # case they rely on these flags being updated
+        self._validation_has_run = True
+        self._is_validating_all = False
+
         # Emit signal that validation rules have been updated
         self._rules_model.emit_all_data_changed()
 
@@ -1178,8 +1221,6 @@ class ValidationWidget(SGQWidget):
 
         # Ensure the details is refreshed
         self._refresh_details()
-
-        self._is_validating_all = False
 
     def fix_rule_begin(self, rule):
         """
@@ -1329,15 +1370,18 @@ class ValidationWidget(SGQWidget):
         indexes = self._rules_view.selectionModel().selectedIndexes()
         self._set_details(indexes)
 
-    def _toggle_errors(self, show=None):
+    def _toggle_errors(self, show_errors=None):
         """
         Callback triggered to show only the validation rules with errors.
 
-        :param show: Set to True to show only errors, False to show all, and None to toggle the current state.
-        :type show: bool
+        :param show_errors: Set to True to show only errors, False to show all, and None to toggle the current state.
+        :type show_errors: bool
         """
 
-        self._rules_proxy_model.turn_on_error_filter(on=None)
+        if show_errors:
+            self._errors_toggle.setChecked(show_errors)
+
+        self._rules_proxy_model.turn_on_error_filter(on=show_errors)
 
     ######################################################################################################
     # ViewItemDelegate callback functions
