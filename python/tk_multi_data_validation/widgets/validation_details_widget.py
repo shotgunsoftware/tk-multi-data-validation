@@ -17,13 +17,13 @@ from ..utils.framework_qtwidgets import (
     GroupedItemView,
     ViewItemDelegate,
     ViewItemAction,
-    ShotgunOverlayWidget,
     SGQWidget,
     SGQLabel,
     SGQGroupBox,
     SGQPushButton,
     SGQMenu,
 )
+from .shotgrid_overlay_widget import ShotGridOverlayWidget
 
 
 class ValidationDetailsWidget(SGQWidget):
@@ -116,7 +116,7 @@ class ValidationDetailsWidget(SGQWidget):
                 )
             )
         else:
-            dependencies_text = ""
+            dependencies_text = "No dependencies."
 
         description = "<html>{desc}{space}{dependencies}</html>".format(
             desc=self.rule.description if self.show_description else "",
@@ -125,7 +125,16 @@ class ValidationDetailsWidget(SGQWidget):
         )
         self._details_description.setText(description)
 
-        self._details_item_model.initialize_data(self.rule.errors)
+        #
+        # Set up the details view
+        #
+        if self.rule.manual:
+            # No details list view for manual rules
+            self._details_item_view.hide()
+        else:
+            # Show the details list view and initialze the model data to display in the view
+            self._details_item_view.show()
+            self._details_item_model.initialize_data(self.rule.errors)
 
         #
         # Set up details action items
@@ -174,21 +183,25 @@ class ValidationDetailsWidget(SGQWidget):
         #
         # Show/hide the overlay message
         #
-        if self.rule.errors:
+        if self.rule.errors or self.rule.manual:
             self._details_item_view_overlay.hide()
         else:
-            if self.rule.manual:
-                self._details_item_view_overlay.show_message(
-                    "Validation rule must be manually checked."
+            if self.rule.valid is not None:
+                msg = "Success! No errors found."
+            elif self.rule.check_func is not None and self.rule.fix_func is not None:
+                msg = "Click {} or {} to see details.".format(
+                    self.rule.check_name,
+                    self.rule.fix_name,
                 )
-            elif self.rule.valid is not None:
-                self._details_item_view_overlay.show_message(
-                    "Check passed. No errors found."
-                )
+            elif self.rule.check_func is not None:
+                msg = "Click {} to see details.".format(self.rule.check_name)
+            elif self.rule.fix_func is not None:
+                msg = "Click {} to see details.".format(self.rule.fix_name)
             else:
-                self._details_item_view_overlay.show_message(
-                    "Run this Check to validate the scene data."
-                )
+                # We should not get here, but in case we do, just set an empty message.
+                msg = ""
+
+            self._details_item_view_overlay.show_message(msg)
 
     ######################################################################################################
     # Protected methods
@@ -203,7 +216,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details = SGQGroupBox(self)
         self._details.setMinimumWidth(200)
         self._details.setSizePolicy(
-            QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+            QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Maximum)
         )
         self._details_description = SGQLabel(self._details)
         self._details_description.setWordWrap(True)
@@ -221,7 +234,7 @@ class ValidationDetailsWidget(SGQWidget):
         )
         self._details_item_view.setModel(self._details_item_model)
         self._details_view_item_delegate = self._create_delegate()
-        self._details_item_view_overlay = ShotgunOverlayWidget(self._details_item_view)
+        self._details_item_view_overlay = ShotGridOverlayWidget(self._details_item_view)
 
         self.layout().setContentsMargins(10, 0, 0, 0)
         self.add_widgets(

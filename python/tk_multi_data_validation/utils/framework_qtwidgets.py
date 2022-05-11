@@ -29,6 +29,7 @@ overlay_widget = sgtk.platform.import_framework(
     "tk-framework-qtwidgets", "overlay_widget"
 )
 ShotgunOverlayWidget = overlay_widget.ShotgunOverlayWidget
+ShotgunSpinningWidget = overlay_widget.ShotgunSpinningWidget
 
 utils = sgtk.platform.import_framework("tk-framework-qtwidgets", "utils")
 
@@ -58,3 +59,4 @@ SGQPushButton = sg_qwidgets.SGQPushButton
 SGQMenu = sg_qwidgets.SGQMenu
 SGQSplitter = sg_qwidgets.SGQSplitter
 SGQListView = sg_qwidgets.SGQListView
+SGQFrame = sg_qwidgets.SGQFrame

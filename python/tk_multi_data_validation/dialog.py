@@ -140,7 +140,9 @@ class AppDialog(QtGui.QWidget):
 
         self._manager.notifier.validate_all_begin.connect(
             lambda: self.show_busy_popup(
-                self.VALIDATE_ID, "Validating Data...", "Please hold on."
+                self.VALIDATE_ID,
+                "Validating Scene Data...",
+                "This may take a few minutes. Thanks for waiting.",
             )
         )
         self._manager.notifier.validate_all_finished.connect(
@@ -150,8 +152,8 @@ class AppDialog(QtGui.QWidget):
         self._manager.notifier.validate_rule_begin.connect(
             lambda rule: self.show_busy_popup(
                 "{}_{}".format(self.VALIDATE_ID, rule.id),
-                "Validating Rule '{}'...".format(rule.name),
-                "Please hold on.",
+                "Validating {}...".format(rule.name),
+                "This may take a few minutes. Thanks for waiting.",
             )
         )
         self._manager.notifier.validate_rule_finished.connect(
@@ -160,7 +162,9 @@ class AppDialog(QtGui.QWidget):
 
         self._manager.notifier.resolve_all_begin.connect(
             lambda: self.show_busy_popup(
-                self.RESOLVE_ID, "Resolving Data Errors...", "Please hold on."
+                self.RESOLVE_ID,
+                "Processing Scene Data...",
+                "This may take a few minutes. Thanks for waiting.",
             )
         )
         self._manager.notifier.resolve_all_finished.connect(
