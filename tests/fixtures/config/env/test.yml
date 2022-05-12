@@ -23,7 +23,7 @@ engines:
         location:
           type: path
           path: $SHOTGUN_CURRENT_REPO_ROOT
-        hook_data_validator: "{config}/test_data_validator.py"
+        hook_data_validation: "{config}/test_data_validation.py"
         rules:
           - id: validation_rule_1
           - id: validation_rule_2

@@ -13,9 +13,17 @@ import sgtk
 HookBaseClass = sgtk.get_hook_baseclass()
 
 
-class TestDataValidatorHook(HookBaseClass):
+class AbstractDataValidationHook(HookBaseClass):
     """
-    Subclass the main abstract data validator hook.
+    Abstract hook class that defines the necessary methods for the Data Validation App to function.
+
+    This is the main hook for the App and is essential for the App to display the validation data and to
+    apply any validation actions to the DCC data. In this hook, define the data validation rules, and check
+    and fix functionality for a specific DCC.
+
+    This hook does not define any of the validation data or implement the methods itself, since the data to
+    be validated will be specific to the running DCC. This hook class must be subclassed, for example, by the
+    engine where DCC specific functionality is available.
     """
 
     def get_validation_data(self):
@@ -29,22 +37,8 @@ class TestDataValidatorHook(HookBaseClass):
 
         :return: The validation data that can be used to validate the data.
         :rtype: dict
+
+        :raises NotImplementedError: If the subclass does not implement this function.
         """
 
-        return {
-            "validation_rule_1": {
-                "name": "Rule #1",
-                "description": "This is the first test rule.",
-                "error_msg": "This is the error message",
-            },
-            "validation_rule_2": {
-                "name": "Rule #2",
-                "description": "This is the second test rule.",
-            },
-            "validation_rule_3": {
-                "name": "Rule #3",
-            },
-            "skip_rule": {
-                "name": "This rule will not be excluded by not including it in the config.",
-            },
-        }
+        raise NotImplementedError()

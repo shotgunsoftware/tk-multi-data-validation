@@ -5,11 +5,11 @@ Data Validation Hooks
 
 .. _validation-hooks-data-validator:
 
-hook_data_validator
---------------------
+hook_data_validation
+----------------------
 
-.. currentmodule:: hooks.data_validator
+.. currentmodule:: hooks.data_validation
 
-.. autoclass:: AbstractDataValidatorHook
+.. autoclass:: AbstractDataValidationHook
     :show-inheritance:
     :members:

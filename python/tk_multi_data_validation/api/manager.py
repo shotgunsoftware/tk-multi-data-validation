@@ -88,7 +88,7 @@ class ValidationManager(object):
         # Create the set of ValidationRules from the validation data retrieved.
         #
         validation_data = self._bundle.execute_hook_method(
-            "hook_data_validator", "get_validation_data"
+            "hook_data_validation", "get_validation_data"
         )
         self.__data = copy.deepcopy(validation_data)
         self.__rules_by_id = {}

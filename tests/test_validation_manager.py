@@ -149,7 +149,7 @@ def bundle_hook_methods(bundle_hook_data_validator_return_value):
     """
 
     return {
-        "hook_data_validator": {
+        "hook_data_validation": {
             "get_validation_data": bundle_hook_data_validator_return_value
         },
     }

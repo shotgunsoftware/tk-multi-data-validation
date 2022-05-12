@@ -21,7 +21,7 @@ Validation Manager
 Data
 ------------------
 
-The data drives the App display and functionality. A set of data :ref:`Validation Rules <validation-api-data-rule>` are defined by the :ref:`hook <validation-hooks-data-validator>` method :class:`hooks.data_validator.AbstractDataValidatorHook.get_validation_data`. The App will display the rule set and provide actions to related to the validation rules. See the :ref:`validation-api-data-rule` class reference for more details.
+The data drives the App display and functionality. A set of data :ref:`Validation Rules <validation-api-data-rule>` are defined by the :ref:`hook <validation-hooks-data-validator>` method :class:`hooks.data_validation.AbstractDataValidationHook.get_validation_data`. The App will display the rule set and provide actions to related to the validation rules. See the :ref:`validation-api-data-rule` class reference for more details.
 
 .. _validation-api-data-rule:
 
