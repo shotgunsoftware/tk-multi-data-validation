@@ -28,7 +28,6 @@ from tk_multi_data_validation.api import ValidationManager
 
 #########################################################################################################
 # Fixtures and mock data for ValidationManager pytests
-#########################################################################################################
 
 
 class Notifier(object):
@@ -115,7 +114,7 @@ def notifier():
 
 
 @pytest.fixture(scope="module")
-def bundle_hook_data_validator_return_value():
+def bundle_hook_data_validation_return_value():
     """
     The return value for the ValidationManager's class variable '_bundle' method
     call 'execute_hook_method("hook_scene_operation", "scan_scene")'.
@@ -140,7 +139,7 @@ def bundle_settings():
 
 
 @pytest.fixture(scope="module")
-def bundle_hook_methods(bundle_hook_data_validator_return_value):
+def bundle_hook_methods(bundle_hook_data_validation_return_value):
     """
     A mapping of hooks and their return value for the ValidationManager's class
     variable '_bundle'. The return values do not necessarily match real production
@@ -150,7 +149,7 @@ def bundle_hook_methods(bundle_hook_data_validator_return_value):
 
     return {
         "hook_data_validation": {
-            "get_validation_data": bundle_hook_data_validator_return_value
+            "get_validation_data": bundle_hook_data_validation_return_value
         },
     }
 
@@ -207,17 +206,17 @@ def manager(bundle, notifier):
 
 
 def test_manager_init_does_not_modify_hook_data(
-    bundle, bundle_hook_data_validator_return_value
+    bundle, bundle_hook_data_validation_return_value
 ):
     """
     Test the ValidationManager init does not modify the hook data used to create the rules.
     """
 
-    saved_data = copy.deepcopy(bundle_hook_data_validator_return_value)
+    saved_data = copy.deepcopy(bundle_hook_data_validation_return_value)
 
     manager = ValidationManager(bundle=bundle)
 
-    assert saved_data == bundle_hook_data_validator_return_value
+    assert saved_data == bundle_hook_data_validation_return_value
 
 
 def test_manager_init_defaults(bundle, bundle_settings):
@@ -412,7 +411,7 @@ def test_manager_init_with_include_and_exclude_rules(
     ],
 )
 def test_manager_init_with_rule_settings(
-    bundle, bundle_settings, bundle_hook_data_validator_return_value, rule_settings
+    bundle, bundle_settings, bundle_hook_data_validation_return_value, rule_settings
 ):
     """
     Test the ValidationManager constructor with the rule_settings param.
@@ -424,7 +423,7 @@ def test_manager_init_with_rule_settings(
     if not rule_settings:
         expected_rules = bundle_settings.get("rules", [])
     else:
-        rule_ids = bundle_hook_data_validator_return_value.keys()
+        rule_ids = bundle_hook_data_validation_return_value.keys()
         expected_rules = [r for r in rule_settings if r["id"] in rule_ids]
 
     assert len(manager.rules) == len(expected_rules)
@@ -433,7 +432,7 @@ def test_manager_init_with_rule_settings(
 
 
 def test_manager_create_dependencies(
-    manager, bundle_settings, bundle_hook_data_validator_return_value
+    manager, bundle_settings, bundle_hook_data_validation_return_value
 ):
     """
     Test the ValidationManager constructor creates the Validation Rules correctly.
@@ -442,11 +441,11 @@ def test_manager_create_dependencies(
     rules = bundle_settings.get("rules", [])
 
     for rule in rules:
-        if rule["id"] not in bundle_hook_data_validator_return_value:
+        if rule["id"] not in bundle_hook_data_validation_return_value:
             continue
 
         # Get the list of dependency ids from the rule data that will create the ValidationRule object
-        rule_data = bundle_hook_data_validator_return_value[rule["id"]]
+        rule_data = bundle_hook_data_validation_return_value[rule["id"]]
         dependency_ids = rule_data.get("dependency_ids", [])
 
         # Ensure we can find the ValidationRule object
