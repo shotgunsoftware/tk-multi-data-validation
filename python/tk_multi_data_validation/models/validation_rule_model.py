@@ -59,7 +59,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         A group header item for a validation rule in the ValidationRulemodel.
         """
 
-        def __init__(self, group_id, group_name, *args, **kwargs):
+        def __init__(self, group_id, group_name):
             """
             Create the ValidationRuleGroupModelItem.
 
@@ -73,9 +73,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             :type kwargs: dict
             """
 
-            super(ValidationRuleModel.ValidationRuleGroupModelItem, self).__init__(
-                *args, **kwargs
-            )
+            super(ValidationRuleModel.ValidationRuleGroupModelItem, self).__init__()
 
             self._id = group_id
             self._name = group_name
