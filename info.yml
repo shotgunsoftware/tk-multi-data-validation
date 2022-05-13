@@ -10,10 +10,10 @@
 
 configuration:
 
-    hook_data_validator:
+    hook_data_validation:
         type: hook
         description: "Define the rules for validating data in a DCC and functions to resolve data violations."
-        default_value: "{self}/data_validator.py"
+        default_value: "{self}/data_validation.py"
 
     rules:
         description: "List of validation rules for the App to enforce. Each validation item requires
