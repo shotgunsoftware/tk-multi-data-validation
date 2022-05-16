@@ -281,7 +281,9 @@ class ValidationManager(object):
 
         return is_valid
 
-    def resolve(self, pre_validate=False, post_validate=False):
+    def resolve(
+        self, pre_validate=False, post_validate=False, retry_until_success=True
+    ):
         """
         Resolve the current data violations found by the validate method.
 
@@ -295,6 +297,11 @@ class ValidationManager(object):
         :param post_validate: True will run the validation step after the resolve step, to check that
                               the scene data is valid after resolution steps applied.
         :type post_validate: bool
+        :param retry_until_success: Set to True will try to fun the resolution operation until all
+            rules have been resolved. The maximum number of tries to resolve will be equal to the
+            number of rules in the manager. This will perform post validate step, evne if post validate
+            has been set to False.
+        :type retry_until_success: bool
 
         :return: True if the resolve operation was successful, else False. Note that if the post_validate
             param is False, this will always be True, since the return status is based on the status
@@ -322,9 +329,50 @@ class ValidationManager(object):
                     self.errors.values(), fetch_dependencies=False, emit_signals=False
                 )
 
-                if post_validate:
+                if post_validate or retry_until_success:
                     # Run validation step once all resolution actions compelted to ensure everything was fixed.
                     success = self.validate()
+
+                # Brute force try to resolve all errors - keep running the resolution on any errors found
+                # from validate until there are none, or the max number of tries reached.
+                #
+                # New errors may occur if executing a rule's fix has side effects which cause another rule to
+                # have errors. For example, rule A has no dependencies, rule B depends on rule A, and rule A
+                # has errors, then only rule A's fix will be executed but it causes rule B to now have errors.
+                # Rule B's fix will not be executed though, so even though resolve all was executed, we have
+                # new errors.
+                #
+                # NOTE if this brute force method becomes slow, the resolve_rules method should be modified to
+                # look up the reverse dependencies to add to the list of rules whose fix operatoins will be
+                # executed.
+                max_retry = len(self.rules) if retry_until_success else 0
+                count = 0
+                prev_errors = set()
+                while not success and count < max_retry:
+                    if prev_errors == set(self.errors):
+                        # Nothing changed from the last attempt to resolve, stop retrying
+                        count = max_retry
+                    else:
+                        self._logger.debug("Resolve retry attempt {}".format(count))
+
+                        # Update the previous errors to the current set
+                        prev_errors = set(self.errors)
+
+                        # Attempt to resolve again
+                        self.resolve_rules(
+                            self.errors.values(),
+                            fetch_dependencies=False,
+                            emit_signals=False,
+                        )
+                        # Check for errors
+                        success = self.validate()
+                        # Update retry count
+                        count += 1
+
+                if retry_until_success and not success:
+                    self._logger.debug(
+                        "Failed to resolve after max retry attempts. There may be a rule dependecy cycle."
+                    )
 
         finally:
             if self.notifier:
@@ -380,8 +428,8 @@ class ValidationManager(object):
 
         try:
             # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
-            # through to check then check if the necessary dependencies are available to resolve first.
-            # Dependency rules may be added in the step wheere dependencies are checked.
+            # through to check then check if the necessary dependencies are available to resolve first. Any
+            # dependency rules will be added in the step wheere dependencies are checked.
             rule_ids = set()
             # Add rules to the set once they have been resolved.
             resolved = set()
