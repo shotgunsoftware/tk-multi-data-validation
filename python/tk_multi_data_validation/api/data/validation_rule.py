@@ -125,6 +125,9 @@ class ValidationRule(object):
         self._error_items = None
         # Flag indicating that the rule fix method was executed at least once
         self._fix_executed = False
+        # Runtime exceptions caught - used to display error messages
+        self._check_runtime_exception = None
+        self._fix_runtime_exception = None
 
     @property
     def id(self):
@@ -341,6 +344,44 @@ class ValidationRule(object):
 
         return [item["id"] for item in self.errors]
 
+    def get_error_messages(self):
+        """
+        Return the list of current error messages.
+
+        If there was a run time error during the check or fix function, the error messages will
+        contain these run time error messages. The default error message will not be included.
+
+        If the check and fix functions executed successfully, then return the default error
+        message for the rule (e.g. assumes if the check/fix ran successfully than if there is
+        an error, it will be due to finding actual validation errors related to the rule).
+
+        :return: The error messages.
+        :rtype: list
+        """
+
+        messages = []
+
+        if self._check_runtime_exception:
+            messages.append(
+                "Validation Error: {}".format(self._check_runtime_exception)
+            )
+
+        if self._fix_runtime_exception:
+            messages.append("Fix Error: {}".format(self._fix_runtime_exception))
+
+        if not self._check_runtime_exception and not self._fix_executed:
+            # Only include the validation error message if both check and fix functions
+            # executed successfully.
+            rule_error = self._data.get("error_msg")
+
+            if not rule_error and self.check_func:
+                rule_error = "Found errors."
+
+            if rule_error:
+                messages.append(rule_error)
+
+        return messages
+
     def get_dependency_ids(self):
         """
         Get the validation rules (ids) that this rule depends on.
@@ -376,19 +417,27 @@ class ValidationRule(object):
 
         if func:
             kwargs.update(self.kwargs)
-            result = func(*args, **kwargs)
+            try:
+                result = func(*args, **kwargs)
+                self._check_runtime_exception = None
+            except Exception as runtime_error:
+                result = None
+                self._valid = False
+                self._error_items = []
+                self._check_runtime_exception = runtime_error
 
-            # Try to set the valid and errors data properties on the rule from the result returned by
-            # the check function. If the result does not have the expected attributes, we will continue on
-            # but the rule will not be updated
-            try:
-                self._valid = result.is_valid
-            except:
-                pass
-            try:
-                self._error_items = result.errors
-            except:
-                pass
+            if result:
+                # Try to set the valid and errors data properties on the rule from the result returned by
+                # the check function. If the result does not have the expected attributes, we will continue on
+                # but the rule will not be updated
+                try:
+                    self._valid = result.is_valid
+                except:
+                    pass
+                try:
+                    self._error_items = result.errors
+                except:
+                    pass
         else:
             # This is a manual check. It is considered valid if the user has checked it off.
             self._valid = self.manual_checked
@@ -418,7 +467,11 @@ class ValidationRule(object):
             return
 
         kwargs.update(self.kwargs)
-        func(*args, **kwargs)
-
-        # The fix function was executed - set the flag to True
-        self._fix_executed = True
+        try:
+            func(*args, **kwargs)
+            self._fix_runtime_exception = None
+        except Exception as runtime_error:
+            self._fix_runtime_exception = runtime_error
+        finally:
+            # The fix function was executed - set the flag to True
+            self._fix_executed = True

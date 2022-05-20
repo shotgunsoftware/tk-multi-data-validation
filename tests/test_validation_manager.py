@@ -552,7 +552,7 @@ def test_manager_resolve_notifier_signals(bundle, notifier):
     manager.validate()
     expected_calls = [call(r) for r in manager.rules if not r.valid]
 
-    manager.resolve()
+    manager.resolve(retry_until_success=False)
 
     manager.notifier.resolve_all_begin.emit.assert_called_once()
     manager.notifier.resolve_all_finished.emit.assert_called_once()
@@ -572,7 +572,7 @@ def test_manager_resolve_with_pre_validate_notifier_signals(bundle, notifier):
 
     manager = ValidationManager(bundle, notifier=notifier)
 
-    manager.resolve(pre_validate=True)
+    manager.resolve(pre_validate=True, retry_until_success=False)
 
     manager.notifier.validate_all_begin.emit.assert_called_once()
     manager.notifier.validate_all_finished.emit.assert_called_once()

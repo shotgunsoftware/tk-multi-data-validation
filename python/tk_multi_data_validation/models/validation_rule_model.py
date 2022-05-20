@@ -227,13 +227,14 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     )
 
                 lines = []
+                error_messages = self._rule.get_error_messages()
                 if (
                     self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE)
-                    and self._rule.error_message
+                    and error_messages
                 ):
                     lines.append(
                         "<span style='color:#EB5555;'>{}</span>".format(
-                            self._rule.error_message
+                            "<br/>".join(error_messages)
                         )
                     )
                 if (
