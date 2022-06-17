@@ -94,7 +94,7 @@ class ValidationWidget(SGQWidget):
 
         self._view_mode = self.VIEW_MODE_GROUPED
         self._details_on = True
-        self._rule_type_filter_on = True
+        self._rule_type_filter_on = False
         self._group_rules_by = group_rules_by
 
         # Flag indicating whether or not eiether of the Valdiate or Fix All button have been clicked yet.
@@ -115,6 +115,12 @@ class ValidationWidget(SGQWidget):
         self._setup_models()
         self._setup_ui()
         self._connect_signals()
+
+        # -----------------------------------------------------
+        # Initialize the widget visibility
+
+        self.turn_on_rule_type_filter(self._rule_type_filter_on)
+        self._show_details()
 
         # -----------------------------------------------------
         # Initialize the widget data
@@ -355,13 +361,16 @@ class ValidationWidget(SGQWidget):
         :type validation_rule_types: list<ValidationRuleType>
         """
 
-        rule_types = validation_rule_types or []
-        if not rule_types:
-            # Not rule types provied, extract the rule types from the data
-            for rule in validation_rules:
-                rule_types.append(rule.type)
+        if self._rule_type_filter_on:
+            rule_types = validation_rule_types or []
+            if not rule_types:
+                # Not rule types provied, extract the rule types from the data
+                for rule in validation_rules:
+                    rule_types.append(rule.type)
 
-        self._rule_types_model.initialize_data(rule_types)
+            if rule_types:
+                self._rule_types_model.initialize_data(rule_types)
+
         self._rules_model.initialize_data(validation_rules)
 
     def get_active_rules(self):
