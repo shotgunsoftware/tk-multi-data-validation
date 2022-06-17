@@ -29,7 +29,13 @@ class DataValidation(sgtk.platform.Application):
         #   - ValidationManager: class provides the interface for validatin.
         #   - ValidationWidget: class provides the user interface to perform data validation
         self._manager_class = tk_multi_data_validation.ValidationManager
-        self._widget_class = tk_multi_data_validation.ValidationWidget
+        try:
+            self._widget_class = tk_multi_data_validation.ValidationWidget
+        except:
+            # Temporary work around to allow pytests to run. Unit tests do not have
+            # access to sgtk.platform.qt for QtCore and QtGui so attempting to import
+            # any classes that requires qt will fail while running tests.
+            pass
 
         cb = lambda: tk_multi_data_validation.show_dialog(self)
         self.engine.register_command(
@@ -100,6 +106,9 @@ class DataValidation(sgtk.platform.Application):
         :return: The data validation widget.
         :rtype: :class:`tk_multi_data_validation.ValidationWidget`
         """
+
+        if not self._widget_class:
+            return None
 
         return self._widget_class(parent, group_rules_by)
 
