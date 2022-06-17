@@ -9,6 +9,7 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 from .api import ValidationManager
+from .widgets import ValidationWidget
 
 
 def show_dialog(app, modal=False):

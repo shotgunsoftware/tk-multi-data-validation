@@ -24,9 +24,12 @@ class DataValidation(sgtk.platform.Application):
 
         tk_multi_data_validation = self.import_module("tk_multi_data_validation")
 
-        # the manager class provides the interface for validatin. We store a reference to it to enable the
-        # create_validation_manager method exposed on the application itself
+        # Store references to validation class objects such that other modules have access to
+        # the data validation functionality
+        #   - ValidationManager: class provides the interface for validatin.
+        #   - ValidationWidget: class provides the user interface to perform data validation
         self._manager_class = tk_multi_data_validation.ValidationManager
+        self._widget_class = tk_multi_data_validation.ValidationWidget
 
         cb = lambda: tk_multi_data_validation.show_dialog(self)
         self.engine.register_command(
@@ -82,6 +85,23 @@ class DataValidation(sgtk.platform.Application):
             notifier=notifier,
             has_ui=has_ui,
         )
+
+    def create_validation_widget(self, parent, group_rules_by=None):
+        """
+        Create the main validation widget.
+
+        This can be used to embed the data validation functionality in another App.
+
+        :param parent: The parent widget
+        :type parent: QWidget
+        :param group_rules_by: The validation rule field that the view will group rules by
+        :type group_rules_by: str
+
+        :return: The data validation widget.
+        :rtype: :class:`tk_multi_data_validation.ValidationWidget`
+        """
+
+        return self._widget_class(parent, group_rules_by)
 
     def _log_metric_viewed_app(self):
         """
