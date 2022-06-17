@@ -9,7 +9,14 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 from .api import ValidationManager
-from .widgets import ValidationWidget
+
+try:
+    from .widgets import ValidationWidget
+except:
+    # Temporary work around to allow pytests to run. Unit tests do not have
+    # access to sgtk.platform.qt for QtCore and QtGui so attempting to import
+    # any classes that requires qt will fail while running tests.
+    pass
 
 
 def show_dialog(app, modal=False):
