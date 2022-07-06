@@ -45,9 +45,9 @@ def show_dialog(app, modal=False):
         app_dialog.activateWindow()
     else:
         if modal:
-            _, widget = app.engine.show_modal("Scene Data Validation", app, AppDialog)
+            _, widget = app.engine.show_modal("Data Validation", app, AppDialog)
         else:
-            widget = app.engine.show_dialog("Scene Data Validation", app, AppDialog)
+            widget = app.engine.show_dialog("Data Validation", app, AppDialog)
 
         # Set the widget property so that we can detect if the dialog for this app
         # is already showing to avoid multiple dialogs open at one time.
