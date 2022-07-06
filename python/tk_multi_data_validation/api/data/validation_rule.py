@@ -419,25 +419,21 @@ class ValidationRule(object):
             kwargs.update(self.kwargs)
             try:
                 result = func(*args, **kwargs)
+
+                # Try to set the valid and errors data properties on the rule from the result returned by
+                # the check function. If the result does not have the expected attributes, we will continue on
+                # but the rule will not be updated
+                self._process_check_result(result)
+
+                # Set the runtime exception to None since there was no error
                 self._check_runtime_exception = None
+
             except Exception as runtime_error:
                 result = None
                 self._valid = False
                 self._error_items = []
                 self._check_runtime_exception = runtime_error
 
-            if result:
-                # Try to set the valid and errors data properties on the rule from the result returned by
-                # the check function. If the result does not have the expected attributes, we will continue on
-                # but the rule will not be updated
-                try:
-                    self._valid = result.is_valid
-                except:
-                    pass
-                try:
-                    self._error_items = result.errors
-                except:
-                    pass
         else:
             # This is a manual check. It is considered valid if the user has checked it off.
             self._valid = self.manual_checked
@@ -475,3 +471,53 @@ class ValidationRule(object):
         finally:
             # The fix function was executed - set the flag to True
             self._fix_executed = True
+
+    #########################################################################################################
+    # Protected methods
+
+    def _process_check_result(self, result):
+        """
+        Process the result returned by the validation rule check function and update the
+        validation rule based on the result.
+
+        The result can be one of:
+            - dict with required keys: 'is_valid', 'errors'
+            - object with required attributes: 'is_valid', 'errors'
+
+        :param result: The result returned by a validation rule check function.
+        :type result: dict | object
+        """
+
+        if not result:
+            return
+
+        required_fields = ("is_valid", "errors")
+
+        if isinstance(result, dict):
+            for field in required_fields:
+                if field not in result:
+                    raise ValueError(
+                        "Validation Rule check function dict result missing key '{field}'".format(
+                            field=field
+                        )
+                    )
+
+            self._valid = result["is_valid"]
+            self._error_items = result["errors"]
+
+        elif isinstance(result, object):
+            for field in required_fields:
+                if not hasattr(result, field):
+                    raise ValueError(
+                        "Validation Rule check function object result missing attribute '{field}'".format(
+                            field=field
+                        )
+                    )
+
+            self._valid = result.is_valid
+            self._error_items = result.errors
+
+        else:
+            raise TypeError(
+                "Validation Rule check function result cannot be processed."
+            )

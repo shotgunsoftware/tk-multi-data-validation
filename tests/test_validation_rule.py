@@ -42,7 +42,7 @@ def rule_data():
         "rule_2": {
             "name": "Rule #2",
             "description": "This is the second test rule.",
-            "check_func": lambda: CheckResult(False),
+            "check_func": lambda: {"is_valid": False, "errors": [1]},
         },
         "rule_3": {
             "name": "Rule #3",
@@ -159,15 +159,6 @@ def test_validadtion_rule_exec_check():
 
     success_rule_result = CheckResult(True)
     success_rule = {"check_func": MagicMock(return_value=success_rule_result)}
-    error_rule_result = CheckResult(False)
-    error_rule = {"check_func": MagicMock(return_value=error_rule_result)}
-    error_list = [1, 2, 3]
-    error_rule_with_data_result = CheckResult(False, errors=error_list)
-    error_rule_with_data = {
-        "check_func": MagicMock(return_value=error_rule_with_data_result)
-    }
-    manual_rule = {"name": "No check function provided"}
-
     rule = ValidationRule(success_rule)
     result = rule.exec_check()
     assert result == success_rule_result
@@ -175,6 +166,8 @@ def test_validadtion_rule_exec_check():
     assert not rule.errors
     success_rule["check_func"].assert_called_once()
 
+    error_rule_result = CheckResult(False)
+    error_rule = {"check_func": MagicMock(return_value=error_rule_result)}
     rule = ValidationRule(error_rule)
     result = rule.exec_check()
     assert result == error_rule_result
@@ -182,6 +175,11 @@ def test_validadtion_rule_exec_check():
     assert not rule.errors
     error_rule["check_func"].assert_called_once()
 
+    error_list = [1, 2, 3]
+    error_rule_with_data_result = CheckResult(False, errors=error_list)
+    error_rule_with_data = {
+        "check_func": MagicMock(return_value=error_rule_with_data_result)
+    }
     rule = ValidationRule(error_rule_with_data)
     result = rule.exec_check()
     assert result == error_rule_with_data_result
@@ -189,6 +187,17 @@ def test_validadtion_rule_exec_check():
     assert rule.errors == error_list
     error_rule_with_data["check_func"].assert_called_once()
 
+    dict_errors = [4, 5, 6]
+    dict_result = {"is_valid": True, "errors": dict_errors}
+    error_rule_with_dict_result = {"check_func": MagicMock(return_value=dict_result)}
+    rule = ValidationRule(error_rule_with_dict_result)
+    result = rule.exec_check()
+    assert result == dict_result
+    assert rule.valid is True
+    assert rule.errors == dict_errors
+    error_rule_with_dict_result["check_func"].assert_called_once()
+
+    manual_rule = {"name": "No check function provided"}
     rule = ValidationRule(manual_rule)
     rule.manual_checked = False
     result = rule.exec_check()
