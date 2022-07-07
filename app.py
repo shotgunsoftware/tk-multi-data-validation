@@ -39,7 +39,7 @@ class DataValidation(sgtk.platform.Application):
 
         cb = lambda: tk_multi_data_validation.show_dialog(self)
         self.engine.register_command(
-            "Scene Data Validation...", cb, {"short_name": "data_validation"}
+            "Data Validation...", cb, {"short_name": "data_validation"}
         )
 
     def show_dialog(self, modal=False):
@@ -122,7 +122,7 @@ class DataValidation(sgtk.platform.Application):
 
             EventMetric.log(
                 EventMetric.GROUP_TOOLKIT,
-                "Opened Scene Data Validation App",
+                "Opened Data Validation App",
                 log_once=False,
                 bundle=self,
             )

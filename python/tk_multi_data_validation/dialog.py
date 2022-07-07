@@ -20,7 +20,7 @@ settings = sgtk.platform.import_framework("tk-framework-shotgunutils", "settings
 
 class AppDialog(QtGui.QWidget):
     """
-    The main Scene Data Validation App dialog.
+    The main Data Validation App dialog.
     """
 
     #
