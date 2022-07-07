@@ -8,7 +8,6 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
-import copy
 from collections import deque
 
 import sgtk
@@ -42,6 +41,10 @@ class ValidationManager(object):
     ):
         """
         Initialize the validation manager from the settings data.
+
+        The hook "hook_data_validation" will be used to get the validation data for the
+        manager by calling the hook's method "get_validation_data". NOTE the data returned
+        by this hook method will be modified.
 
         :param bundle: The bundle instance for the app.
         :type bundle: TankBundle
@@ -83,17 +86,16 @@ class ValidationManager(object):
         # Default accept function is not set, which will accept all rules
         self._accept_rule_fn = None
 
-        #
-        # Retrieve the validation data from given settings or get them from the hook data validator hook.
-        # Create the set of ValidationRules from the validation data retrieved.
-        #
-        validation_data = self._bundle.execute_hook_method(
+        # Retrieve the validation data from the hook method. NOTE the data returned by this
+        # hook method will be modified
+        self.__data = self._bundle.execute_hook_method(
             "hook_data_validation", "get_validation_data"
         )
-        self.__data = copy.deepcopy(validation_data)
         self.__rules_by_id = {}
         self.__errors = {}
 
+        # Create the set of ValidationRules from the validation data and the rules defined in
+        # the settings
         rule_settings = rule_settings or self._bundle.get_setting("rules", [])
         for rule_item in rule_settings:
             rule_id = rule_item["id"]

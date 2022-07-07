@@ -1047,7 +1047,7 @@ class ValidationWidget(SGQWidget):
                 else:
                     num_errors = len(self._rules_model.get_errors())
                     if num_errors <= 0:
-                        icon = SGQIcon.ValidationOk(size=SGQIcon.EXTRA_LARGE)
+                        icon = SGQIcon.ValidationOk(size=SGQIcon.SIZE_40x40)
                         details_text = "<br/>".join(
                             [
                                 "<span style='font-size:24px; color:#309AFF;'>Awesome work!</span>",

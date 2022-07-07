@@ -205,18 +205,22 @@ def manager(bundle, notifier):
 #########################################################################################################
 
 
-def test_manager_init_does_not_modify_hook_data(
-    bundle, bundle_hook_data_validation_return_value
+def test_manager_init_updates_validation_data(
+    bundle, bundle_settings, bundle_hook_data_validation_return_value
 ):
     """
-    Test the ValidationManager init does not modify the hook data used to create the rules.
+    Test the ValidationManager init updates the data passed from the hook.
     """
 
-    saved_data = copy.deepcopy(bundle_hook_data_validation_return_value)
+    data = copy.deepcopy(bundle_hook_data_validation_return_value)
 
     manager = ValidationManager(bundle=bundle)
 
-    assert saved_data == bundle_hook_data_validation_return_value
+    if "dependency_ids" in data:
+        assert "dependencies" in data
+
+    for rule in bundle_settings.get("rules", []):
+        assert rule["id"] in data
 
 
 def test_manager_init_defaults(bundle, bundle_settings):
