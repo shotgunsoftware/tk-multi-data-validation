@@ -492,17 +492,17 @@ class ValidationWidget(SGQWidget):
         # Top toolbar
 
         # List view mode button
-        self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.ListViewMode())
+        self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.list_view_mode())
         self._view_mode_list_button.setToolTip("Compact List View")
 
         # Grouped view mode button
         self._view_mode_grouped_button = SGQToolButton(
-            self, icon=SGQIcon.GridViewMode()
+            self, icon=SGQIcon.grid_view_mode()
         )
         self._view_mode_grouped_button.setToolTip("Grouped View")
 
         # Error view mode button
-        self._errors_toggle = SGQToolButton(self, icon=SGQIcon.Toggle())
+        self._errors_toggle = SGQToolButton(self, icon=SGQIcon.toggle())
         self._errors_toggle.setObjectName("errors_toggle")
         self._errors_toggle.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self._errors_toggle.setText("  Only show validation errors")
@@ -514,7 +514,7 @@ class ValidationWidget(SGQWidget):
         self._errors_label = SGQLabel(self)
 
         # Details button
-        self._details_button = SGQToolButton(self, icon=SGQIcon.Info())
+        self._details_button = SGQToolButton(self, icon=SGQIcon.info())
         self._details_button.setToolTip("Show/Hide Details Panel")
 
         # Filter text search bar
@@ -745,7 +745,7 @@ class ValidationWidget(SGQWidget):
         delegate.add_action(
             {
                 "type": ViewItemAction.TYPE_PUSH_BUTTON,
-                "icon": SGQIcon.TreeArrow(),
+                "icon": SGQIcon.tree_arrow(),
                 "show_always": True,
                 "features": QtGui.QStyleOptionButton.Flat,
                 "get_data": get_expand_action_data,
@@ -1047,7 +1047,7 @@ class ValidationWidget(SGQWidget):
                 else:
                     num_errors = len(self._rules_model.get_errors())
                     if num_errors <= 0:
-                        icon = SGQIcon.ValidationOk(size=SGQIcon.SIZE_40x40)
+                        icon = SGQIcon.validation_ok(size=SGQIcon.SIZE_40x40)
                         details_text = "<br/>".join(
                             [
                                 "<span style='font-size:24px; color:#309AFF;'>Awesome work!</span>",
