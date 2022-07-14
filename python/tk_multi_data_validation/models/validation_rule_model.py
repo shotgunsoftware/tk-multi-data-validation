@@ -433,9 +433,9 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         self._hierarchical = True
 
         # Status icons
-        self._error_status_icon = SGQIcon.ValidationError()
-        self._warning_status_icon = SGQIcon.ValidationWarning()
-        self._ok_status_icon = SGQIcon.ValidationOk()
+        self._error_status_icon = SGQIcon.validation_error()
+        self._warning_status_icon = SGQIcon.validation_warning()
+        self._ok_status_icon = SGQIcon.validation_ok()
 
         # Add additional roles defined by the ViewItemRolesMixin class.
         self.NEXT_AVAILABLE_ROLE = self.initialize_roles(self.NEXT_AVAILABLE_ROLE)
