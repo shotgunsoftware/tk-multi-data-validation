@@ -31,6 +31,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_TYPE_ID_ROLE,
         RULE_TYPE_ROLE,
         RULE_ITEM_ROLE,
+        RULE_ITEMS_ROLE,
         RULE_ITEM_ID_ROLE,
         RULE_CHECK_NAME_ROLE,
         RULE_CHECK_FUNC_ROLE,
@@ -46,7 +47,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_MANUAL_CHECK_STATE_ROLE,
         RULE_STATUS_ICON_ROLE,
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 22)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 23)
 
     #
     # Signals
@@ -94,11 +95,20 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.IS_GROUP_ITEM_ROLE:
                 return True
 
+            if role == ValidationRuleModel.GROUP_ITEM_ID_ROLE:
+                return self._id
+
             if role == ValidationRuleModel.IS_RULE_ITEM_ROLE:
                 return False
 
-            if role == ValidationRuleModel.GROUP_ITEM_ID_ROLE:
-                return self._id
+            if role == ValidationRuleModel.RULE_ITEMS_ROLE:
+                return self._get_rules()
+
+            if role == ValidationRuleModel.RULE_CHECK_NAME_ROLE:
+                return "Validate {} Items".format(self._name)
+
+            if role == ValidationRuleModel.RULE_FIX_NAME_ROLE:
+                return "Fix {} Items".format(self._name)
 
             if role == ValidationRuleModel.VIEW_ITEM_HEADER_ROLE:
                 return self._name
@@ -138,6 +148,17 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             return super(ValidationRuleModel.ValidationRuleGroupModelItem, self).data(
                 role
             )
+
+        def _get_rules(self):
+            """Return the list of ValidationRule objects that belong to this grouping."""
+
+            rules = []
+
+            for row in range(self.rowCount()):
+                child = self.child(row)
+                rules.append(child.data(ValidationRuleModel.RULE_ITEM_ROLE))
+
+            return rules
 
     class ValidationRuleModelItem(QtGui.QStandardItem):
         """
