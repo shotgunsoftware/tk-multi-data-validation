@@ -970,9 +970,14 @@ class ValidationWidget(SGQWidget):
             actions.append(action)
 
         # Add action to show details for the item that the context menu is shown for.
-        show_details_action = QtGui.QAction("Show Details")
-        show_details_action.triggered.connect(lambda: self._show_details(show=True))
-        actions.append(show_details_action)
+        is_details_visible = self._details_widget.isVisible()
+        toggle_details_action = QtGui.QAction(
+            "Hide Details" if is_details_visible else "Show Details"
+        )
+        toggle_details_action.triggered.connect(
+            lambda: self._show_details(show=not is_details_visible)
+        )
+        actions.append(toggle_details_action)
 
         # Create the menu, add the actions and show it
         menu = SGQMenu(self)
