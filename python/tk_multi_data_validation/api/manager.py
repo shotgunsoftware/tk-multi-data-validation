@@ -257,6 +257,9 @@ class ValidationManager(object):
         :rtype: bool
         """
 
+        if not rule:
+            return
+
         if emit_signals and self.notifier:
             # Emit a signal to notify that a specifc rule has started validation
             self.notifier.validate_rule_begin.emit(rule)
