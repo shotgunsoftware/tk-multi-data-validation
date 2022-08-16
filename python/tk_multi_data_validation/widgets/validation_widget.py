@@ -1033,9 +1033,7 @@ class ValidationWidget(SGQWidget):
             self.fix_rule_finished(rule)
 
     def _update_view_overlay(self):
-        """
-        Update the main rules view overlay widget.
-        """
+        """Update the main rules view overlay widget."""
 
         if self._rules_model.rowCount() <= 0:
             self._view_overlay_widget.show_message("No data.")
