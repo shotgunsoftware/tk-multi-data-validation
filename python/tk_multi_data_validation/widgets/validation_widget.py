@@ -467,6 +467,7 @@ class ValidationWidget(SGQWidget):
         self._rules_view.setMinimumWidth(300)
         self._rules_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._rules_view.setMouseTracking(True)
+        self._rules_view.group_items_selectable = True
         self._rules_view.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self._rules_view.setModel(self._rules_proxy_model)
         self._rules_delegate = self._create_rules_delegate()
@@ -831,7 +832,6 @@ class ValidationWidget(SGQWidget):
             self._view_mode_list_button.setChecked(True)
             self._view_mode_grouped_button.setChecked(False)
             self._rules_model.hierarchical = False
-            self._rules_view.group_items_selectable = True
             self._rules_view.group_spacing = 30
             self._details_widget.show_description = True
 
@@ -843,7 +843,6 @@ class ValidationWidget(SGQWidget):
             self._view_mode_grouped_button.setChecked(True)
             self._view_mode_list_button.setChecked(False)
             self._rules_model.hierarchical = True
-            self._rules_view.group_items_selectable = False
             self._rules_view.group_spacing = 4
             self._details_widget.show_description = False
 
