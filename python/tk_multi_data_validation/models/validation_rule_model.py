@@ -106,6 +106,15 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.RULE_FIX_NAME_ROLE:
                 return "Fix {}".format(self._name)
 
+            if role == ValidationRuleModel.RULE_VALIDATION_RAN:
+                # Group items say validation has already ran if any single child item
+                # validation has executed
+                for row in range(self.rowCount()):
+                    child_item = self.child(row)
+                    if child_item.data(ValidationRuleModel.RULE_VALIDATION_RAN):
+                        return True
+                return False
+
             if role == ValidationRuleModel.VIEW_ITEM_HEADER_ROLE:
                 return self._name
 
