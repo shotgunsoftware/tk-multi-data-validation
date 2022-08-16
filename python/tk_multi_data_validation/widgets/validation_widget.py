@@ -1438,9 +1438,14 @@ class ValidationWidget(SGQWidget):
             index, QtGui.QItemSelectionModel.ClearAndSelect
         )
 
-        # Get the ValidationRule object for the index
-        rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self.on_validate_rule(rule, refresh_details=True)
+        # Get the ValidationRule objects for the index
+        rules = index.data(ValidationRuleModel.RULE_ITEM_ROLE) or index.data(
+            ValidationRuleModel.RULE_ITEMS_ROLE
+        )
+        if not isinstance(rules, list):
+            rules = [rules]
+
+        self.on_validate_rule(rules, refresh_details=True)
 
     @wait_cursor
     def rule_fix_action_callback(self, view, index, pos):
@@ -1461,8 +1466,13 @@ class ValidationWidget(SGQWidget):
         )
 
         # Get the ValidationRule object for the index
-        rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self.on_fix_rule(rule)
+        rules = index.data(ValidationRuleModel.RULE_ITEM_ROLE) or index.data(
+            ValidationRuleModel.RULE_ITEMS_ROLE
+        )
+        if not isinstance(rules, list):
+            rules = [rules]
+
+        self.on_fix_rule(rules)
 
 
 #############################################################################################################
