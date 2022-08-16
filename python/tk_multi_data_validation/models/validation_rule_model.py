@@ -105,10 +105,10 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 return self._get_rules()
 
             if role == ValidationRuleModel.RULE_CHECK_NAME_ROLE:
-                return "Validate {} Items".format(self._name)
+                return "Validate {}".format(self._name)
 
             if role == ValidationRuleModel.RULE_FIX_NAME_ROLE:
-                return "Fix {} Items".format(self._name)
+                return "Fix {}".format(self._name)
 
             if role == ValidationRuleModel.VIEW_ITEM_HEADER_ROLE:
                 return self._name
