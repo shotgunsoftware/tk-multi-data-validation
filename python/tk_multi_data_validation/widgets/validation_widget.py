@@ -103,7 +103,9 @@ class ValidationWidget(SGQWidget):
         self._is_validating_all = False
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
-        # Set these callbacks to the default validate and fix methods
+        # The default methods to validate and fix all will be initialized. If a ValidationManager
+        # is being used to manage the validation data, then override these callbacks with the
+        # ValidationManager specific validate and fix functions.
         self._validate_all_callback = self._validate_rules
         self._validate_rule_callback = lambda rule: self._validate_rules([rule])
         self._fix_all_callback = self._fix_rules

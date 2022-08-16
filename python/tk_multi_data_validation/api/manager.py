@@ -198,9 +198,13 @@ class ValidationManager(object):
 
     def validate(self, emit_signals=True):
         """
-        Validate the DCC data by executing all validation rule check functions.
+        Validate the data by executing all validation rule check functions.
 
-        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.
+        This method will reset the current validation manager state before validating any
+        rules. This means that any errors found on a previous validation operation will be
+        removed.
+
+        :param emit_signals: True will emit notifier signals when validation begins and ends.
         :param emit_signals: bool
 
         :return: True if all validation rule checks passed (data is valid), else False.
@@ -225,9 +229,17 @@ class ValidationManager(object):
         """
         Validate the given list of rules.
 
+        This method will not reset the current validation manager state. This means that
+        if a rule was found to have errors and it is not processed in this validation
+        operation, than the error will remain.
+
+        If the `accept_rule_fn` function is defined, only rules that are accepted by the
+        function will be validated. If the `accept_rule_fn` is not defiend, then all given
+        rules will be validated.
+
         :param rules: The list of rules.
         :type rules: list<ValidationRule>
-        :param emit_signals: Set to True to emit notifier signals for validation begin and finished.
+        :param emit_signals: True will emit notifier signals when validation begins and ends.
         :param emit_signals: bool
         """
 
@@ -244,7 +256,7 @@ class ValidationManager(object):
 
     def validate_rule(self, rule, emit_signals=True):
         """
-        Validate the DCC data with the given rule.
+        Validate the data with the given rule.
 
         The check function executed to validate the DCC data is implemented by the ValidationRule (e.g. the
         manager does nothing to validate the data, it is just responsible for executing the validate
