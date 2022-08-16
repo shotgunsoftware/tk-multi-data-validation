@@ -237,11 +237,15 @@ class ValidationManager(object):
         function will be validated. If the `accept_rule_fn` is not defiend, then all given
         rules will be validated.
 
-        :param rules: The list of rules.
-        :type rules: list<ValidationRule>
+        :param rules: The list of rules to validate. This method will also accept a single
+            validation object.
+        :type rules: list<ValidationRule> | ValidationRule
         :param emit_signals: True will emit notifier signals when validation begins and ends.
         :param emit_signals: bool
         """
+
+        if isinstance(rules, ValidationRule):
+            rules = [rules]
 
         if emit_signals and self.notifier:
             self.notifier.validate_all_begin.emit()

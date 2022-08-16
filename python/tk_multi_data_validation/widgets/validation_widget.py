@@ -14,11 +14,12 @@ from sgtk.platform.qt import QtCore, QtGui
 from .list_view_auto_height import ListViewAutoHeight
 from .validation_details_widget import ValidationDetailsWidget
 from ..api.data.validation_rule_type import ValidationRuleType
+from ..api.data.validation_rule import ValidationRule
 from ..models.validation_rule_model import ValidationRuleModel
 from ..models.validation_rule_type_model import ValidationRuleTypeModel
 from ..models.validation_rule_proxy_model import ValidationRuleProxyModel
-from ..utils.framework_qtwidgets import SGQIcon
 from .shotgrid_overlay_widget import ShotGridOverlayWidget
+from ..utils.exceptions import DataValidationError
 from ..utils.framework_qtwidgets import (
     FilterMenu,
     FilterMenuButton,
@@ -32,6 +33,7 @@ from ..utils.framework_qtwidgets import (
     SGQSplitter,
     SGQMenu,
     SGQLabel,
+    SGQIcon,
 )
 from ..utils.decorators import wait_cursor
 
@@ -107,9 +109,9 @@ class ValidationWidget(SGQWidget):
         # is being used to manage the validation data, then override these callbacks with the
         # ValidationManager specific validate and fix functions.
         self._validate_all_callback = self._validate_rules
-        self._validate_rule_callback = lambda rule: self._validate_rules([rule])
+        self._validate_rules_callback = self._validate_rules
         self._fix_all_callback = self._fix_rules
-        self._fix_rule_callback = lambda rule: self._fix_rules([rule])
+        self._fix_rules_callback = self._fix_rules
 
         # -----------------------------------------------------
         # Set up the UI
@@ -175,18 +177,18 @@ class ValidationWidget(SGQWidget):
         return self._publish_button
 
     @property
-    def validate_rule_callback(self):
+    def validate_rules_callback(self):
         """
         Get or set the custom callback triggered when the validate button is clicked.
 
-        This property must be a function that accepts a single parameter that is a list of ValidationRule
-        objects.
+        This property must be a function that accepts a single parameter that is a
+        ValidationRule object or a list of ValidationRule objects.
         """
-        return self._validate_rule_callback
+        return self._validate_rules_callback
 
-    @validate_rule_callback.setter
-    def validate_rule_callback(self, cb):
-        self._validate_rule_callback = cb
+    @validate_rules_callback.setter
+    def validate_rules_callback(self, cb):
+        self._validate_rules_callback = cb
 
     @property
     def validate_all_callback(self):
@@ -217,18 +219,18 @@ class ValidationWidget(SGQWidget):
         self._fix_all_callback = cb
 
     @property
-    def fix_rule_callback(self):
+    def fix_rules_callback(self):
         """
         Get or set the custom callback triggered when the fix button is clicked.
 
-        This property must be a function that accepts a single parameter that is a list of ValidationRule
-        objects.
+        This property must be a function that accepts a single parameter that is a single
+        ValiationRule object or a list of ValidationRule objects.
         """
-        return self._fix_rule_callback
+        return self._fix_rules_callback
 
-    @fix_rule_callback.setter
-    def fix_rule_callback(self, cb):
-        self._fix_rule_callback = cb
+    @fix_rules_callback.setter
+    def fix_rules_callback(self, cb):
+        self._fix_rules_callback = cb
 
     #########################################################################################################
     # Public methods
@@ -666,9 +668,9 @@ class ValidationWidget(SGQWidget):
         # Details widget signals
         #
         self._details_widget.request_validate_data.connect(
-            lambda rule: self.on_validate_rule(rule, refresh_details=True)
+            lambda rule: self.on_validate_rules(rule, refresh_details=True)
         )
-        self._details_widget.request_fix_data.connect(self.on_fix_rule)
+        self._details_widget.request_fix_data.connect(self.on_fix_rules)
         self._details_widget.about_to_execute_action.connect(
             self.details_about_to_execute_action
         )
@@ -1106,32 +1108,52 @@ class ValidationWidget(SGQWidget):
         self.fix_all_callback(active_rules)
 
     @wait_cursor
-    def on_validate_rule(self, rule, refresh_details=False):
+    def on_validate_rules(self, rules, refresh_details=False):
         """
-        Callback triggered to validate a specific rule.
+        Callback triggered to validate a specific set of rules.
 
-        :param rule: The validation rule to run the check function for.
-        :type rule: VaildationRule
-        :param refresh_details: Set to True to refresh the details widget after the validation.
+        :param rule: The validation rule or list of rules to validate.
+        :type rule: VaildationRule | list<ValidationRule>
+        :param refresh_details: Set to True to refresh the details widget after validation.
         :type refresh_details: bool
         """
 
-        self.validate_rule_callback(rule)
+        if isinstance(rules, ValidationRule):
+            rules = [rules]
+
+        if not isinstance(rules, (list, tuple)):
+            raise DataValidationError(
+                "Rules passed to validate must be a list or tuple."
+            )
+
+        if not self.validate_rules_callback:
+            raise DataValidationError("Validation rules callback not defined.")
+
+        self.validate_rules_callback(rules)
 
         if refresh_details:
             # Refresh the details since its data may have changed
             self._refresh_details()
 
     @wait_cursor
-    def on_fix_rule(self, rule):
+    def on_fix_rules(self, rules):
         """
-        Callback triggered to fix a specific rule.
+        Callback triggered to fix a specific set of rules.
 
-        :param rule: The validation rule to run the fix function for.
-        :type rule: VaildationRule
+        :param rule: The validation rule or list of rules to fix.
+        :type rule: VaildationRule | list<ValidationRule>
         """
 
-        self.fix_rule_callback(rule)
+        if isinstance(rules, ValidationRule):
+            rules = [rules]
+
+        if not isinstance(rules, (list, tuple)):
+            raise DataValidationError("Rules passed to fix must be a list or tuple.")
+
+        if not self.fix_rules_callback:
+            raise DataValidationError("Fix rules callback not defined.")
+
+        self.fix_rules_callback(rules)
 
     def validate_rule_begin(self, rule):
         """
@@ -1286,7 +1308,7 @@ class ValidationWidget(SGQWidget):
         """
 
         rule = index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-        self.on_validate_rule(rule, refresh_details=True)
+        self.on_validate_rules(rule, refresh_details=True)
 
     def _on_search_text_changed(self):
         """
@@ -1440,10 +1462,8 @@ class ValidationWidget(SGQWidget):
         rules = index.data(ValidationRuleModel.RULE_ITEM_ROLE) or index.data(
             ValidationRuleModel.RULE_ITEMS_ROLE
         )
-        if not isinstance(rules, list):
-            rules = [rules]
 
-        self.on_validate_rule(rules, refresh_details=True)
+        self.on_validate_rules(rules, refresh_details=True)
 
     @wait_cursor
     def rule_fix_action_callback(self, view, index, pos):
@@ -1467,10 +1487,8 @@ class ValidationWidget(SGQWidget):
         rules = index.data(ValidationRuleModel.RULE_ITEM_ROLE) or index.data(
             ValidationRuleModel.RULE_ITEMS_ROLE
         )
-        if not isinstance(rules, list):
-            rules = [rules]
 
-        self.on_fix_rule(rules)
+        self.on_fix_rules(rules)
 
 
 #############################################################################################################
