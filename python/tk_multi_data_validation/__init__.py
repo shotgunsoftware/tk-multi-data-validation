@@ -8,6 +8,7 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
+from .dialog import AppDialog
 from .api import ValidationManager
 
 try:
@@ -52,3 +53,5 @@ def show_dialog(app, modal=False):
         # Set the widget property so that we can detect if the dialog for this app
         # is already showing to avoid multiple dialogs open at one time.
         widget.setProperty("app_name", app.name)
+
+    return widget
