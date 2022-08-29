@@ -67,9 +67,9 @@ class ValidationRule(object):
             warn_msg
                 :type: str
                 :description: Text that describes the warning for this rule.
-            kwargs
-                :type: dict
-                :description: The keyword arguments to pass to the check and fix functions.
+            get_kwargs
+                :type: function
+                :description: A function that returns a dictionary of keyword arguments to pass to the check and fix functions.
             actions
                 :type: list<dict>
                 :description: A list of actions that can be applied to the data to resolve any errors for this rule.
@@ -258,9 +258,9 @@ class ValidationRule(object):
         return self._data.get("fix_func")
 
     @property
-    def kwargs(self):
-        """Get the extra keyword arguments dict to pass to the check and fix functions."""
-        return self._data.get("kwargs", {})
+    def get_kwargs(self):
+        """Get the function that returns the extra keyword arguments dict to pass to the check and fix functions."""
+        return self._data.get("get_kwargs", lambda: {})
 
     @property
     def actions(self):
@@ -416,7 +416,7 @@ class ValidationRule(object):
         func = self.check_func
 
         if func:
-            kwargs.update(self.kwargs)
+            kwargs.update(self.get_kwargs())
             try:
                 result = func(*args, **kwargs)
 
@@ -462,7 +462,7 @@ class ValidationRule(object):
         if not func:
             return
 
-        kwargs.update(self.kwargs)
+        kwargs.update(self.get_kwargs())
         try:
             func(*args, **kwargs)
             self._fix_runtime_exception = None
