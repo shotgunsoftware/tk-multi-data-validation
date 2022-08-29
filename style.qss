@@ -16,7 +16,8 @@ SGQToolButton
   outline: none;
   padding: 4px;
 }
-SGQToolButton:checked,
+SGQToolButton#view_mode_list_button:checked,
+SGQToolButton#view_mode_grouped_button:checked,
 SGQToolButton:hover
 {
   background-color: palette(light);
