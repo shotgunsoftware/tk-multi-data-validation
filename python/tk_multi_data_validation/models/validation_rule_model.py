@@ -17,36 +17,35 @@ from ..utils.framework_qtwidgets import SGQIcon, ViewItemRolesMixin
 
 
 class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
-    """
-    A model to manage validation rules data.
-    """
+    """A model to manage validation rules data."""
 
     # Additional data roles defined for the model
     _BASE_ROLE = QtCore.Qt.UserRole + 1
     (
         CHECKBOX_ICON_ROLE,  # Icon used to draw the checkbox (e.g. for toggle buttons that Qt does not support)
-        IS_GROUP_ITEM_ROLE,
-        IS_RULE_ITEM_ROLE,
-        GROUP_ITEM_ID_ROLE,
-        RULE_TYPE_ID_ROLE,
-        RULE_TYPE_ROLE,
-        RULE_ITEM_ROLE,
-        RULE_ITEM_ID_ROLE,
-        RULE_CHECK_NAME_ROLE,
-        RULE_CHECK_FUNC_ROLE,
-        RULE_FIX_NAME_ROLE,
-        RULE_FIX_FUNC_ROLE,
+        IS_GROUP_ITEM_ROLE,  # True if item is a group, else False
+        IS_RULE_ITEM_ROLE,  # True if item represents a rule (non-group), else False
+        GROUP_ITEM_ID_ROLE,  # The unique ID for the group
+        RULE_TYPE_ID_ROLE,  # The rule type ID for the item
+        RULE_TYPE_ROLE,  # The rule type object for the item
+        RULE_ITEM_ROLE,  # The rule object for this item
+        RULE_ITEMS_ROLE,  # The rule objects for this group item
+        RULE_ITEM_ID_ROLE,  # The ID for the rule object (only if RULE_ITEM_ROLE is valid)
+        RULE_CHECK_NAME_ROLE,  # The name for the validation operation of the rule(s)
+        RULE_CHECK_FUNC_ROLE,  # The validation function for the rule(s)
+        RULE_FIX_NAME_ROLE,  # The name of the fix operation of the rule(s)
+        RULE_FIX_FUNC_ROLE,  # The fix function for the rule(s)
         RULE_VALIDATION_RAN,  # False if the rule check function has never been executed, else True
         RULE_FIX_RAN,  # False if the rule fix function has never been executed, else True
-        RULE_VALID_ROLE,
-        RULE_HAS_ERROR_ROLE,
-        RULE_ACTIONS_ROLE,
-        RULE_ITEM_ACTIONS_ROLE,
-        RULE_ERROR_ITEMS_ROLE,
-        RULE_MANUAL_CHECK_STATE_ROLE,
-        RULE_STATUS_ICON_ROLE,
+        RULE_VALID_ROLE,  # True if the last time the rule was validated, it was successful
+        RULE_HAS_ERROR_ROLE,  # True if the last time the rule was validated, it was not successful
+        RULE_ACTIONS_ROLE,  # Action items that can be executed against the rule
+        RULE_ITEM_ACTIONS_ROLE,  # Action items that can be executed against the individual errors found for the rule
+        RULE_ERROR_ITEMS_ROLE,  # The data that is found to have validation errors
+        RULE_MANUAL_CHECK_STATE_ROLE,  # True if the rule is a manual check
+        RULE_STATUS_ICON_ROLE,  # The status icon for the current state of the rule
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 22)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 23)
 
     #
     # Signals
@@ -55,9 +54,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     rule_check_state_changed = QtCore.Signal(ValidationRule, QtCore.Qt.CheckState)
 
     class ValidationRuleGroupModelItem(QtGui.QStandardItem):
-        """
-        A group header item for a validation rule in the ValidationRulemodel.
-        """
+        """A group header item for a validation rule in the ValidationRulemodel."""
 
         def __init__(self, group_id, group_name):
             """
@@ -94,11 +91,29 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.IS_GROUP_ITEM_ROLE:
                 return True
 
+            if role == ValidationRuleModel.GROUP_ITEM_ID_ROLE:
+                return self._id
+
             if role == ValidationRuleModel.IS_RULE_ITEM_ROLE:
                 return False
 
-            if role == ValidationRuleModel.GROUP_ITEM_ID_ROLE:
-                return self._id
+            if role == ValidationRuleModel.RULE_ITEMS_ROLE:
+                return self._get_rules()
+
+            if role == ValidationRuleModel.RULE_CHECK_NAME_ROLE:
+                return "Validate {}".format(self._name)
+
+            if role == ValidationRuleModel.RULE_FIX_NAME_ROLE:
+                return "Fix {}".format(self._name)
+
+            if role == ValidationRuleModel.RULE_VALIDATION_RAN:
+                # Group items say validation has already ran if any single child item
+                # validation has executed
+                for row in range(self.rowCount()):
+                    child_item = self.child(row)
+                    if child_item.data(ValidationRuleModel.RULE_VALIDATION_RAN):
+                        return True
+                return False
 
             if role == ValidationRuleModel.VIEW_ITEM_HEADER_ROLE:
                 return self._name
@@ -139,10 +154,24 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 role
             )
 
+        def _get_rules(self):
+            """
+            Return the list of validation rules of the child items in this grouping.
+
+            :return: The list of validation rule objects.
+            :rtype: list<ValidationRule>
+            """
+
+            rules = []
+
+            for row in range(self.rowCount()):
+                child = self.child(row)
+                rules.append(child.data(ValidationRuleModel.RULE_ITEM_ROLE))
+
+            return rules
+
     class ValidationRuleModelItem(QtGui.QStandardItem):
-        """
-        An item for validation rule data in the ValidationRuleModel.
-        """
+        """An item for validation rule data in the ValidationRuleModel."""
 
         def __init__(self, rule=None):
             """
