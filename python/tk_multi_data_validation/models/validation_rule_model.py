@@ -40,7 +40,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_VALID_ROLE,  # True if the last time the rule was validated, it was successful
         RULE_HAS_ERROR_ROLE,  # True if the last time the rule was validated, it was not successful
         RULE_ACTIONS_ROLE,  # Action items that can be executed against the rule
-        RULE_ITEM_ACTIONS_ROLE,  # Action items taht can be executed against the individual errors found for the rule
+        RULE_ITEM_ACTIONS_ROLE,  # Action items that can be executed against the individual errors found for the rule
         RULE_ERROR_ITEMS_ROLE,  # The data that is found to have validation errors
         RULE_MANUAL_CHECK_STATE_ROLE,  # True if the rule is a manual check
         RULE_STATUS_ICON_ROLE,  # The status icon for the current state of the rule
