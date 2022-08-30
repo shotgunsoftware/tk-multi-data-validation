@@ -372,9 +372,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     # Not status to report if the rule has not been validated yet
                     return None
 
-                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
-                    return self.model().error_status_icon
-
                 # TODO revist this special case handling for rules that do not have an automated validate
                 # function, but do have an autoamted fix (semi-automated)
                 if not self._rule.manual and not self._rule.check_func:
@@ -389,6 +386,10 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
                 if self.data(ValidationRuleModel.RULE_VALID_ROLE):
                     return self.model().ok_status_icon
+
+                # Check for errors after warning status has been checked
+                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self.model().error_status_icon
 
                 return None
 
