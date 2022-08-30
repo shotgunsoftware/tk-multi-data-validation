@@ -145,7 +145,7 @@ class ValidationRuleDetailsModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 return self._details.get("name")
 
             if role == ValidationRuleDetailsModel.VIEW_ITEM_SUBTITLE_ROLE:
-                return None
+                return self._details.get("type")
 
             if role == ValidationRuleDetailsModel.VIEW_ITEM_TEXT_ROLE:
                 return None
