@@ -8,10 +8,10 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
-from .dialog import AppDialog
 from .api import ValidationManager
 
 try:
+    from .dialog import AppDialog
     from .widgets import ValidationWidget
 except:
     # Temporary work around to allow pytests to run. Unit tests do not have
@@ -26,9 +26,6 @@ def show_dialog(app, modal=False):
 
     :param app: The parent App
     """
-
-    # defer imports so that the app works gracefully in batch modes
-    from .dialog import AppDialog
 
     # Check if the App is already showing
     app_dialog = None
