@@ -498,12 +498,14 @@ class ValidationWidget(SGQWidget):
 
         # List view mode button
         self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.list_view_mode())
+        self._view_mode_list_button.setObjectName("view_mode_list_button")
         self._view_mode_list_button.setToolTip("Compact List View")
 
         # Grouped view mode button
         self._view_mode_grouped_button = SGQToolButton(
             self, icon=SGQIcon.grid_view_mode()
         )
+        self._view_mode_grouped_button.setObjectName("view_mode_grouped_button")
         self._view_mode_grouped_button.setToolTip("Grouped View")
 
         # Error view mode button

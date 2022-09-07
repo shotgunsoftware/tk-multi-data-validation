@@ -24,6 +24,10 @@ class DataValidation(sgtk.platform.Application):
 
         tk_multi_data_validation = self.import_module("tk_multi_data_validation")
 
+        # Keep track of the dialog and panel widgets for this app
+        self._current_dialog = None
+        self._current_panel = None
+
         # Store references to validation class objects such that other modules have access to
         # the data validation functionality
         #   - ValidationManager: class provides the interface for validatin.
@@ -37,9 +41,14 @@ class DataValidation(sgtk.platform.Application):
             # any classes that requires qt will fail while running tests.
             pass
 
-        cb = lambda: tk_multi_data_validation.show_dialog(self)
+        # Register the app as a panel.
+        self._unique_panel_id = self.engine.register_panel(self.create_panel)
+
+        # Register a menu entry on the ShotGrid menu so that users can launch the panel.
         self.engine.register_command(
-            "Data Validation...", cb, {"short_name": "data_validation"}
+            "Data Validation...",
+            self.create_panel,
+            {"type": "panel", "short_name": "data_validation"},
         )
 
     def show_dialog(self, modal=False):
@@ -51,7 +60,54 @@ class DataValidation(sgtk.platform.Application):
         """
 
         tk_multi_data_validation = self.import_module("tk_multi_data_validation")
-        tk_multi_data_validation.show_dialog(self, modal)
+        return tk_multi_data_validation.show_dialog(self, modal)
+
+    def create_dialog(self):
+        """
+        Show the app as a dialog.
+
+        Contrary to the create_panel() method, multiple calls to this method will result in
+        multiple windows appearing.
+
+        :returns: The widget associated with the dialog.
+        :rtype: AppDialog
+        """
+
+        widget = self.show_dialog()
+        self._current_dialog = widget
+
+        return widget
+
+    def create_panel(self):
+        """
+        Shows the app as a panel.
+
+        Note that since panels are singletons by nature, calling this more than once will only
+        result in one panel.
+
+        :returns: The widget associated with the panel.
+        :rtype: AppDialog
+        """
+
+        tk_multi_data_validation = self.import_module("tk_multi_data_validation")
+
+        try:
+            widget = self.engine.show_panel(
+                self._unique_panel_id,
+                "Data Validation",
+                self,
+                tk_multi_data_validation.AppDialog,
+            )
+        except AttributeError as e:
+            self.log_warning(
+                "Could not execute show_panel method - please upgrade "
+                "to latest core and engine! Falling back on show_dialog. "
+                "Error: %s" % e
+            )
+            widget = self.create_dialog()
+
+        self._current_panel = widget
+        return widget
 
     def create_validation_manager(
         self,
@@ -129,3 +185,21 @@ class DataValidation(sgtk.platform.Application):
         except:
             # Ignore all errors, e.g. using a core that does not support metrics.
             pass
+
+    def _on_dialog_close(self, dialog):
+        """
+        Callback called by the panel dialog whenever it is about to close.
+
+        Clear the stored references to the dialog, if it is one of the app dialogs.
+
+        :param dialog: The dialog that is about to close.
+        :type dialog: QtGui.QDialog
+        """
+
+        if dialog == self._current_dialog:
+            self.log_debug("Current dialog has been closed, clearing reference.")
+            self._current_dialog = None
+
+        elif dialog == self._current_panel:
+            self.log_debug("Current panel has been closed, clearing reference.")
+            self._current_panel = None

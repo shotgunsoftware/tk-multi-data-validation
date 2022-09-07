@@ -340,9 +340,18 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return False
 
                 if not self._rule.manual and not self._rule.check_func:
-                    # Special case for rule that do not have a check func, but have a fix func:
-                    # Show as an error if its fix has never been executed
-                    return not self._rule.fix_executed
+                    # Special case for rules that do not have a check func, but have a fix func:
+                    # Show as error if its fix has never been executed or there are error messages
+                    # set from running the fix
+                    if not self._rule.fix_executed:
+                        return True
+
+                    error_messages = self._rule.get_error_messages()
+                    if error_messages:
+                        return True
+
+                    # Found no errors
+                    return False
 
                 if self._rule.manual and not self._rule.manual_checked:
                     # Manual rules that are not checked are an error
@@ -360,6 +369,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                     return None
 
                 if not self.data(ValidationRuleModel.RULE_VALIDATION_RAN):
+                    # Not status to report if the rule has not been validated yet
                     return None
 
                 # TODO revist this special case handling for rules that do not have an automated validate
@@ -376,7 +386,12 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
                 if self.data(ValidationRuleModel.RULE_VALID_ROLE):
                     return self.model().ok_status_icon
-                return self.model().error_status_icon
+
+                # Check for errors after warning status has been checked
+                if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
+                    return self.model().error_status_icon
+
+                return None
 
             if role == ValidationRuleModel.CHECKBOX_ICON_ROLE:
                 return self._checkbox_icon

@@ -11,6 +11,7 @@
 from .api import ValidationManager
 
 try:
+    from .dialog import AppDialog
     from .widgets import ValidationWidget
 except:
     # Temporary work around to allow pytests to run. Unit tests do not have
@@ -25,9 +26,6 @@ def show_dialog(app, modal=False):
 
     :param app: The parent App
     """
-
-    # defer imports so that the app works gracefully in batch modes
-    from .dialog import AppDialog
 
     # Check if the App is already showing
     app_dialog = None
@@ -52,3 +50,5 @@ def show_dialog(app, modal=False):
         # Set the widget property so that we can detect if the dialog for this app
         # is already showing to avoid multiple dialogs open at one time.
         widget.setProperty("app_name", app.name)
+
+    return widget
