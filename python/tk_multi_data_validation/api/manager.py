@@ -38,6 +38,7 @@ class ValidationManager(object):
         logger=None,
         notifier=None,
         has_ui=False,
+        pre_validate_before_fix=True,
     ):
         """
         Initialize the validation manager from the settings data.
@@ -62,6 +63,9 @@ class ValidationManager(object):
         :type notifier: ValidationNotifer
         :param has_ui: Set to True if the manager is being used with a UI, else False.
         :type has_ui: bool
+        :param pre_validate_before_fix: Set to True to ensure validate is executed before a
+            rule is fixed.
+        :type pre_validate_before_fix: bool
 
         :signal ValidationNotifier.validate_rule_begin(ValidationRule): Emits before a validation rule check
             function is executed. The returned parameter is the validation rule.
@@ -73,6 +77,7 @@ class ValidationManager(object):
         self._logger = logger or self._bundle.logger
         self._notifier = notifier
         self._has_ui = has_ui
+        self._pre_validate_before_fix = pre_validate_before_fix
 
         # Set the default rule types (in order). This can be set using the rule_types property.
         # TODO allow this to be config-based
@@ -170,6 +175,22 @@ class ValidationManager(object):
     def has_ui(self):
         """Get the flag indicating if this manager is running with a User Interface."""
         return self._has_ui
+
+    @property
+    def pre_validate_before_fix(self):
+        """
+        Get or set the property to run validate before fix.
+
+        Set to True to ensure that validate is always executed before a rule is fixed. This
+        ensure that the fix is applied to the most up to date data.
+
+        Default is True.
+        """
+        return self._pre_validate_before_fix
+
+    @pre_validate_before_fix.setter
+    def pre_validate_before_fix(self, pre_validate):
+        self._pre_validate_before_fix = pre_validate
 
     #########################################################################################################
     # Public functions
@@ -630,7 +651,7 @@ class ValidationManager(object):
             self.notifier.resolve_rule_begin.emit(rule)
 
         try:
-            rule.exec_fix()
+            rule.exec_fix(pre_validate=self.pre_validate_before_fix)
         finally:
             if self.notifier:
                 self.notifier.resolve_rule_finished.emit(rule)

@@ -451,29 +451,38 @@ class ValidationRule(object):
 
         return result
 
-    def exec_fix(self, *args, **kwargs):
+    def exec_fix(self, pre_validate=True):
         """
         Execute the rule's fix function.
 
         Note that if this rule has dependencies, this method does not take those into account. See the
         ValidationManager resolve methods to handle rule dependencies.
 
-        :param args: The arguments lits to pass to the check function
-        :type args: list
-        :param kwargs: The keyword arguments to pass to the check function
-        :type kwargs: dict
+        :param pre_validate: Set to True to run the rule's validate first and pass its result
+            to the rule's fix function.
+        :type pre_validate: bool
 
         :raises Exception: If the fix operation was not successful.
         """
 
         func = self.fix_func
-
         if not func:
+            # Cannot fix if there is no fix function
             return
 
-        kwargs.update(self.get_kwargs())
+        kwargs = self.get_kwargs()
+
+        if pre_validate:
+            # Run the validate function right before fixing so that the rule's errors are the
+            # most up to date with the current data (e.g. the data may have changed since the
+            # last time validate was called and collected the error items).
+            self.exec_check()
+
+        # Set the errors to pass to the fix function
+        kwargs["errors"] = self.errors
+
         try:
-            func(*args, **kwargs)
+            func(**kwargs)
             self._fix_runtime_exception = None
         except Exception as runtime_error:
             self._fix_runtime_exception = runtime_error
