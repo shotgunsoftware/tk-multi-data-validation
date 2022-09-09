@@ -42,12 +42,15 @@ class ValidationDetailsWidget(SGQWidget):
     about_to_execute_action = QtCore.Signal(dict)
     execute_action_finished = QtCore.Signal(dict)
 
-    def __init__(self, parent):
+    def __init__(self, parent, pre_validate_before_actions=True):
         """
         Create the validation details widget.
 
         :param parent: The parent widget
         :type parent: QtGui.QWidget
+        :param pre_validate_before_actions: True will run validation before executing actions
+            so that the action callback acts on the most up to date error data. Default True. Default True.
+        :type pre_validate_before_actions: bool
         """
 
         super(ValidationDetailsWidget, self).__init__(
@@ -57,6 +60,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._rule = None
         self._details_item_model = ValidationRuleDetailsModel(self)
         self._show_description = True
+        self._pre_validate_before_actions = pre_validate_before_actions
 
         self._setup_ui()
         self._connect_signals()
@@ -79,6 +83,18 @@ class ValidationDetailsWidget(SGQWidget):
     @show_description.setter
     def show_description(self, show):
         self._show_description = show
+
+    @property
+    def pre_validate_before_actions(self):
+        """
+        Get or set the property that decides if validation is ran before executing actions
+        on the current affected (error) objects.
+        """
+        return self._pre_validate_before_actions
+
+    @pre_validate_before_actions.setter
+    def pre_validate_before_actions(self, pre_validate):
+        self._pre_validate_before_actions = pre_validate
 
     ######################################################################################################
     # Public methods
@@ -170,9 +186,10 @@ class ValidationDetailsWidget(SGQWidget):
             if not action_cb:
                 continue
 
-            kwargs = {"errors": self.rule.errors}
             button = SGQPushButton(rule_action["name"], self._details_toolbar)
-            button.clicked.connect(lambda cb=action_cb, k=kwargs: cb(**k))
+            button.clicked.connect(
+                lambda checked=False, a=rule_action: self._execute_action(a)
+            )
             self._details_toolbar.add_widget(button)
 
         #
@@ -317,7 +334,7 @@ class ValidationDetailsWidget(SGQWidget):
         for rule_action in rule_actions:
             action = QtGui.QAction(rule_action["name"])
             action.triggered.connect(
-                lambda checked=False, a=rule_action: self._execute_action(a)
+                lambda checked=False, a=rule_action: self._execute_item_action(a)
             )
             actions.append(action)
 
@@ -378,11 +395,13 @@ class ValidationDetailsWidget(SGQWidget):
         """
 
         action = self._get_details_item_first_action(index)
-        return self._execute_action(action)
+        return self._execute_item_action(action)
 
     def _execute_action(self, action):
         """
-        Execute an action.
+        Execute the action.
+
+        This action is applied to all details items.
 
         Get the data from the action to execute it. Emit signals to indicate when the action is about to run
         and after it has finished.
@@ -391,6 +410,42 @@ class ValidationDetailsWidget(SGQWidget):
         :type action: dict
 
         :return: The value returned by the action.
+        :rtype: any
+        """
+
+        if not action:
+            return None
+
+        callback_fn = action.get("callback")
+        if not callback_fn:
+            return None
+
+        kwargs = action.get("kwargs", {})
+        kwargs["errors"] = (
+            self.rule.get_errors()
+            if self.pre_validate_before_actions
+            else self.rule.errors
+        )
+
+        self.about_to_execute_action.emit(action)
+        result = callback_fn(**kwargs)
+        self.execute_action_finished.emit(action)
+
+        return result
+
+    def _execute_item_action(self, action):
+        """
+        Execute the item action.
+
+        This action is applied to a single details item.
+
+        Get the data from the action to execute it. Emit signals to indicate when the action is about to run
+        and after it has finished.
+
+        :parm action: The item action to execute.
+        :type action: dict
+
+        :return: The value returned by the item action.
         :rtype: any
         """
 

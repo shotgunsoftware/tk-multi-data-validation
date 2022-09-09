@@ -343,15 +343,25 @@ class ValidationRule(object):
 
         return self._data.get(field)
 
-    def get_actions_data(self):
-        """Return the action data required to execute the action callback functions."""
+    def get_actions_data(self, pre_validate=False):
+        """
+        Return the action data required to execute the action callback functions.
+
+        :param pre_validate: True will validate the rule before getting the errors to include
+            in the action data. This ensures that the error data included is not stale.
+        :type pre_validate: bool
+
+        :return: The action data required to execute the callback functions.
+        :rtype: List[dict]
+        """
 
         actions = []
 
         for action in self.actions:
             # Add the current errors to the action data so that the action function can be
             # applied to the current errors.
-            action["kwargs"] = {"errors": self.errors}
+            errors = self.get_errors() if pre_validate else self.errors
+            action["kwargs"] = {"errors": errors}
             actions.append(action)
 
         return actions
@@ -421,6 +431,12 @@ class ValidationRule(object):
         fixed in, when fixing in bulk.
         """
         return self.dependencies.values()
+
+    def get_errors(self):
+        """Validate the current data and return the most up to date errors."""
+
+        self.exec_check()
+        return self.errors
 
     def exec_check(self):
         """
