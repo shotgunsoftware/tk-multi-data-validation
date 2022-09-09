@@ -8,6 +8,8 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
+import sgtk
+
 from .validation_rule_type import ValidationRuleType
 
 
@@ -128,6 +130,13 @@ class ValidationRule(object):
         # Runtime exceptions caught - used to display error messages
         self._check_runtime_exception = None
         self._fix_runtime_exception = None
+
+        # Store the hook method to sanitize validation results, as it will be used many times.
+        bundle = sgtk.platform.current_bundle()
+        hook_path = bundle.get_setting("hook_data_validation")
+        self._sanitize_check_result = bundle.create_hook_instance(
+            hook_path
+        ).sanitize_check_result
 
     @property
     def id(self):
@@ -488,34 +497,35 @@ class ValidationRule(object):
         :type result: dict | object
         """
 
-        if not result:
-            return
+        # First sanitize the result
+        sanitized_result = self._sanitize_check_result(result)
 
+        # Define the required fields for the check result
         required_fields = ("is_valid", "errors")
 
-        if isinstance(result, dict):
+        if isinstance(sanitized_result, dict):
             for field in required_fields:
-                if field not in result:
+                if field not in sanitized_result:
                     raise ValueError(
                         "Validation Rule check function dict result missing key '{field}'".format(
                             field=field
                         )
                     )
 
-            self._valid = result["is_valid"]
-            self._error_items = result["errors"]
+            self._valid = sanitized_result["is_valid"]
+            self._error_items = sanitized_result["errors"]
 
-        elif isinstance(result, object):
+        elif isinstance(sanitized_result, object):
             for field in required_fields:
-                if not hasattr(result, field):
+                if not hasattr(sanitized_result, field):
                     raise ValueError(
                         "Validation Rule check function object result missing attribute '{field}'".format(
                             field=field
                         )
                     )
 
-            self._valid = result.is_valid
-            self._error_items = result.errors
+            self._valid = sanitized_result.is_valid
+            self._error_items = sanitized_result.errors
 
         else:
             raise TypeError(
