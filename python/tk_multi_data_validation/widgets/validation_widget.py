@@ -968,10 +968,9 @@ class ValidationWidget(SGQWidget):
             callback = rule_action.get("callback")
             if not callback:
                 continue
-            args = rule_action.get("args", [])
             kwargs = rule_action.get("kwargs", {})
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, a=args, k=kwargs: fn(*a, **k))
+            action.triggered.connect(lambda fn=callback, k=kwargs: fn(**k))
             actions.append(action)
 
         # Add action to show details for the item that the context menu is shown for.

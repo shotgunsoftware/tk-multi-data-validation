@@ -343,6 +343,19 @@ class ValidationRule(object):
 
         return self._data.get(field)
 
+    def get_actions_data(self):
+        """Return the action data required to execute the action callback functions."""
+
+        actions = []
+
+        for action in self.actions:
+            # Add the current errors to the action data so that the action function can be
+            # applied to the current errors.
+            action["kwargs"] = {"errors": self.errors}
+            actions.append(action)
+
+        return actions
+
     def get_error_item_ids(self):
         """
         Convenience method to get a list of the item ids from the data errors.
@@ -409,14 +422,9 @@ class ValidationRule(object):
         """
         return self.dependencies.values()
 
-    def exec_check(self, *args, **kwargs):
+    def exec_check(self):
         """
         Execute the rule's check function.
-
-        :param args: The arguments lits to pass to the check function
-        :type args: list
-        :param kwargs: The keyword arguments to pass to the check function
-        :type kwargs: dict
 
         :return: The result returned by the check function
         :rtype: any
@@ -425,9 +433,9 @@ class ValidationRule(object):
         func = self.check_func
 
         if func:
-            kwargs.update(self.get_kwargs())
+            kwargs = self.get_kwargs()
             try:
-                result = func(*args, **kwargs)
+                result = func(**kwargs)
 
                 # Try to set the valid and errors data properties on the rule from the result returned by
                 # the check function. If the result does not have the expected attributes, we will continue on

@@ -153,8 +153,6 @@ class ValidationDetailsWidget(SGQWidget):
 
             check_button = SGQPushButton(name, self._details_toolbar)
 
-            args = []
-            kwargs = {}
             check_button.clicked.connect(self._request_validate_rule)
             self._details_toolbar.add_widget(check_button)
 
@@ -163,8 +161,6 @@ class ValidationDetailsWidget(SGQWidget):
             name = self.rule.fix_name
             fix_button = SGQPushButton(name, self._details_toolbar)
 
-            args = []
-            kwargs = {}
             fix_button.clicked.connect(self._request_fix_rule)
             self._details_toolbar.add_widget(fix_button)
 
@@ -174,10 +170,9 @@ class ValidationDetailsWidget(SGQWidget):
             if not action_cb:
                 continue
 
-            args = rule_action.get("args", [])
-            kwargs = {"errors": self.rule.get_error_item_ids()}
+            kwargs = {"errors": self.rule.errors}
             button = SGQPushButton(rule_action["name"], self._details_toolbar)
-            button.clicked.connect(lambda cb=action_cb, a=args, k=kwargs: cb(*a, **k))
+            button.clicked.connect(lambda cb=action_cb, k=kwargs: cb(**k))
             self._details_toolbar.add_widget(button)
 
         #
@@ -351,7 +346,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         actions = []
         for action in self._rule.item_actions:
-            action["args"] = [item_id]
+            action["kwargs"] = {"errors": [item_id]}
             actions.append(action)
         return actions
 
@@ -406,11 +401,10 @@ class ValidationDetailsWidget(SGQWidget):
         if not callback_fn:
             return None
 
-        args = action.get("args", [])
         kwargs = action.get("kwargs", {})
 
         self.about_to_execute_action.emit(action)
-        result = callback_fn(*args, **kwargs)
+        result = callback_fn(**kwargs)
         self.execute_action_finished.emit(action)
 
         return result
