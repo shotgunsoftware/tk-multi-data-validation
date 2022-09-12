@@ -430,15 +430,21 @@ class ValidationManager(object):
             a. If the rule has no dependencies - resolve it immediately
             b. If the rule has dependencies - add it to the queue to process later
 
-        2. If `fetch_dependencies` is not explicitly set as False, check if all dependencies are provided
+        2. If `fetch_dependencies` is not explicitly set as False, check if all dependencies
+           are provided
 
-            a. If missing dependencies and `fetch_dependencies` not explicitly set to True then prompt user to fetch and resolve dependencies
-            b. If `fetch_dependencies` is explicitly set to True or user answered YES to (a), then try to find any missing dependencies in the manager, and process them as done with the other rules
+            a. If missing dependencies and `fetch_dependencies` not explicitly set to True then
+               prompt user to fetch and resolve dependencies
+            b. If `fetch_dependencies` is explicitly set to True or user answered YES to (a),
+               then try to find any missing dependencies in the manager, and process them as
+               done with the other rules
 
         3. Process the queue of rules (that have dependencies)
 
-            a. If the rule's dependencies have been resolved or ignored - now resolve it and mark it as resolved
-            b. If the rule's dependencies have not been resolved - add it back to the end of the queue
+            a. If the rule's dependencies have been resolved or ignored - now resolve it and
+               mark it as resolved
+            b. If the rule's dependencies have not been resolved - add it back to the end of
+               the queue
 
         Time complexity (n = number of rules)
 
