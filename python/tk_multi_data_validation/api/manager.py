@@ -217,16 +217,13 @@ class ValidationManager(object):
 
         self.__errors = {}
 
-    def validate(self, emit_signals=True):
+    def validate(self):
         """
         Validate the data by executing all validation rule check functions.
 
         This method will reset the current validation manager state before validating any
         rules. This means that any errors found on a previous validation operation will be
         removed.
-
-        :param emit_signals: True will emit notifier signals when validation begins and ends.
-        :param emit_signals: bool
 
         :return: True if all validation rule checks passed (data is valid), else False.
         :rtype: bool
