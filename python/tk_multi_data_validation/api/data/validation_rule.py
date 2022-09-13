@@ -301,25 +301,27 @@ class ValidationRule(object):
         """
         Get the valid state of the rule.
 
-        This will reflect the status returned by the rule's check function the last time it was executed.
+        This will reflect the status returned by the rule's check function the last time it was
+        executed. If the value of this property is None, this indicates that the rule's check
+        function was not executed, or the rule's valid state cannot be determined because at
+        least one of the rule's dependencies is not valid or could not be checked (due to one
+        of its dependencies).
         """
         return self._valid
 
     @property
     def errors(self):
         """
-        Get the error data found for this rule.
+        Get the error data for this rule, based on the last time its check function executed.
 
-        This will contain the error data items found by the rule's check function the last time it was
-        executed.
+        This will contain the error data items found by the rule's check function the last time
+        it was executed.
         """
         return self._error_items or []
 
     @property
     def fix_executed(self):
-        """
-        Get the flag indicating if the rule's fix method was executed at least once.
-        """
+        """Get the flag indicating if the rule's fix method was executed at least once."""
         return self._fix_executed
 
     @property
