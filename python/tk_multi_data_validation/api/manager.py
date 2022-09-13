@@ -243,7 +243,7 @@ class ValidationManager(object):
         return not self.__errors
 
     @sgtk.LogManager.log_timing
-    def validate_rules(self, rules, emit_signals=True):
+    def validate_rules(self, rules, fetch_dependencies=True, emit_signals=True):
         """
         Validate the given list of rules.
 
@@ -251,13 +251,14 @@ class ValidationManager(object):
         if a rule was found to have errors and it is not processed in this validation
         operation, than the error will remain.
 
-        If the `accept_rule_fn` function is defined, only rules that are accepted by the
-        function will be validated. If the `accept_rule_fn` is not defiend, then all given
-        rules will be validated.
-
         :param rules: The list of rules to validate. This method will also accept a single
             validation object.
         :type rules: list<ValidationRule> | ValidationRule
+        :param fetch_dependencies: Set to True to ensure all dependencies for a rule are
+            validated before the rule itself is validated. Set to False will not fetch any
+            missing dependencies to validate first. Set to None to prompt user to fetch or
+            not. Defaults to True.
+        :type fetch_dependencies: bool
         :param emit_signals: True will emit notifier signals when validation begins and ends.
         :param emit_signals: bool
         """
@@ -269,9 +270,9 @@ class ValidationManager(object):
             self.notifier.validate_all_begin.emit()
 
         try:
-            for rule in rules:
-                if not self.accept_rule_fn or self.accept_rule_fn(rule):
-                    self.validate_rule(rule)
+            self._process_rules(
+                rules, fetch_dependencies, emit_signals, self.validate_rule
+            )
         finally:
             if emit_signals and self.notifier:
                 self.notifier.validate_all_finished.emit()
@@ -424,15 +425,46 @@ class ValidationManager(object):
         """
         Resolve the given list of rules.
 
-        Steps to resolve rules
+        :param rules: The list of rules to resolve. This method will also accept a single
+            validation object.
+        :type rules: list<ValidationRule> | ValidationRule
+        :param fetch_dependencies: Set to True to ensure all dependencies for a rule are
+            resolved before the rule itself is resolved. Set to False will not fetch any
+            missing dependencies to resolve first. Set to None to prompt user to fetch or not.
+            Defaults to None.
+        :type fetch_dependencies: bool
+        """
+
+        if emit_signals and self.notifier:
+            self.notifier.resolve_all_begin.emit()
+
+        try:
+            self._process_rules(
+                rules, fetch_dependencies, emit_signals, self.resolve_rule
+            )
+        finally:
+            if emit_signals and self.notifier:
+                self.notifier.resolve_all_finished.emit()
+
+    def _process_rules(
+        self, rules, fetch_dependencies, emit_signals, process_rule_callback
+    ):
+        """
+        Process the given list of rules.
+
+        Steps to process rules:
+
         1. Iterate over all rules
 
-            a. If the rule has no dependencies - resolve it immediately
+        *If the `accept_rule_fn` function is defined, only rules that are accepted by the
+        function will be processed. If the `accept_rule_fn` is not defiend, then all given
+        rules will be processed.
+
+            a. If the rule has no dependencies - process it immediately
             b. If the rule has dependencies - add it to the queue to process later
 
         2. If `fetch_dependencies` is not explicitly set as False, check if all dependencies
-           are provided
-
+           are provided:
             a. If missing dependencies and `fetch_dependencies` not explicitly set to True then
                prompt user to fetch and resolve dependencies
             b. If `fetch_dependencies` is explicitly set to True or user answered YES to (a),
@@ -440,11 +472,14 @@ class ValidationManager(object):
                done with the other rules
 
         3. Process the queue of rules (that have dependencies)
-
             a. If the rule's dependencies have been resolved or ignored - now resolve it and
                mark it as resolved
             b. If the rule's dependencies have not been resolved - add it back to the end of
                the queue
+
+        The process_rule_callback is a function that is called for each rule that is
+        processed. It must take a `ValidationRule` object as its first argument. For example,
+        pass the `validate_rule` to process all rules and by validating each one.
 
         Time complexity (n = number of rules)
 
@@ -458,183 +493,195 @@ class ValidationManager(object):
 
         :param rules: The list of rules to resolve.
         :type rules: list<ValidationRule>
-        :param fetch_dependencies: Set to True to ensure all dependencies for a reule are resolved before
-            the rule itself is resolved. Set to False will not fetch any missing dependencies to resolve.
-        :type fetch_dependencies: bool
+        :param fetch_dependencies: Set to True to ensure all dependencies for a rule are
+            processed before the rule itself is processed. Set to False will not fetch any
+            missing dependencies to process first. Set to None to prompt user to fetch or not.
         :param emit_signals: Set to True to emit notifier signals for resolve operation.
         :type emit_signals: bool
+        :param process_rule_callback: The function called to each rule that is processed. This is a
+            function that takes a `ValidationRule` object as its first argument.
+        :type process_rule_callback: function(rule: ValidationRule) -> bool
         """
 
         if not rules:
             return
 
-        if emit_signals:
-            self.notifier.resolve_all_begin.emit()
+        # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
+        # through to check then check if the necessary dependencies are available to resolve first. Any
+        # dependency rules will be added in the step wheere dependencies are checked.
+        rule_ids = set()
+        # Add rules to the set once they have been processed.
+        processed = {}
+        # Add rules to the set if they were processed, but failed.
+        failed = set()
+        # The set of all dependencies to required by the list of rules passed to resolve.
+        all_dependencies = set()
+        # Dependencies mapping - update this mapping as dependencies are processed.
+        dependencies = {}
+        # Add rules to the queue if they have dependencies that have not been processed yet.
+        queue = deque()
+        queue_count = 0
 
-        try:
-            # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
-            # through to check then check if the necessary dependencies are available to resolve first. Any
-            # dependency rules will be added in the step wheere dependencies are checked.
-            rule_ids = set()
-            # Add rules to the set once they have been resolved.
-            resolved = set()
-            # The set of all dependencies to required by the list of rules passed to resolve.
-            all_dependencies = set()
-            # Dependencies mapping - update this mapping as dependencies are resolved.
-            dependencies = {}
-            # Add rules to the queue if they have dependencies that have not been resolved yet.
-            queue = deque()
-            queue_count = 0
+        def process_rule(rule):
+            """
+            Helper function to intially process a validation rule.
 
-            def process_rule(rule):
-                """
-                Helper function to intially process a validation rule.
+            1. Add the rule to the set of rule ids.
+            2a. If the rule does not have dependencies, resolve it immediately and add it to
+                the processed set.
+            2b. If the rule has dependencies, update the dependencies map and list, and add it
+                to the queue to process later once all of its dependencies are processed.
 
-                1. Add the rule to the set of rule ids.
-                2a. If the rule does not have dependencies, resolve it immediately and add it to the resolved
-                    set.
-                2b. If the rule has dependencies, update the dependencies map and list, and add it to the queue
-                    to process later once all of its dependencies are resolved.
+            :param rule: The rule to process
+            :type rule: ValidationRule
 
-                :param rule: The rule to process
-                :type rule: ValidationRule
+            :return: True if the rule was processed, else False if it was not processed and
+                added to the queue.
+            :rtype: bool
+            """
 
-                :return: True if the rule was resolved, else False if it was not resolved and added to the queue.
-                :rtype: bool
-                """
-
-                if not rule or rule in rule_ids:
-                    # Trivially return True for rule that does not exist, and skip rules that have already been
-                    # processed
-                    return True
-
-                rule_ids.add(rule.id)
-
-                dependencies_ids = rule.get_dependency_ids()
-                if dependencies_ids:
-                    # Copy the list of dependencies so that the original dependency list is not modified, and
-                    # using a set instead for faster lookup and removal
-                    rule_dependencies_set = set(dependencies_ids)
-                    dependencies[rule.id] = rule_dependencies_set
-                    # Only add dependencies to the set if they have not been processed yet.
-                    all_dependencies.update(rule_dependencies_set.difference(rule_ids))
-
-                    queue.append(rule)
-                    return False
-
-                # No dependencies, resolve it immediately
-                self.resolve_rule(rule)
-                resolved.add(rule.id)
+            if not rule or rule in rule_ids:
+                # Trivially return True for rule that does not exist, and skip rules that have already been
+                # processed
                 return True
 
-            # First pass will resolve any rules without dependencies. Rules with dependencies will be added to
-            # the queue to be resolved once all its dependencies are resolved.
-            for rule in rules:
-                if not self.accept_rule_fn or self.accept_rule_fn(rule):
-                    if not process_rule(rule):
-                        queue_count += 1
+            rule_ids.add(rule.id)
 
-            # Check for dependencies and fetch them if specified
-            if fetch_dependencies or fetch_dependencies is None:
-                # Keep processing dependencies until the set is empty - dependencies may be added during
-                # while iterating if a dependency and another dependency
-                while all_dependencies:
-                    dependency_rule_id = all_dependencies.pop()
-                    if dependency_rule_id in rule_ids:
-                        # Dependency is already found
-                        continue
+            dependencies_ids = rule.get_dependency_ids()
+            if dependencies_ids:
+                # Copy the list of dependencies so that the original dependency list is not modified, and
+                # using a set instead for faster lookup and removal
+                rule_dependencies_set = set(dependencies_ids)
+                dependencies[rule.id] = rule_dependencies_set
+                # Only add dependencies to the set if they have not been processed yet.
+                all_dependencies.update(rule_dependencies_set.difference(rule_ids))
 
-                    dependency_rule = self.get_rule(dependency_rule_id)
-                    if not dependency_rule:
-                        # Skip dependenceis that the manager does not have
-                        continue
+                queue.append(rule)
+                return False
 
-                    # If not yet specified, prompt user to fetch missing dependencies
-                    if fetch_dependencies is None:
-                        if self.notifier:
-                            self.notifier.about_to_open_msg_box.emit()
+            # No dependencies, resolve it immediately
+            success = process_rule_callback(rule)
+            if not success:
+                failed.add(rule.id)
+            processed[rule.id] = rule
+            return True
 
-                        # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
-                        # to only individual dependencies
-                        if self.has_ui:
-                            from sgtk.platform.qt import QtGui
+        # First pass will resolve any rules without dependencies. Rules with dependencies will be added to
+        # the queue to be processed once all its dependencies are processed.
+        for rule in rules:
+            if not self.accept_rule_fn or self.accept_rule_fn(rule):
+                if not process_rule(rule):
+                    queue_count += 1
 
-                            answer = QtGui.QMessageBox.question(
-                                None,
-                                "Fix Dependencies",
-                                "This operation will apply additional fixes for dependencies.",
-                                QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
-                            )
-                            fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
-                        else:
-                            # TODO allow headless mode to specify whether or not to fetch. Default to fetch
-                            fetch_dependencies = True
+        # Check for dependencies and fetch them if specified
+        if fetch_dependencies or fetch_dependencies is None:
+            # Keep processing dependencies until the set is empty - dependencies may be added during
+            # while iterating if a dependency and another dependency
+            while all_dependencies:
+                dependency_rule_id = all_dependencies.pop()
+                if dependency_rule_id in rule_ids:
+                    # Dependency is already found
+                    continue
 
-                        if self.notifier:
-                            self.notifier.msg_box_closed.emit()
+                dependency_rule = self.get_rule(dependency_rule_id)
+                if not dependency_rule:
+                    # Skip dependenceis that the manager does not have
+                    continue
 
-                    if fetch_dependencies:
-                        if not process_rule(dependency_rule):
-                            queue_count += 1
+                # If not yet specified, prompt user to fetch missing dependencies
+                if fetch_dependencies is None:
+                    if self.notifier:
+                        self.notifier.about_to_open_msg_box.emit()
+
+                    # NOTE for now this is simplified by asking to fetch all or not - if requested this could ask
+                    # to only individual dependencies
+                    if self.has_ui:
+                        from sgtk.platform.qt import QtGui
+
+                        answer = QtGui.QMessageBox.question(
+                            None,
+                            "Dependencies",
+                            "Dependencies must be resolved first. Click OK to continue, or Cancel to abort.",
+                            QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
+                        )
+                        fetch_dependencies = bool(answer == QtGui.QMessageBox.Ok)
                     else:
-                        # The user canceled the operation
-                        if emit_signals and self.notifier:
-                            self.notifier.resolve_all_finished.emit()
-                        return
+                        # TODO allow headless mode to specify whether or not to fetch. Default to fetch
+                        fetch_dependencies = True
 
-            # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
-            # resolved or ignored, then resolve it and add it to the resolved list, else add it back to the end
-            # of the queue to try again after all rules in the queue have been processed.
-            #
-            # Detect cycles by calculating the max number of iterations it would take to empty the queue, if this
-            # count is exceeded, then there is a cycle. In the worst case, the each item depends on the item that
-            # comes after it, which means it'll take n + (n-1) + (n-2) + ... + 2 + 1
-            max_iters = queue_count + (queue_count * (queue_count - 1) / 2)
-            iter_count = 0
-            while queue:
-                if iter_count > max_iters:
-                    raise RecursionError(
-                        "Detected cycle in Validation Rule dependencies."
-                    )
-                iter_count += 1
+                    if self.notifier:
+                        self.notifier.msg_box_closed.emit()
 
-                # Get the next rule to process from the queue
-                rule = queue.popleft()
-
-                # Determine if dependencies have been resolved
-                has_dependencies = False
-                rule_dependencies = dependencies.get(rule.id, [])
-                while rule_dependencies and not has_dependencies:
-                    dependency_rule_id = rule_dependencies.pop()
-
-                    if dependency_rule_id not in rule_ids:
-                        if fetch_dependencies:
-                            self._logger.error(
-                                "Dependency not resolved '{}'".format(
-                                    dependency_rule_id
-                                )
-                            )
-                        # Dependency is ignored
-                        continue
-
-                    if dependency_rule_id in resolved:
-                        # Dependency has already been resolved
-                        continue
-
-                    # This dependency is not resolved yet, add it back to the set
-                    has_dependencies = True
-                    rule_dependencies.add(dependency_rule_id)
-
-                if has_dependencies:
-                    # Still unresolved dependencies, add it back to the end of the queue
-                    queue.append(rule)
+                if fetch_dependencies:
+                    if not process_rule(dependency_rule):
+                        queue_count += 1
                 else:
-                    self.resolve_rule(rule)
-                    resolved.add(rule.id)
+                    # The user canceled the operation
+                    if emit_signals and self.notifier:
+                        self.notifier.resolve_all_finished.emit()
+                    return
 
-        finally:
-            if emit_signals and self.notifier:
-                self.notifier.resolve_all_finished.emit()
+        # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
+        # processed or ignored, then resolve it and add it to the processed list, else add it back to the end
+        # of the queue to try again after all rules in the queue have been processed.
+        #
+        # Detect cycles by calculating the max number of iterations it would take to empty the queue, if this
+        # count is exceeded, then there is a cycle. In the worst case, the each item depends on the item that
+        # comes after it, which means it'll take n + (n-1) + (n-2) + ... + 2 + 1
+        max_iters = queue_count + (queue_count * (queue_count - 1) / 2)
+        iter_count = 0
+        while queue:
+            if iter_count > max_iters:
+                raise RecursionError("Detected cycle in Validation Rule dependencies.")
+            iter_count += 1
+
+            # Get the next rule to process from the queue
+            rule = queue.popleft()
+
+            # Determine if dependencies have been processed
+            has_dependencies = False
+            dependency_failed = None
+            rule_dependencies = dependencies.get(rule.id, [])
+            while (
+                rule_dependencies and not has_dependencies and dependency_failed is None
+            ):
+                dependency_rule_id = rule_dependencies.pop()
+
+                if dependency_rule_id not in rule_ids:
+                    # Dependency is ignored - log a warning and continue
+                    if fetch_dependencies:
+                        self._logger.warning(
+                            "Dependency not resolved '{}'".format(dependency_rule_id)
+                        )
+                    continue
+
+                if dependency_rule_id in failed:
+                    # Dependency processed, but failed
+                    dependency_failed = processed[dependency_rule_id]
+                    continue
+
+                if dependency_rule_id in processed:
+                    # Dependency has already been processed
+                    continue
+
+                # This dependency is not processed yet, add it back to the set
+                has_dependencies = True
+                rule_dependencies.add(dependency_rule_id)
+
+            if has_dependencies and dependency_failed is None:
+                # Still has dependencies to be processed, add it back to the end of the queue.
+                queue.append(rule)
+
+            else:
+                # Set the failed dependency for this rule before processing it. If no
+                # dependency has failed, it will be reset to None.
+                rule.set_failed_dependency(dependency_failed)
+
+                # Process the rule
+                success = process_rule_callback(rule)
+                if not success:
+                    failed.add(rule.id)
+                processed[rule.id] = rule
 
     def resolve_rule(self, rule):
         """
@@ -654,7 +701,21 @@ class ValidationManager(object):
             self.notifier.resolve_rule_begin.emit(rule)
 
         try:
-            rule.exec_fix(pre_validate=self.pre_validate_before_fix)
+            result = rule.exec_fix(pre_validate=self.pre_validate_before_fix)
+            if result is None or result:
+                success = True
+            else:
+                success = False
+
+        except Exception as resolve_error:
+            self._logger.error(
+                "Failed to resolve rule {id}\n{error}".format(id=rule.id),
+                error=resolve_error,
+            )
+            success = False
+
         finally:
             if self.notifier:
                 self.notifier.resolve_rule_finished.emit(rule)
+
+        return success
