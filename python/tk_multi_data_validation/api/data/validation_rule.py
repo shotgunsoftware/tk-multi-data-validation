@@ -461,7 +461,15 @@ class ValidationRule(object):
         return self.dependencies.values()
 
     def get_errors(self):
-        """Validate the current data and return the most up to date errors."""
+        """
+        Execute this rule's check function to get the most up to date error data.
+
+        The rule's check function will be executed, the `errors` property will be updated with
+        the check function's result, and the result will be returned.
+
+        :return: The most up to date error data.
+        :rtype: list
+        """
 
         self.exec_check()
         return self.errors
