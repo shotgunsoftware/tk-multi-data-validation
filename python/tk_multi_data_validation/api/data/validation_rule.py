@@ -549,9 +549,6 @@ class ValidationRule(object):
             self._error_items = []
             result = None
 
-        # Reset the failed dependency after the rule has executed its check function
-        self._failed_dependency = None
-
         return result
 
     def exec_fix(self, pre_validate=True, force=False):
