@@ -265,13 +265,12 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                             "<br/>".join(error_messages)
                         )
                     )
-                if (
-                    (self._rule.manual and not self._rule.manual_checked)
-                    or (not self._rule.manual and not self._rule.check_func)
-                ) and self._rule.warn_message:
+
+                warning_messages = self._rule.get_warning_messages()
+                if warning_messages:
                     lines.append(
                         "<span style='color:#FBB549;'>{}</span>".format(
-                            self._rule.warn_message
+                            "<br/>".join(warning_messages)
                         )
                     )
                 lines.append(self._rule.description)
@@ -386,7 +385,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 if self.data(ValidationRuleModel.RULE_VALID_ROLE):
                     return self.model().ok_status_icon
 
-                # Check for errors after warning status has been checked
+                # Check for errors after warning and ok status has been checked
                 if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
                     return self.model().error_status_icon
 

@@ -208,15 +208,20 @@ class ValidationRule(object):
 
     @property
     def error_message(self):
-        """Get the text that describes how the data is not valid."""
-        default_msg = "Found errors." if self.check_func else ""
-        return self._data.get("error_msg", default_msg)
+        """Get or set the text that describes how the current data errors."""
+        msg = self._data.get("error_msg")
+        if msg is None:
+            if self.check_func:
+                msg = "Found errors."
+            else:
+                msg = ""
+            self.error_message = msg
+        return msg
 
     @property
     def warn_message(self):
-        """Get the text that describes the warning for this rule."""
-        default_msg = "Validatoin must be manually checked." if self.manual else ""
-        return self._data.get("warn_msg", default_msg)
+        """Get or set the text that describes the current warnings."""
+        return self._data.get("warn_msg")
 
     @property
     def checked(self):
@@ -404,13 +409,30 @@ class ValidationRule(object):
         if not self._check_runtime_exception and not self._fix_executed:
             # Only include the validation error message if both check and fix functions
             # executed successfully.
-            rule_error = self._data.get("error_msg")
+            if self.error_message:
+                messages.append(self.error_message)
 
-            if not rule_error and self.check_func:
-                rule_error = "Found errors."
+        return messages
 
-            if rule_error:
-                messages.append(rule_error)
+    def get_warning_messages(self):
+        """Return the list of current warning messages."""
+
+        messages = []
+
+        if self.warn_message:
+            messages.append(self.warn_message)
+
+        if (self.manual and not self.manual_checked) or (
+            not self.manual and not self.check_func
+        ):
+            messages.append("Validation must be manually checked.")
+
+        if self._failed_dependency:
+            messages.append(
+                "Validation/Fix not run because the dependency failed: {}".format(
+                    self._failed_dependency.name
+                )
+            )
 
         return messages
 
