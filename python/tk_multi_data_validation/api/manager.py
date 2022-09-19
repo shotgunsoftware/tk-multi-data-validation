@@ -283,10 +283,7 @@ class ValidationManager(object):
             self._logger.debug("Validating Rule: {}".format(rule.id))
             rule.exec_check()
 
-            # Check if rule's valid state after executing its check function
-            is_valid = rule.valid
-
-            if is_valid:
+            if rule.valid:
                 if rule.id in self.__errors:
                     # Remove the rule from the error set
                     del self.__errors[rule.id]
@@ -298,11 +295,9 @@ class ValidationManager(object):
                 # Emit a signal to notify that a specifc rule has finished validation
                 self.notifier.validate_rule_finished.emit(rule)
 
-        return is_valid
+        return rule.valid
 
-    def resolve(
-        self, pre_validate=False, post_validate=False, retry_until_success=True
-    ):
+    def resolve(self, pre_validate=True, post_validate=False, retry_until_success=True):
         """
         Resolve the current data violations found by the validate method.
 
@@ -310,16 +305,16 @@ class ValidationManager(object):
         (e.g. the manager does nothing to validate the data, it is just responsible for executing the
         fix functions).
 
-        :param pre_validate: True will run the validation step before the resovle step, to ensure the
-                             list of items to resolve is the most up to date.
+        :param pre_validate: True will run each rule's validation before its fix, to ensure the
+            error data passed to the fix accurately reflects the most current data.
         :type pre_validate: bool
         :param post_validate: True will run the validation step after the resolve step, to check that
-                              the scene data is valid after resolution steps applied.
+                              the scene data is valid after resolution steps applied. Default False.
         :type post_validate: bool
         :param retry_until_success: Set to True will try to fun the resolution operation until all
             rules have been resolved. The maximum number of tries to resolve will be equal to the
             number of rules in the manager. This will perform post validate step, evne if post validate
-            has been set to False.
+            has been set to False. Default True.
         :type retry_until_success: bool
 
         :return: True if the resolve operation was successful, else False. Note that if the post_validate
@@ -334,64 +329,61 @@ class ValidationManager(object):
         try:
             success = True
 
-            if pre_validate:
-                # First run the validate method to check for data violations.
-                self.validate()
+            # Resolve the data violations. Explicitly say do not fetch dependencies because all
+            # rules are being passed (nothing will need to be fetched). Pre validate will happen
+            # before each rule is about to be resolved to ensure each rule is validated in order
+            # of dependencies.
+            self.resolve_rules(
+                self.rules,
+                pre_validate=pre_validate,
+                fetch_dependencies=False,
+                emit_signals=False,
+            )
 
-            if self.errors:
-                # Resolve the data violations. Explicitly say not to fetch dependencies because this function
-                # has validated all rules and all rules will be passed to resolve that will be fixed - if
-                # dependencies are not included, then that means they have no errors and thus, do not need to
-                # run their fix action to modify the data. Basically, this means dependencies can be ignored
-                # as they will have no effect on the data.
-                self.resolve_rules(
-                    self.errors.values(), fetch_dependencies=False, emit_signals=False
-                )
+            if post_validate or retry_until_success:
+                # Run validation step once all resolution actions compelted to ensure everything was fixed.
+                success = self.validate()
 
-                if post_validate or retry_until_success:
-                    # Run validation step once all resolution actions compelted to ensure everything was fixed.
-                    success = self.validate()
+            # Brute force try to resolve all errors - keep running the resolution on any errors found
+            # from validate until there are none, or the max number of tries reached.
+            #
+            # New errors may occur if executing a rule's fix has side effects which cause another rule to
+            # have errors. For example, rule A has no dependencies, rule B depends on rule A, and rule A
+            # has errors, then only rule A's fix will be executed but it causes rule B to now have errors.
+            # Rule B's fix will not be executed though, so even though resolve all was executed, we have
+            # new errors.
+            #
+            # NOTE if this brute force method becomes slow, the resolve_rules method should be modified to
+            # look up the reverse dependencies to add to the list of rules whose fix operatoins will be
+            # executed.
+            max_retry = len(self.rules) if retry_until_success else 0
+            count = 0
+            prev_errors = set()
+            while not success and count < max_retry:
+                if prev_errors == set(self.errors):
+                    # Nothing changed from the last attempt to resolve, stop retrying
+                    count = max_retry
+                else:
+                    self._logger.debug("Resolve retry attempt {}".format(count))
 
-                # Brute force try to resolve all errors - keep running the resolution on any errors found
-                # from validate until there are none, or the max number of tries reached.
-                #
-                # New errors may occur if executing a rule's fix has side effects which cause another rule to
-                # have errors. For example, rule A has no dependencies, rule B depends on rule A, and rule A
-                # has errors, then only rule A's fix will be executed but it causes rule B to now have errors.
-                # Rule B's fix will not be executed though, so even though resolve all was executed, we have
-                # new errors.
-                #
-                # NOTE if this brute force method becomes slow, the resolve_rules method should be modified to
-                # look up the reverse dependencies to add to the list of rules whose fix operatoins will be
-                # executed.
-                max_retry = len(self.rules) if retry_until_success else 0
-                count = 0
-                prev_errors = set()
-                while not success and count < max_retry:
-                    if prev_errors == set(self.errors):
-                        # Nothing changed from the last attempt to resolve, stop retrying
-                        count = max_retry
-                    else:
-                        self._logger.debug("Resolve retry attempt {}".format(count))
+                    # Update the previous errors to the current set
+                    prev_errors = set(self.errors)
 
-                        # Update the previous errors to the current set
-                        prev_errors = set(self.errors)
-
-                        # Attempt to resolve again
-                        self.resolve_rules(
-                            self.errors.values(),
-                            fetch_dependencies=False,
-                            emit_signals=False,
-                        )
-                        # Check for errors
-                        success = self.validate()
-                        # Update retry count
-                        count += 1
-
-                if retry_until_success and not success:
-                    self._logger.debug(
-                        "Failed to resolve after max retry attempts. There may be a rule dependecy cycle."
+                    # Attempt to resolve again
+                    self.resolve_rules(
+                        self.errors.values(),
+                        fetch_dependencies=False,
+                        emit_signals=False,
                     )
+                    # Check for errors
+                    success = self.validate()
+                    # Update retry count
+                    count += 1
+
+            if retry_until_success and not success:
+                self._logger.debug(
+                    "Failed to resolve after max retry attempts. There may be a rule dependecy cycle."
+                )
 
         finally:
             if self.notifier:
@@ -400,13 +392,18 @@ class ValidationManager(object):
         return success
 
     @sgtk.LogManager.log_timing
-    def resolve_rules(self, rules, fetch_dependencies=None, emit_signals=True):
+    def resolve_rules(
+        self, rules, pre_validate=True, fetch_dependencies=None, emit_signals=True
+    ):
         """
         Resolve the given list of rules.
 
         :param rules: The list of rules to resolve. This method will also accept a single
             validation object.
         :type rules: list<ValidationRule> | ValidationRule
+        :param pre_validate: True will run each rule's validation before its fix, to ensure the
+            error data passed to the fix accurately reflects the most current data.
+        :type pre_validate: bool
         :param fetch_dependencies: Set to True to ensure all dependencies for a rule are
             resolved before the rule itself is resolved. Set to False will not fetch any
             missing dependencies to resolve first. Set to None to prompt user to fetch or not.
@@ -419,11 +416,51 @@ class ValidationManager(object):
 
         try:
             self._process_rules(
-                rules, fetch_dependencies, emit_signals, self.resolve_rule
+                rules,
+                fetch_dependencies,
+                emit_signals,
+                lambda rule: self.resolve_rule(rule, pre_validate=pre_validate),
             )
         finally:
             if emit_signals and self.notifier:
                 self.notifier.resolve_all_finished.emit()
+
+    def resolve_rule(self, rule, pre_validate=True, emit_signals=True):
+        """
+        Resolve the validation rule.
+
+        :param rule: The validation rule to resolve
+        :type rule: ValidationRule
+        """
+
+        self._logger.debug(
+            "\nResolving Rule: {}\nDependencies: {}".format(
+                rule.id, ", ".join([d for d in rule.get_dependency_names()])
+            )
+        )
+
+        if emit_signals and self.notifier:
+            self.notifier.resolve_rule_begin.emit(rule)
+
+        try:
+            result = rule.exec_fix(pre_validate=pre_validate)
+            if result is None or result is True:
+                success = True
+            else:
+                success = False
+
+        except Exception as resolve_error:
+            self._logger.error(
+                "Failed to resolve rule {id}\n{error}".format(id=rule.id),
+                error=resolve_error,
+            )
+            success = False
+
+        finally:
+            if emit_signals and self.notifier:
+                self.notifier.resolve_rule_finished.emit(rule)
+
+        return success
 
     def _process_rules(
         self, rules, fetch_dependencies, emit_signals, process_rule_callback
@@ -501,9 +538,29 @@ class ValidationManager(object):
         queue = deque()
         queue_count = 0
 
-        def process_rule(rule):
+        def __process_rule(rule):
             """
-            Helper function to intially process a validation rule.
+            Process the rule by executing the process callback.
+
+            Add the rule to the failed set if it the process callback failed. Add the rule to
+            the processed set regardless of the process callback result.
+
+            :param rule: The rule to execute the callback for.
+            :type rule: ValidationRule
+            """
+
+            success = process_rule_callback(rule)
+            if not success:
+                failed.add(rule.id)
+            processed[rule.id] = rule
+
+        def __process(rule):
+            """
+            Helper function to process a rule.
+
+            A rule is processed immediately if it has no dependencies, otherwise its
+            dependency info is retrieved and the rule is queued to be processed once all of
+            its dependencies have been processed.
 
             1. Add the rule to the set of rule ids.
             2a. If the rule does not have dependencies, resolve it immediately and add it to
@@ -520,8 +577,8 @@ class ValidationManager(object):
             """
 
             if not rule or rule in rule_ids:
-                # Trivially return True for rule that does not exist, and skip rules that have already been
-                # processed
+                # Trivially return True for rule that does not exist, and skip rules that have
+                # already been added to the list to process
                 return True
 
             rule_ids.add(rule.id)
@@ -539,20 +596,17 @@ class ValidationManager(object):
                 return False
 
             # No dependencies, resolve it immediately
-            success = process_rule_callback(rule)
-            if not success:
-                failed.add(rule.id)
-            processed[rule.id] = rule
+            __process_rule(rule)
             return True
 
-        # First pass will resolve any rules without dependencies. Rules with dependencies will be added to
+        # First, process any rules without dependencies. Rules with dependencies will be added to
         # the queue to be processed once all its dependencies are processed.
         for rule in rules:
             if not self.accept_rule_fn or self.accept_rule_fn(rule):
-                if not process_rule(rule):
+                if not __process(rule):
                     queue_count += 1
 
-        # Check for dependencies and fetch them if specified
+        # Second, fetch dependencies, if specified
         if fetch_dependencies or fetch_dependencies is None:
             # Keep processing dependencies until the set is empty - dependencies may be added during
             # while iterating if a dependency and another dependency
@@ -592,7 +646,7 @@ class ValidationManager(object):
                         self.notifier.msg_box_closed.emit()
 
                 if fetch_dependencies:
-                    if not process_rule(dependency_rule):
+                    if not __process(dependency_rule):
                         queue_count += 1
                 else:
                     # The user canceled the operation
@@ -600,13 +654,15 @@ class ValidationManager(object):
                         self.notifier.resolve_all_finished.emit()
                     return
 
-        # Now process the queue of rules, which have dependencies. For each rule, if all dependencies are
-        # processed or ignored, then resolve it and add it to the processed list, else add it back to the end
-        # of the queue to try again after all rules in the queue have been processed.
+        # Third, now process the queue of rules, which have dependencies. For each rule, if all
+        # dependencies are # processed or ignored, then resolve it and add it to the processed
+        # list, else add it back to the end of the queue to try again after all rules in the
+        # queue have been processed.
         #
-        # Detect cycles by calculating the max number of iterations it would take to empty the queue, if this
-        # count is exceeded, then there is a cycle. In the worst case, the each item depends on the item that
-        # comes after it, which means it'll take n + (n-1) + (n-2) + ... + 2 + 1
+        # Detect cycles by calculating the max number of iterations it would take to empty the
+        # queue, if this count is exceeded, then there is a cycle. In the worst case, the each
+        # item depends on the item that comes after it, which means it'll take
+        # n + (n-1) + (n-2) + ... + 2 + 1
         max_iters = queue_count + (queue_count * (queue_count - 1) / 2)
         iter_count = 0
         while queue:
@@ -648,53 +704,11 @@ class ValidationManager(object):
                 rule_dependencies.add(dependency_rule_id)
 
             if has_dependencies and dependency_failed is None:
-                # Still has dependencies to be processed, add it back to the end of the queue.
+                # Still has dependencies to be processed (and none of its dependenceis have
+                # failed), add it back to the end of the queue.
                 queue.append(rule)
-
             else:
                 # Set the failed dependency for this rule before processing it. If no
                 # dependency has failed, it will be reset to None.
                 rule.set_failed_dependency(dependency_failed)
-
-                # Process the rule
-                success = process_rule_callback(rule)
-                if not success:
-                    failed.add(rule.id)
-                processed[rule.id] = rule
-
-    def resolve_rule(self, rule):
-        """
-        Resolve the validation rule.
-
-        :param rule: The validation rule to resolve
-        :type rule: ValidationRule
-        """
-
-        self._logger.debug(
-            "\nResolving Rule: {}\nDependencies: {}".format(
-                rule.id, ", ".join([d for d in rule.get_dependency_names()])
-            )
-        )
-
-        if self.notifier:
-            self.notifier.resolve_rule_begin.emit(rule)
-
-        try:
-            result = rule.exec_fix(pre_validate=self.pre_validate_before_fix)
-            if result is None or result:
-                success = True
-            else:
-                success = False
-
-        except Exception as resolve_error:
-            self._logger.error(
-                "Failed to resolve rule {id}\n{error}".format(id=rule.id),
-                error=resolve_error,
-            )
-            success = False
-
-        finally:
-            if self.notifier:
-                self.notifier.resolve_rule_finished.emit(rule)
-
-        return success
+                __process_rule(rule)
