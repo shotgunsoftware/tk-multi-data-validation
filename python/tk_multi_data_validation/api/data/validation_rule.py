@@ -532,38 +532,39 @@ class ValidationRule(object):
             dependency. Default is False.
         :type force: bool
 
-        :return: The result returned by the check function.
-        :rtype: any
+        :return: False is returned if failed to execute the check (there is a failed
+            dependency or the check function threw an exception). None is returned if the rule
+            does not have a check function. Otherwise, the result returned by the check
+            function is sanitized by `_process_check_result` and returned.
+        :rtype: list | bool | None
         """
 
+        # Reset teh check runtime exception
+        self._check_runtime_exception = None
+
+        # Do not run the check function when it has a failed dependency, and not forcing.
         if not force and self.has_failed_dependency():
-            # Do not run the check function when it has a failed dependency, and not forcing.
             # Set the rule state to indicate that the check function not run
             self._valid = None
-            self._error_items = []
-            return False
-
-        # Run the check function
-        if self.check_func:
-            kwargs = self.get_kwargs()
-            try:
-                result = self.check_func(**kwargs)
-                # Try to set the valid and errors data properties on the rule from the result returned by
-                # the check function. If the result does not have the expected attributes, we will continue on
-                # but the rule will not be updated
-                self._process_check_result(result)
-                # Set the runtime exception to None since there was no error
-                self._check_runtime_exception = None
-            except Exception as runtime_error:
-                result = None
-                self._valid = False
-                self._error_items = []
-                self._check_runtime_exception = runtime_error
-        else:
-            # This is a manual check. It is considered valid if the user has checked it off.
-            self._valid = self.manual_checked
-            self._error_items = []
+            self._error_items = None
             result = None
+        else:
+            # Run the check function
+            if self.check_func:
+                kwargs = self.get_kwargs()
+                try:
+                    raw_result = self.check_func(**kwargs)
+                    result = self._process_check_result(raw_result)
+                except Exception as runtime_error:
+                    self._check_runtime_exception = runtime_error
+                    self._valid = False
+                    self._error_items = None
+                    result = None
+            else:
+                # This is a manual check. It is considered valid if the user has checked it off.
+                self._valid = self.manual_checked
+                self._error_items = None
+                result = None
 
         return result
 
@@ -571,15 +572,24 @@ class ValidationRule(object):
         """
         Execute the rule's fix function.
 
-        Note that if this rule has dependencies, this method does not take those into account. See the
-        ValidationManager resolve methods to handle rule dependencies.
-
         It is reccommended to use this method to execute the rule's fix function, instead of
         directly invoking the fix function, so that the rule's properties are updated
         consistently after the fix function is executed.
 
-        :param pre_validate: Set to True to run the rule's validate first and pass its result
-            to the rule's fix function.
+        Validate will run before executing the fix if `pre_validate=True`. It is encouraged to
+        pre validate so that the error data is always retrieved right before running the fix,
+        and the error data accurately reflects the current data. If not pre validated, then
+        the fix will be applied to the error data that was retrieved the last time the
+        validate was run (this requires user to always manually validate before fix, and
+        ensure the error data reflects the current data before running the fix).
+
+        Fetching nor fixing dependencies is not handled in this method (see the
+        :class:`ValidationManager` resolve methods), though it will fail immediately if there
+        are errors and it has the failed dependency property set.
+
+        :param pre_validate: Set to True to run the rule's validate function before fixing.
+            This ensures the error data passed to the fix function accurately reflect the
+            current data.
         :type pre_validate: bool
         :param force: Set to True to run the fix function no matter if there are failed
             dependencies. Set to False to only run the fix if there there is not a failed
@@ -592,20 +602,30 @@ class ValidationRule(object):
         :raises Exception: If the fix operation was not successful.
         """
 
-        if not self.fix_func:
-            # Cannot fix if there is no fix function.
-            return False
+        # Reset the fix runtime exception
+        self._fix_runtime_exception = None
 
-        if not force and self.has_failed_dependency():
-            # Do not run the fix function if it has a failed dependency - the data may not be
-            # in the required state for this rule's fix function to be applicable.
-            return False
-
+        # Before running the fix, first validate (if specified) to ensure the error data
+        # accurately reflects the current data.
         if pre_validate:
-            # Run the validate function right before fixing so that the rule's errors are the
-            # most up to date with the current data (e.g. the data may have changed since the
-            # last time validate was called and collected the error items).
             self.exec_check()
+
+        # If the rule has successfully validated, then no need to run the fix (since there is
+        # nothing to fix).
+        # NOTE it is encouraged to set pre_validate=True to ensure errors reflect the current
+        # data and does not require user to run validate before fix to gather the error data.
+        if self.valid:
+            return True
+
+        # If there is no fix function, the data can not be automatically fixed. Return failure.
+        if not self.fix_func:
+            return False
+
+        # Do not run the fix function if it has a failed dependency and not forcing. If a
+        # dependency has failed, the data may not be in the required state for this fix to be
+        # applicable. Return failure.
+        if not force and self.has_failed_dependency():
+            return False
 
         # Get the key-word arguments and set the errors to pass to the fix function
         kwargs = self.get_kwargs()
@@ -613,7 +633,6 @@ class ValidationRule(object):
 
         try:
             fix_result = self.fix_func(**kwargs)
-            self._fix_runtime_exception = None
             # The fix function was executed - set the flag to True
             self._fix_executed = True
         except Exception as runtime_error:
@@ -636,6 +655,9 @@ class ValidationRule(object):
 
         :param result: The result returned by a validation rule check function.
         :type result: dict | object
+
+        :return: The sanitized result.
+        :rtype: dict
         """
 
         # First sanitize the result
@@ -672,3 +694,5 @@ class ValidationRule(object):
             raise TypeError(
                 "Validation Rule check function result cannot be processed."
             )
+
+        return sanitized_result
