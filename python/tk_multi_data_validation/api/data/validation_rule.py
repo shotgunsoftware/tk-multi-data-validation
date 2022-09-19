@@ -113,6 +113,8 @@ class ValidationRule(object):
         :type bundle: TankBundle
         """
 
+        self.check_data(rule_data)
+
         # Set the main rule data
         self._data = rule_data or {}
 
@@ -145,6 +147,16 @@ class ValidationRule(object):
         self._sanitize_check_result = bundle.create_hook_instance(
             hook_path
         ).sanitize_check_result
+
+    @staticmethod
+    def check_data(data):
+        """Raise an exception if the data is not valid to create a ValidationRule object."""
+
+        if "id" not in data:
+            raise ValueError("Missing id data for ValidationRule.")
+
+        if "name" not in data:
+            raise ValueError("Missing id data for ValidationRule.")
 
     @property
     def id(self):
