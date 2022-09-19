@@ -14,22 +14,10 @@ HookBaseClass = sgtk.get_hook_baseclass()
 
 
 class TestDataValidationHook(HookBaseClass):
-    """
-    Subclass the main abstract data validator hook.
-    """
+    """Implement the data validation hook for testing."""
 
     def get_validation_data(self):
-        """
-        Return the main data validation rule set that drives the App.
-
-        This method must be implemented by the subclass.
-
-        It is not enforced, but the dictionary returned by this function should be formated such that each
-        key-value pair can be passed to create a :class:`tk_multi_data_validation.api.data.ValidationRule`.
-
-        :return: The validation data that can be used to validate the data.
-        :rtype: dict
-        """
+        """Implement the hook method for to return test data for validation."""
 
         return {
             "validation_rule_1": {
@@ -48,3 +36,9 @@ class TestDataValidationHook(HookBaseClass):
                 "name": "This rule will not be excluded by not including it in the config.",
             },
         }
+
+    def sanitize_check_result(self, check_result):
+        """Implement the hook metho to sanitize the check result for testing validation."""
+
+        # Just return the result as is
+        return check_result
