@@ -55,32 +55,14 @@ class AbstractDataValidationHook(HookBaseClass):
         different DCCs, the error objects need to be sanitized into a format that the Data
         Validation App can handle. The standard format that the Data Validation App excepts
         is a list of dictionaries, where each dictionary defines a DCC error object with
-        key-values:
+        the following keys:
 
-            is_valid:
-                type: bool
-                description: True if the validate function succeed with the current data, else
-                             False.
+            :is_valid: ``bool`` True if the validate function succeed with the current data, else False.
+            :errors: ``List[dict]`` The list of error objects (found by the validate function). None or empty list if the current data is valid. List elements have the following keys:
 
-            errors:
-                type: list
-                description: The list of error objects (found by the validate function). None
-                             or empty list if the current data is valid.
-                items:
-                    type: dict
-                    key-values:
-                        id:
-                            type: str | int
-                            description: A unique identifier for the error object.
-                            optional: False
-                        name:
-                            type: str
-                            description: The display name for the error object.
-                            optional: False
-                        type:
-                            type: str
-                            description: The display name of the error object type.
-                            optional: True
+                :id: ``str | int`` A unique identifier for the error object.
+                :name: ``str`` The display name for the error object.
+                :type: ``str`` The display name of the error object type (optional).
 
         This method will be called by the Data Validation App after any validate function is
         called, in order to receive the validate result in the required format.
