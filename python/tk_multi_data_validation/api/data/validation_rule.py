@@ -235,7 +235,7 @@ class ValidationRule(object):
                 msg = "Found errors."
             else:
                 msg = ""
-            self.error_message = msg
+            self._data["error_msg"] = msg
         return msg
 
     @property
