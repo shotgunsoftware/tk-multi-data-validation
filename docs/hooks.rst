@@ -1,9 +1,9 @@
 .. _validation-hooks:
 
-Data Validation Hooks
+Hooks
 ======================
 
-.. _validation-hooks-data-validator:
+.. _validation-hooks-data-validation:
 
 hook_data_validation
 ----------------------
