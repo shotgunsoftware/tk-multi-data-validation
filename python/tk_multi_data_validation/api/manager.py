@@ -122,7 +122,7 @@ class ValidationManager(object):
                     ] = dependency_data.get("name")
 
             rule_data.update(rule_item)
-            rule = ValidationRule(rule_data)
+            rule = ValidationRule(rule_data, bundle=self._bundle)
             self.__rules_by_id[rule.id] = rule
 
     #########################################################################################################
