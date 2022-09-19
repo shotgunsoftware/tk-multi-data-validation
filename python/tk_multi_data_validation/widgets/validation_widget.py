@@ -988,10 +988,11 @@ class ValidationWidget(SGQWidget):
             if not callback:
                 continue
 
+            rule = rule_model_item.data(ValidationRuleModel.RULE_ITEM_ROLE)
             kwargs = rule_action.get("kwargs", {})
-            if self.pre_validate_before_actions:
-                rule = rule_model_item.data(ValidationRuleModel.RULE_ITEM_ROLE)
-                kwargs["errors"] = rule.get_errors()
+            kwargs["errors"] = (
+                rule.get_errors() if self.pre_validate_before_actions else rule.errors
+            )
 
             action = QtGui.QAction(rule_action["name"])
             action.triggered.connect(lambda fn=callback, k=kwargs: fn(**k))
