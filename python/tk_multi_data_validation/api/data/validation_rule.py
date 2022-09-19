@@ -30,7 +30,7 @@ class ValidationRule(object):
         :type rule_data: dict
 
         **rule_data dict format**
-            key
+            id
                 :type: str
                 :description: The unique identifier for this rule.
             name
