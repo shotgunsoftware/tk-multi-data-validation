@@ -22,7 +22,7 @@ class ValidationRule(object):
     of class properties below for more information on what data is contained in the validation rule object.
     """
 
-    def __init__(self, rule_data):
+    def __init__(self, rule_data, bundle=None):
         """
         Create a validation rule with the provided data.
 
@@ -107,6 +107,10 @@ class ValidationRule(object):
             dependencies
                 :type: dict<str>
                 :description: A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.
+
+        :param bundle: (optional) The bundle instance for the app. If not specified, the
+            current bundle will be retrieved.
+        :type bundle: TankBundle
         """
 
         # Set the main rule data
@@ -136,7 +140,7 @@ class ValidationRule(object):
         self._failed_dependency = None
 
         # Store the hook method to sanitize validation results, as it will be used many times.
-        bundle = sgtk.platform.current_bundle()
+        bundle = bundle or sgtk.platform.current_bundle()
         hook_path = bundle.get_setting("hook_data_validation")
         self._sanitize_check_result = bundle.create_hook_instance(
             hook_path
