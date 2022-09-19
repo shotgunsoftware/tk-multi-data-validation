@@ -449,7 +449,7 @@ class ValidationRule(object):
         ):
             messages.append("Validation must be manually checked.")
 
-        if self._failed_dependency:
+        if self.has_failed_dependency():
             messages.append(
                 "Validation/Fix not run because the dependency failed: {}".format(
                     self._failed_dependency.name
