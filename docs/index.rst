@@ -9,7 +9,7 @@ The Data Validation App is a customizable workflow tool that allows studios to h
 Once you're ready to start setting up the app, see the step-by-step guide in :ref:`getting-started`.
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     using_the_app
     getting_started

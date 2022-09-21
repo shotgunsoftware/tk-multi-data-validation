@@ -6,15 +6,15 @@ App Config Settings
 The Data Validation App settings are defined in the Toolkit App Config settings file ``tk-multi-data-validation.yml``. The app supports the following settings:
 
     hook_data_validation:
-        The hook to define the Validation Rule Set and sanitize validation results.
+        The hook to define the :ref:`validation-rule-set` and sanitize check function return values.
 
     rules:
-        The list of active validation rules (these will be shown in the Data Validation App if found in the Validation Rule Set). Each item in the list must include an ``id`` and ``name``, which are the unique identifier and display name of the rule. Optionally, items may define a ``data_type``, which categorizes the rule for a grouped display.
+        The list of :ref:`Validation Rules <validation-rule-item>` that the Data Validation App will display. Each item in the list must include an ``id``, which must correspond to a rule in the :ref:`validation-rule-set`. If there are rules in the validation rule set that are not included in this config setting, then those rules will not be displayed in the app. Optionally, items may define a ``data_type``, which categorizes the rule so it can be displayed in a grouped view.
 
 An example of the settings file that is set up for Alias and VRED:
 
 .. code-block:: yaml
-    :caption: tk-multi-data-validation.yml settings for the VRED Engine
+    :caption: Example: tk-multi-data-validation.yml settings set up for the Alias and VRED Engines
 
     settings.tk-multi-data-validation.alias:
       location: "@apps.tk-multi-data-validation.location"

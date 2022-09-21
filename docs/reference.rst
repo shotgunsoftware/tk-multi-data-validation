@@ -8,3 +8,4 @@ Reference
 
     hooks
     api
+    glossary

@@ -16,6 +16,14 @@ Validation Manager
     :show-inheritance:
     :members:
 
+Validation Rule
+------------------
+
+.. py:currentmodule:: tk_multi_data_validation.api.data
+
+.. autoclass:: ValidationRule
+    :show-inheritance:
+    :members:
 
 .. _validation-widget:
 
@@ -30,14 +38,3 @@ Validation Widget
 
 
 .. _validation-api-data-rule:
-
-Validation Rule
-------------------
-
-The data drives the App display and functionality. A set of data :ref:`Validation Rules <validation-api-data-rule>` are defined by the :ref:`hook <validation-hooks-data-validation>` method :class:`hooks.data_validation.AbstractDataValidationHook.get_validation_data`. The App will display the rule set and provide actions to related to the validation rules. See the :ref:`validation-api-data-rule` class reference for more details.
-
-.. py:currentmodule:: tk_multi_data_validation.api.data
-
-.. autoclass:: ValidationRule
-    :show-inheritance:
-    :members:
