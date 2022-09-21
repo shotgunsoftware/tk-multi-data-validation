@@ -12,12 +12,6 @@ import copy
 import os
 import sys
 
-sys.path.append("/Users/oues/python_libs")
-import ptvsd
-
-ptvsd.enable_attach()
-ptvsd.wait_for_attach()
-
 import pytest
 import mock
 from mock import call, MagicMock
