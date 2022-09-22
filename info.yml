@@ -15,6 +15,11 @@ configuration:
         description: "Define the rules for validating data in a DCC and functions to resolve data violations."
         default_value: "{self}/data_validation.py"
 
+    hook_ui_config:
+        type: hook
+        description: "Customize the display of the Data Validation App."
+        default_value: "{self}/ui_config.py"
+
     rules:
         description: "List of validation rules for the App to enforce. Each validation item requires
                      a unique key to identify the validation rule, and it is optional to specify

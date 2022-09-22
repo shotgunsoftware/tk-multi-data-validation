@@ -445,7 +445,7 @@ class ValidationWidget(SGQWidget):
         self._rule_types_model = ValidationRuleTypeModel(self)
 
         # Main validation rule source and proxy models
-        self._rules_model = ValidationRuleModel(self, self.group_rules_by)
+        self._rules_model = ValidationRuleModel(self, self.group_rules_by, self._bundle)
         self._rules_proxy_model = ValidationRuleProxyModel(self)
         self._rules_proxy_model.setSourceModel(self._rules_model)
 
