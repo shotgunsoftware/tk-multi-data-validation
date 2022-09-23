@@ -198,22 +198,28 @@ class ValidationDetailsWidget(SGQWidget):
         if self.rule.errors or self.rule.manual:
             self._details_item_view_overlay.hide()
         else:
+            text = None
+            warnings = None
+
             if self.rule.valid is not None:
-                msg = "Success! No errors found."
+                text = "Success! No errors found."
             elif self.rule.check_func is not None and self.rule.fix_func is not None:
-                msg = "Click {} or {} to see details.".format(
+                text = "Click {} or {} to see details.".format(
                     self.rule.check_name,
                     self.rule.fix_name,
                 )
             elif self.rule.check_func is not None:
-                msg = "Click {} to see details.".format(self.rule.check_name)
+                text = "Click {} to see details.".format(self.rule.check_name)
             elif self.rule.fix_func is not None:
-                msg = "Click {} to see details.".format(self.rule.fix_name)
-            else:
-                # We should not get here, but in case we do, just set an empty message.
-                msg = ""
+                text = "Click {} to see details.".format(self.rule.fix_name)
 
-            self._details_item_view_overlay.show_message(msg)
+            warning_messages = self.rule.get_warning_messages()
+            if warning_messages:
+                warnings = "<span style='color:#FBB549;'>{}</span>".format(
+                    "<br/><br/>".join(warning_messages)
+                )
+
+            self._details_item_view_overlay.show_message(title=text, details=warnings)
 
     ######################################################################################################
     # Protected methods
@@ -247,6 +253,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_item_view.setModel(self._details_item_model)
         self._details_view_item_delegate = self._create_delegate()
         self._details_item_view_overlay = ShotGridOverlayWidget(self._details_item_view)
+        self._details_item_view_overlay.title_word_wrap = True
 
         self.layout().setContentsMargins(10, 0, 0, 0)
         self.add_widgets(
