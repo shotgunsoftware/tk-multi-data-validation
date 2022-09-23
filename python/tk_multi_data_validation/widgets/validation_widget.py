@@ -916,17 +916,23 @@ class ValidationWidget(SGQWidget):
 
         if not selected_indexes:
             self._details_overlay_widget.show_message(
-                "Select an item to see more details."
+                "Select a Validation Rule to see more details."
             )
         elif len(selected_indexes) > 1:
             self._details_overlay_widget.show_message(
-                "Select a single item to see details."
+                "Select a Validation Rule to see details."
             )
         else:
             self._details_overlay_widget.hide()
             model_index = selected_indexes[0]
             rule = model_index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-            self._details_widget.set_data(rule)
+            if not rule:
+                # Do not show details for group items
+                self._details_overlay_widget.show_message(
+                    "Select a Validation Rule to see more details."
+                )
+            else:
+                self._details_widget.set_data(rule)
 
     def _refresh_details(self, rule=None):
         """
