@@ -42,12 +42,15 @@ class ValidationDetailsWidget(SGQWidget):
     about_to_execute_action = QtCore.Signal(dict)
     execute_action_finished = QtCore.Signal(dict)
 
-    def __init__(self, parent):
+    def __init__(self, parent, pre_validate_before_actions=True):
         """
         Create the validation details widget.
 
         :param parent: The parent widget
         :type parent: QtGui.QWidget
+        :param pre_validate_before_actions: True will run validation before executing actions
+            so that the action callback acts on the most up to date error data. Default True. Default True.
+        :type pre_validate_before_actions: bool
         """
 
         super(ValidationDetailsWidget, self).__init__(
@@ -57,6 +60,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._rule = None
         self._details_item_model = ValidationRuleDetailsModel(self)
         self._show_description = True
+        self._pre_validate_before_actions = pre_validate_before_actions
 
         self._setup_ui()
         self._connect_signals()
@@ -79,6 +83,18 @@ class ValidationDetailsWidget(SGQWidget):
     @show_description.setter
     def show_description(self, show):
         self._show_description = show
+
+    @property
+    def pre_validate_before_actions(self):
+        """
+        Get or set the property that decides if validation is ran before executing actions
+        on the current affected (error) objects.
+        """
+        return self._pre_validate_before_actions
+
+    @pre_validate_before_actions.setter
+    def pre_validate_before_actions(self, pre_validate):
+        self._pre_validate_before_actions = pre_validate
 
     ######################################################################################################
     # Public methods
@@ -153,8 +169,6 @@ class ValidationDetailsWidget(SGQWidget):
 
             check_button = SGQPushButton(name, self._details_toolbar)
 
-            args = []
-            kwargs = {}
             check_button.clicked.connect(self._request_validate_rule)
             self._details_toolbar.add_widget(check_button)
 
@@ -163,8 +177,6 @@ class ValidationDetailsWidget(SGQWidget):
             name = self.rule.fix_name
             fix_button = SGQPushButton(name, self._details_toolbar)
 
-            args = []
-            kwargs = {}
             fix_button.clicked.connect(self._request_fix_rule)
             self._details_toolbar.add_widget(fix_button)
 
@@ -174,10 +186,10 @@ class ValidationDetailsWidget(SGQWidget):
             if not action_cb:
                 continue
 
-            args = rule_action.get("args", [])
-            kwargs = {"errors": self.rule.get_error_item_ids()}
             button = SGQPushButton(rule_action["name"], self._details_toolbar)
-            button.clicked.connect(lambda cb=action_cb, a=args, k=kwargs: cb(*a, **k))
+            button.clicked.connect(
+                lambda checked=False, a=rule_action: self._execute_action(a)
+            )
             self._details_toolbar.add_widget(button)
 
         #
@@ -186,22 +198,28 @@ class ValidationDetailsWidget(SGQWidget):
         if self.rule.errors or self.rule.manual:
             self._details_item_view_overlay.hide()
         else:
+            text = None
+            warnings = None
+
             if self.rule.valid is not None:
-                msg = "Success! No errors found."
+                text = "Success! No errors found."
             elif self.rule.check_func is not None and self.rule.fix_func is not None:
-                msg = "Click {} or {} to see details.".format(
+                text = "Click {} or {} to see details.".format(
                     self.rule.check_name,
                     self.rule.fix_name,
                 )
             elif self.rule.check_func is not None:
-                msg = "Click {} to see details.".format(self.rule.check_name)
+                text = "Click {} to see details.".format(self.rule.check_name)
             elif self.rule.fix_func is not None:
-                msg = "Click {} to see details.".format(self.rule.fix_name)
-            else:
-                # We should not get here, but in case we do, just set an empty message.
-                msg = ""
+                text = "Click {} to see details.".format(self.rule.fix_name)
 
-            self._details_item_view_overlay.show_message(msg)
+            warning_messages = self.rule.get_warning_messages()
+            if warning_messages:
+                warnings = "<span style='color:#FBB549;'>{}</span>".format(
+                    "<br/><br/>".join(warning_messages)
+                )
+
+            self._details_item_view_overlay.show_message(title=text, details=warnings)
 
     ######################################################################################################
     # Protected methods
@@ -235,6 +253,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_item_view.setModel(self._details_item_model)
         self._details_view_item_delegate = self._create_delegate()
         self._details_item_view_overlay = ShotGridOverlayWidget(self._details_item_view)
+        self._details_item_view_overlay.title_word_wrap = True
 
         self.layout().setContentsMargins(10, 0, 0, 0)
         self.add_widgets(
@@ -322,7 +341,7 @@ class ValidationDetailsWidget(SGQWidget):
         for rule_action in rule_actions:
             action = QtGui.QAction(rule_action["name"])
             action.triggered.connect(
-                lambda checked=False, a=rule_action: self._execute_action(a)
+                lambda checked=False, a=rule_action: self._execute_item_action(a)
             )
             actions.append(action)
 
@@ -351,7 +370,7 @@ class ValidationDetailsWidget(SGQWidget):
 
         actions = []
         for action in self._rule.item_actions:
-            action["args"] = [item_id]
+            action["kwargs"] = {"errors": [item_id]}
             actions.append(action)
         return actions
 
@@ -383,11 +402,13 @@ class ValidationDetailsWidget(SGQWidget):
         """
 
         action = self._get_details_item_first_action(index)
-        return self._execute_action(action)
+        return self._execute_item_action(action)
 
     def _execute_action(self, action):
         """
-        Execute an action.
+        Execute the action.
+
+        This action is applied to all details items.
 
         Get the data from the action to execute it. Emit signals to indicate when the action is about to run
         and after it has finished.
@@ -406,11 +427,46 @@ class ValidationDetailsWidget(SGQWidget):
         if not callback_fn:
             return None
 
-        args = action.get("args", [])
+        kwargs = action.get("kwargs", {})
+        kwargs["errors"] = (
+            self.rule.get_errors()
+            if self.pre_validate_before_actions
+            else self.rule.errors
+        )
+
+        self.about_to_execute_action.emit(action)
+        result = callback_fn(**kwargs)
+        self.execute_action_finished.emit(action)
+
+        return result
+
+    def _execute_item_action(self, action):
+        """
+        Execute the item action.
+
+        This action is applied to a single details item.
+
+        Get the data from the action to execute it. Emit signals to indicate when the action is about to run
+        and after it has finished.
+
+        :parm action: The item action to execute.
+        :type action: dict
+
+        :return: The value returned by the item action.
+        :rtype: any
+        """
+
+        if not action:
+            return None
+
+        callback_fn = action.get("callback")
+        if not callback_fn:
+            return None
+
         kwargs = action.get("kwargs", {})
 
         self.about_to_execute_action.emit(action)
-        result = callback_fn(*args, **kwargs)
+        result = callback_fn(**kwargs)
         self.execute_action_finished.emit(action)
 
         return result

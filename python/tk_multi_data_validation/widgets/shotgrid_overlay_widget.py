@@ -39,7 +39,7 @@ class ShotGridOverlayWidget(SGQWidget):
         # Set the default image size to None - no scaling will be applied.
         self._image_size = None
         self._title_alignment = None
-        self._title_word_wrap = None
+        self._title_word_wrap = True
         self._title_max_width = None
 
         # Set up the layout and widgets
@@ -81,9 +81,7 @@ class ShotGridOverlayWidget(SGQWidget):
         self._title_label.setTextFormat(QtCore.Qt.RichText)
         self._title_label.setOpenExternalLinks(True)
         self._title_label.setSizePolicy(
-            QtGui.QSizePolicy(
-                QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Preferred
-            )
+            QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         )
 
         # The details text
@@ -100,16 +98,12 @@ class ShotGridOverlayWidget(SGQWidget):
 
         # Add the image and title to a horizontal layout to control alignment relative to other content
         title_layout = QtGui.QHBoxLayout()
-        title_layout.setSizeConstraint(QtGui.QLayout.SetMaximumSize)
-        title_layout.addStretch()
         title_layout.addWidget(self._image_label)
         title_layout.addWidget(self._title_label)
         title_layout.addWidget(self._spinner_label)
-        title_layout.addStretch()
 
         # Add the details to a horizontal layout control alignment relative to other content
         details_layout = QtGui.QHBoxLayout()
-        details_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         details_layout.setContentsMargins(0, 20, 0, 0)
         details_layout.addStretch()
         details_layout.addWidget(self._details_label)
@@ -120,28 +114,14 @@ class ShotGridOverlayWidget(SGQWidget):
 
         # Add the title and details layout to a single layout
         content_layout = QtGui.QVBoxLayout()
-        content_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
+        content_layout.addStretch()
         content_layout.addLayout(title_layout)
         content_layout.addLayout(details_layout)
-
-        # Add content to horizontal layout to control horizontal alignment of all content within the main widget
-        main_hlayout = QtGui.QHBoxLayout()
-        main_hlayout.addStretch()
-        main_hlayout.addLayout(content_layout)
-        main_hlayout.addStretch()
-        main_hlayout.setStretch(0, 1)
-        main_hlayout.setStretch(1, 10)
-        main_hlayout.setStretch(2, 1)
-
-        # Add content to vertical layout to control vertical alignment of all content within the main widget
-        main_vlayout = QtGui.QVBoxLayout()
-        main_vlayout.addStretch()
-        main_vlayout.addLayout(main_hlayout)
-        main_vlayout.addStretch()
+        content_layout.addStretch()
 
         # Add grid layout to frame in order to add content widgets to the frame
         grid_layout = QtGui.QGridLayout(frame)
-        grid_layout.addLayout(main_vlayout, 1, 1, 1, 1)
+        grid_layout.addLayout(content_layout, 1, 1, 1, 1)
 
         # Add the frame to the overlay widget
         self.layout().setSpacing(0)
@@ -338,12 +318,6 @@ class ShotGridOverlayWidget(SGQWidget):
 
         if title:
             if pixmap:
-                if self._title_max_width is None:
-                    self._title_label.setMaximumWidth(250)
-
-                if self.title_word_wrap is None:
-                    self._title_label.setWordWrap(True)
-
                 if self._title_alignment is None:
                     self._title_label.setAlignment(
                         QtCore.Qt.AlignLeading
@@ -351,19 +325,17 @@ class ShotGridOverlayWidget(SGQWidget):
                         | QtCore.Qt.AlignVCenter
                         | QtCore.Qt.TextWordWrap
                     )
+                title_max_width = self.title_max_width or 250
             else:
-                if self._title_max_width is None:
-                    # Reset max width to the default Qt max value
-                    self._title_label.setMaximumWidth(16777215)
-
-                if self.title_word_wrap is None:
-                    self._title_label.setWordWrap(False)
-
                 self._title_label.setAlignment(
                     QtCore.Qt.AlignCenter
                     | QtCore.Qt.AlignVCenter
                     | QtCore.Qt.TextWordWrap
                 )
+                title_max_width = self.title_max_width or 16777215
+
+            self._title_label.setMaximumWidth(title_max_width)
+            self._title_label.setWordWrap(self.title_word_wrap or False)
 
         self._image_label.setPixmap(pixmap)
         self._title_label.setText(title)

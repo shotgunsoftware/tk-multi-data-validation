@@ -78,7 +78,7 @@ class ValidationWidget(SGQWidget):
     details_about_to_execute_action = QtCore.Signal(dict)
     details_execute_action_finished = QtCore.Signal(dict)
 
-    def __init__(self, parent, group_rules_by=None):
+    def __init__(self, parent, group_rules_by=None, pre_validate_before_actions=True):
         """
         Create the validation widget.
 
@@ -86,6 +86,9 @@ class ValidationWidget(SGQWidget):
         :type parent: QWidget
         :param group_rules_by: The validation rule field that the view will group rules by
         :type group_rules_by: str
+        :param pre_validate_before_actions: True will run validation before executing actions
+            so that the action callback acts on the most up to date error data. Default True. Default True.
+        :type pre_validate_before_actions: bool
         """
 
         super(ValidationWidget, self).__init__(
@@ -98,6 +101,10 @@ class ValidationWidget(SGQWidget):
         self._details_on = True
         self._rule_type_filter_on = False
         self._group_rules_by = group_rules_by
+
+        # Flag indicating if validate is run before actions to ensure actions are applied to
+        # most up to date error data
+        self._pre_validate_before_actions = pre_validate_before_actions
 
         # Flag indicating whether or not eiether of the Valdiate or Fix All button have been clicked yet.
         self._validation_has_run = False
@@ -231,6 +238,18 @@ class ValidationWidget(SGQWidget):
     @fix_rules_callback.setter
     def fix_rules_callback(self, cb):
         self._fix_rules_callback = cb
+
+    @property
+    def pre_validate_before_actions(self):
+        """
+        Get or set the property that decides if validation is ran before executing actions
+        on the current affected (error) objects.
+        """
+        return self._pre_validate_before_actions
+
+    @pre_validate_before_actions.setter
+    def pre_validate_before_actions(self, pre_validate):
+        self._pre_validate_before_actions = pre_validate
 
     #########################################################################################################
     # Public methods
@@ -426,7 +445,7 @@ class ValidationWidget(SGQWidget):
         self._rule_types_model = ValidationRuleTypeModel(self)
 
         # Main validation rule source and proxy models
-        self._rules_model = ValidationRuleModel(self, self.group_rules_by)
+        self._rules_model = ValidationRuleModel(self, self.group_rules_by, self._bundle)
         self._rules_proxy_model = ValidationRuleProxyModel(self)
         self._rules_proxy_model.setSourceModel(self._rules_model)
 
@@ -897,17 +916,23 @@ class ValidationWidget(SGQWidget):
 
         if not selected_indexes:
             self._details_overlay_widget.show_message(
-                "Select an item to see more details."
+                "Select a Validation Rule to see more details."
             )
         elif len(selected_indexes) > 1:
             self._details_overlay_widget.show_message(
-                "Select a single item to see details."
+                "Select a Validation Rule to see details."
             )
         else:
             self._details_overlay_widget.hide()
             model_index = selected_indexes[0]
             rule = model_index.data(ValidationRuleModel.RULE_ITEM_ROLE)
-            self._details_widget.set_data(rule)
+            if not rule:
+                # Do not show details for group items
+                self._details_overlay_widget.show_message(
+                    "Select a Validation Rule to see more details."
+                )
+            else:
+                self._details_widget.set_data(rule)
 
     def _refresh_details(self, rule=None):
         """
@@ -968,10 +993,15 @@ class ValidationWidget(SGQWidget):
             callback = rule_action.get("callback")
             if not callback:
                 continue
-            args = rule_action.get("args", [])
+
+            rule = rule_model_item.data(ValidationRuleModel.RULE_ITEM_ROLE)
             kwargs = rule_action.get("kwargs", {})
+            kwargs["errors"] = (
+                rule.get_errors() if self.pre_validate_before_actions else rule.errors
+            )
+
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, a=args, k=kwargs: fn(*a, **k))
+            action.triggered.connect(lambda fn=callback, k=kwargs: fn(**k))
             actions.append(action)
 
         # Add action to show details for the item that the context menu is shown for.

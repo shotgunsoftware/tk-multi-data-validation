@@ -9,6 +9,7 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 import sgtk
+from sgtk import TankError
 from sgtk.platform.qt import QtGui, QtCore
 
 from .validation_rule_type_model import ValidationRuleTypeModel
@@ -18,6 +19,8 @@ from ..utils.framework_qtwidgets import SGQIcon, ViewItemRolesMixin
 
 class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     """A model to manage validation rules data."""
+
+    UI_CONFIG_HOOK_PATH = "hook_ui_config"
 
     # Additional data roles defined for the model
     _BASE_ROLE = QtCore.Qt.UserRole + 1
@@ -40,12 +43,11 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         RULE_VALID_ROLE,  # True if the last time the rule was validated, it was successful
         RULE_HAS_ERROR_ROLE,  # True if the last time the rule was validated, it was not successful
         RULE_ACTIONS_ROLE,  # Action items that can be executed against the rule
-        RULE_ITEM_ACTIONS_ROLE,  # Action items that can be executed against the individual errors found for the rule
         RULE_ERROR_ITEMS_ROLE,  # The data that is found to have validation errors
         RULE_MANUAL_CHECK_STATE_ROLE,  # True if the rule is a manual check
         RULE_STATUS_ICON_ROLE,  # The status icon for the current state of the rule
         NEXT_AVAILABLE_ROLE,  # Keep track of the next available custome role. Insert new roles above.
-    ) = range(_BASE_ROLE, _BASE_ROLE + 23)
+    ) = range(_BASE_ROLE, _BASE_ROLE + 22)
 
     #
     # Signals
@@ -53,7 +55,39 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     # Emit when the validation rule model item check state has changed
     rule_check_state_changed = QtCore.Signal(ValidationRule, QtCore.Qt.CheckState)
 
-    class ValidationRuleGroupModelItem(QtGui.QStandardItem):
+    class BaseModelItem(QtGui.QStandardItem):
+        """The base model item class for QStandardItem objects in the ValidationRuleModel."""
+
+        def data(self, role):
+            """
+            Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.
+
+            Return the data for the item for the specified role. This method will look up the
+            callback function set up for the given role, and call that function to retrieve
+            the data for the role. See the ValidationRuleModel constructor for the set up of
+            the data role to callback function, using the ``role_methods`` property.
+
+            :param role: The :class:`sgtk.platform.qt.QtCore.Qt.ItemDataRole` role.
+            :return: The data for the specified roel.
+            """
+
+            # Check if the model has a method defined for retrieving the item data for this role.
+            data_method = self.model().get_method_for_role(role)
+
+            if data_method:
+                try:
+                    return data_method(self.index())
+                except TypeError as error:
+                    raise TankError(
+                        "Failed to execute the method defined to retrieve item data for role `{role}`.\nError: {msg}".format(
+                            role=role, msg=error
+                        )
+                    )
+
+            # Default to the base implementation
+            return super(ValidationRuleModel.BaseModelItem, self).data(role)
+
+    class ValidationRuleGroupModelItem(BaseModelItem):
         """A group header item for a validation rule in the ValidationRulemodel."""
 
         def __init__(self, group_id, group_name):
@@ -80,6 +114,11 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             Override the :class:`sgtk.platform.qt.QtGui.QStandardItem` method.
 
             Return the data for the item for the specified role.
+
+            NOTE: data for roles may be retrieved by the function set up by the
+            ``role_methods`` property. See the ValidationRuleModel constructor for which roles
+            have a function set up to retrieve its data. This is to support customizing the
+            data returned for a model role by using a hook method.
 
             :param role: The :class:`sgtk.platform.qt.QtCore.Qt.ItemDataRole` role.
             :return: The data for the specified roel.
@@ -170,7 +209,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             return rules
 
-    class ValidationRuleModelItem(QtGui.QStandardItem):
+    class ValidationRuleModelItem(BaseModelItem):
         """An item for validation rule data in the ValidationRuleModel."""
 
         def __init__(self, rule=None):
@@ -203,12 +242,14 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
             Return the data for the item for the specified role.
 
+            NOTE: data for roles may be retrieved by the function set up by the
+            ``role_methods`` property. See the ValidationRuleModel constructor for which roles
+            have a function set up to retrieve its data. This is to support customizing the
+            data returned for a model role by using a hook method.
+
             :param role: The :class:`sgtk.platform.qt.QtCore.Qt.ItemDataRole` role.
             :return: The data for the specified role.
             """
-
-            if role == QtCore.Qt.BackgroundRole:
-                return QtGui.QApplication.palette().midlight()
 
             if role == QtCore.Qt.CheckStateRole:
                 return QtCore.Qt.Checked if self._rule.checked else QtCore.Qt.Unchecked
@@ -266,13 +307,12 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                             "<br/>".join(error_messages)
                         )
                     )
-                if (
-                    (self._rule.manual and not self._rule.manual_checked)
-                    or (not self._rule.manual and not self._rule.check_func)
-                ) and self._rule.warn_message:
+
+                warning_messages = self._rule.get_warning_messages()
+                if warning_messages:
                     lines.append(
                         "<span style='color:#FBB549;'>{}</span>".format(
-                            self._rule.warn_message
+                            "<br/>".join(warning_messages)
                         )
                     )
                 lines.append(self._rule.description)
@@ -387,7 +427,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
                 if self.data(ValidationRuleModel.RULE_VALID_ROLE):
                     return self.model().ok_status_icon
 
-                # Check for errors after warning status has been checked
+                # Check for errors after warning and ok status has been checked
                 if self.data(ValidationRuleModel.RULE_HAS_ERROR_ROLE):
                     return self.model().error_status_icon
 
@@ -399,11 +439,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             if role == ValidationRuleModel.RULE_ACTIONS_ROLE:
                 if not self._rule:
                     return None
-                actions = []
-                for action in self._rule.actions:
-                    action["kwargs"] = {"errors": self._rule.get_error_item_ids()}
-                    actions.append(action)
-                return actions
+                return self._rule.get_actions_data()
 
             if role == ValidationRuleModel.RULE_MANUAL_CHECK_STATE_ROLE:
                 if not self._rule:
@@ -460,7 +496,7 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
     # ValidationRuleModel methods
     #
 
-    def __init__(self, parent, group_by=None):
+    def __init__(self, parent, group_by=None, bundle=None):
         """
         Create the ValidationRuleModel.
 
@@ -470,6 +506,8 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         :type group_by: str
         """
 
+        # We need to call the base class constructor explicitly (cannot use super) since the
+        # class inherits multiple base classes
         QtGui.QStandardItemModel.__init__(self, parent)
 
         self._group_by = group_by
@@ -483,6 +521,19 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         # Add additional roles defined by the ViewItemRolesMixin class.
         self.NEXT_AVAILABLE_ROLE = self.initialize_roles(self.NEXT_AVAILABLE_ROLE)
+
+        bundle = bundle or sgtk.platform.current_bundle()
+        ui_config_hook_path = bundle.get_setting(self.UI_CONFIG_HOOK_PATH)
+        ui_config_hook = bundle.create_hook_instance(ui_config_hook_path)
+
+        # Create a mapping of model item data roles to the method that will be called to retrieve
+        # the data for the item. The methods defined for each role must accept one paramete, which
+        # is the item index (QModelIndex) that the data is being retrieved for.
+        # NOTE the model item ``data`` methods should not return a value for the roles in this
+        # mapping, unless they intend to override these defined callbacks
+        self.role_methods = {
+            QtCore.Qt.BackgroundRole: ui_config_hook.get_rule_item_background_color,
+        }
 
     ######################################################################################################
     # Properties

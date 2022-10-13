@@ -110,7 +110,9 @@ class AppDialog(QtGui.QWidget):
 
         # Set custom callbacks for validating/fix all and validating/fix individual rules
         self._validation_widget.validate_rules_callback = self._manager.validate_rules
-        self._validation_widget.validate_all_callback = self._manager.validate
+        self._validation_widget.validate_all_callback = (
+            lambda rules: self._manager.validate()
+        )
         self._validation_widget.fix_rules_callback = self._resolve_rules
         self._validation_widget.fix_all_callback = lambda rules: self._manager.resolve(
             pre_validate=True, post_validate=True

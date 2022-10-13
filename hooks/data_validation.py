@@ -42,3 +42,37 @@ class AbstractDataValidationHook(HookBaseClass):
         """
 
         raise NotImplementedError()
+
+    def sanitize_check_result(self, errors):
+        """
+        Sanitize the value returned by any validate function to conform to the standard format.
+
+        This method must be implemented by the subclass.
+
+        Each engine will provide their own validation functions which should return the list of
+        objects that do not follow the validation rule. These objects will be referred to as
+        "errors". In order for the Data Validation App to handle these objects coming from
+        different DCCs, the error objects need to be sanitized into a format that the Data
+        Validation App can handle. The standard format that the Data Validation App excepts
+        is a list of dictionaries, where each dictionary defines a DCC error object with
+        the following keys:
+
+            :is_valid: ``bool`` True if the validate function succeed with the current data, else False.
+            :errors: ``List[dict]`` The list of error objects (found by the validate function). None or empty list if the current data is valid. List elements have the following keys:
+
+                :id: ``str | int`` A unique identifier for the error object.
+                :name: ``str`` The display name for the error object.
+                :type: ``str`` The display name of the error object type (optional).
+
+        This method will be called by the Data Validation App after any validate function is
+        called, in order to receive the validate result in the required format.
+
+        :param errors: The value returned by a validate function that needs to be sanitized to
+            the standard format.
+        :type errors: any
+
+        :return: The validation result in the standardized format.
+        :rtype: dict
+        """
+
+        raise NotImplementedError()

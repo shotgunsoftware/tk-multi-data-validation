@@ -16,55 +16,48 @@ import pytest
 import mock
 from mock import call, MagicMock
 
-from validation_utils import CheckResult
-
 # Manually add the app modules to the path in order to import them here.
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "python"))
 app_dir = os.path.abspath(os.path.join(base_dir, "tk_multi_data_validation"))
 api_dir = os.path.abspath(os.path.join(app_dir, "api"))
-sys.path.extend([base_dir, app_dir, api_dir])
+data_dir = os.path.abspath(os.path.join(api_dir, "data"))
+sys.path.extend([base_dir, app_dir, api_dir, data_dir])
 from tk_multi_data_validation.api import ValidationManager
+from tk_multi_data_validation.api.data import ValidationRule
+
+
+RULE_IDS = [
+    "rule_1",
+    "rule_2",
+    "rule_3",
+    "rule_4",
+]
+DEPENDENCY_RULE_IDS = [
+    "dep_1",
+    "dep_2",
+    "dep_3",
+    "dep_4",
+    "dep_5",
+    "dep_6",
+    "dep_7",
+]
+BAD_DEPENDENCY_RULE_IDS = [
+    "bad_dep_1",
+    "bad_dep_2",
+    "bad_dep_3",
+    "bad_dep_4",
+]
+
+#########################################################################################################
+# Helper classes
+
+
+class Notifier(object):
+    """Mock notifier object for testing the ValidationManager."""
 
 
 #########################################################################################################
 # Fixtures and mock data for ValidationManager pytests
-
-
-class Notifier(object):
-    """Mock object for testing."""
-
-
-class Logger(object):
-    """Mock object for testing."""
-
-    def debug(self, msg):
-        pass
-
-    def error(self, msg):
-        pass
-
-
-MOCK_GET_VALIDATOR_DATA = {
-    "rule_1": {
-        "name": "Rule #1",
-        "description": "This is the first test rule.",
-        "error_msg": "This is the error message",
-        "dependency_ids": ["rule_2", "rule_3", "omit_rule"],
-        "check_func": lambda: CheckResult(True),
-    },
-    "rule_2": {
-        "name": "Rule #2",
-        "description": "This is the second test rule.",
-        "dependency_ids": ["rule_3"],
-        "check_func": lambda: CheckResult(False),
-    },
-    "rule_3": {
-        "name": "Rule #3",
-    },
-    "omit_rule": {
-        "name": "This rule will not be excluded by not including it in the config.",
-    },
-}
 
 
 @pytest.fixture
@@ -113,83 +106,29 @@ def notifier():
     return mock_notifier
 
 
-@pytest.fixture(scope="module")
-def bundle_hook_data_validation_return_value():
-    """
-    The return value for the ValidationManager's class variable '_bundle' method
-    call 'execute_hook_method("hook_scene_operation", "scan_scene")'.
-    """
-
-    return MOCK_GET_VALIDATOR_DATA
-
-
-@pytest.fixture(scope="module")
-def bundle_settings():
-    """
-    The settings for the ValidationManager class variable '_bundle'.
-    """
-
-    return {
-        "rules": [
-            {"id": "rule_1"},
-            {"id": "rule_2", "required": False},
-            {"id": "rule_3", "data_type": "Test Data"},
-        ],
-    }
-
-
-@pytest.fixture(scope="module")
-def bundle_hook_methods(bundle_hook_data_validation_return_value):
-    """
-    A mapping of hooks and their return value for the ValidationManager's class
-    variable '_bundle'. The return values do not necessarily match real production
-    data, this is meant to be used to ensure the ValidationManager can execute its
-    methods without erring on hooks not found.
-    """
-
-    return {
-        "hook_data_validation": {
-            "get_validation_data": bundle_hook_data_validation_return_value
-        },
-    }
-
-
-@pytest.fixture
-def bundle(bundle_settings, bundle_hook_methods):
-    """
-    A mock Application object to use to create the ValidationManager object. Note that
-    the mock Application does not provide the full functionality of the actual class
-    it represents; any additional functionality required must be added here.
-    """
-
-    def mock_app_get_setting(name, default_value=None):
-        """
-        Mock the Application method 'get_settings'
-        """
-        return bundle_settings.get(name, default_value)
-
-    def mock_app_execute_hook_method(hook_name, hook_method, **kwargs):
-        """
-        Mock the Application method 'execute_hook_method'.
-        """
-        return bundle_hook_methods.get(hook_name, {}).get(hook_method, None)
-
-    # Set up the mock Application
-    app = MagicMock()
-    app.get_setting = mock_app_get_setting
-    app.execute_hook_method = mock_app_execute_hook_method
-    app.logger = Logger()
-
-    return app
-
-
 @pytest.fixture
 def manager(bundle, notifier):
-    """
-    Fixture to return a ValidationManager.
-    """
+    """Fixture to return a ValidationManager."""
 
-    return ValidationManager(bundle, notifier=notifier)
+    return ValidationManager(bundle, notifier=notifier, include_rules=RULE_IDS)
+
+
+@pytest.fixture
+def manager_with_dependencies(bundle, notifier):
+    """Fixture to return a ValidationManager with rules that have dependencies."""
+
+    return ValidationManager(
+        bundle, notifier=notifier, include_rules=DEPENDENCY_RULE_IDS
+    )
+
+
+@pytest.fixture
+def manager_with_dependency_cycle(bundle, notifier):
+    """Fixture to return a ValidationManager with rules that have a dependency cycle."""
+
+    return ValidationManager(
+        bundle, notifier=notifier, include_rules=BAD_DEPENDENCY_RULE_IDS
+    )
 
 
 #########################################################################################################
@@ -206,13 +145,13 @@ def manager(bundle, notifier):
 
 
 def test_manager_init_updates_validation_data(
-    bundle, bundle_settings, bundle_hook_data_validation_return_value
+    bundle, bundle_settings, mock_get_validation_data
 ):
     """
     Test the ValidationManager init updates the data passed from the hook.
     """
 
-    data = copy.deepcopy(bundle_hook_data_validation_return_value)
+    data = copy.deepcopy(mock_get_validation_data)
 
     manager = ValidationManager(bundle=bundle)
 
@@ -415,7 +354,7 @@ def test_manager_init_with_include_and_exclude_rules(
     ],
 )
 def test_manager_init_with_rule_settings(
-    bundle, bundle_settings, bundle_hook_data_validation_return_value, rule_settings
+    bundle, bundle_settings, mock_get_validation_data, rule_settings
 ):
     """
     Test the ValidationManager constructor with the rule_settings param.
@@ -427,7 +366,7 @@ def test_manager_init_with_rule_settings(
     if not rule_settings:
         expected_rules = bundle_settings.get("rules", [])
     else:
-        rule_ids = bundle_hook_data_validation_return_value.keys()
+        rule_ids = mock_get_validation_data.keys()
         expected_rules = [r for r in rule_settings if r["id"] in rule_ids]
 
     assert len(manager.rules) == len(expected_rules)
@@ -436,29 +375,27 @@ def test_manager_init_with_rule_settings(
 
 
 def test_manager_create_dependencies(
-    manager, bundle_settings, bundle_hook_data_validation_return_value
+    manager_with_dependencies, mock_get_validation_data
 ):
     """
     Test the ValidationManager constructor creates the Validation Rules correctly.
     """
 
-    rules = bundle_settings.get("rules", [])
-
-    for rule in rules:
-        if rule["id"] not in bundle_hook_data_validation_return_value:
+    for rule in manager_with_dependencies.rules:
+        if rule.id not in mock_get_validation_data:
             continue
 
         # Get the list of dependency ids from the rule data that will create the ValidationRule object
-        rule_data = bundle_hook_data_validation_return_value[rule["id"]]
+        rule_data = mock_get_validation_data[rule.id]
         dependency_ids = rule_data.get("dependency_ids", [])
 
         # Ensure we can find the ValidationRule object
-        found_rule = manager.get_rule(rule["id"])
+        found_rule = manager_with_dependencies.get_rule(rule.id)
         assert found_rule
 
         # Go through each expected dependency and assert that it is added to the ValidationRule object
         for dep_id in dependency_ids:
-            found_dep = manager.get_rule(dep_id)
+            found_dep = manager_with_dependencies.get_rule(dep_id)
             if not found_dep:
                 continue
 
@@ -475,62 +412,11 @@ def test_manager_reset(manager):
     assert manager.errors == {}
 
 
-def test_manager_validate(bundle):
+def test_manager_validate_notifier_signals(manager):
     """
     Test the ValidationManager validate method.
     """
 
-    manager = ValidationManager(bundle, notifier=None)
-    manager.accept_rule_fn = None
-
-    success = manager.validate()
-    assert not success
-
-    # Based on the hook data, there should be 2 errors.
-    # 1. rule_2 explicitly returns not valid
-    # 2. rule_3 does not have a check function (which makes it manual) and is not manually "checked"
-    assert len(manager.errors) == 2
-    assert "rule_2" in manager.errors
-    assert "rule_3" in manager.errors
-
-
-def test_manager_validate_with_accept_fn(bundle):
-    """
-    Test the ValidationManager validate method.
-    """
-
-    manager = ValidationManager(bundle, notifier=None)
-    manager.accept_rule_fn = lambda r: r.check_func is not None
-
-    success = manager.validate()
-    assert not success
-
-    # Based on the hook data and accept function, there should be only 1 error.
-    # 1. rule_2 explicitly returns not valid
-    # Note that rule_3 is ignored by the accept_rule_fn
-    assert len(manager.errors) == 1
-    assert "rule_2" in manager.errors
-
-
-def test_manager_validate_successfully(bundle):
-    """
-    Test the ValidationManager validate method.
-    """
-
-    manager = ValidationManager(bundle, notifier=None)
-    manager.accept_rule_fn = lambda r: r.id == "rule_1"
-
-    success = manager.validate()
-    assert success
-    assert not manager.errors
-
-
-def test_manager_validate_notifier_signals(bundle, notifier):
-    """
-    Test the ValidationManager validate method.
-    """
-
-    manager = ValidationManager(bundle, notifier=notifier)
     manager.validate()
 
     manager.notifier.validate_all_begin.emit.assert_called_once()
@@ -545,12 +431,11 @@ def test_manager_validate_notifier_signals(bundle, notifier):
     )
 
 
-def test_manager_resolve_notifier_signals(bundle, notifier):
+def test_manager_resolve_notifier_signals(manager):
     """
     Test the ValidationManager validate method.
     """
 
-    manager = ValidationManager(bundle, notifier=notifier)
     manager.accept_rule_fn = None
 
     manager.validate()
@@ -569,22 +454,290 @@ def test_manager_resolve_notifier_signals(bundle, notifier):
     )
 
 
-def test_manager_resolve_with_pre_validate_notifier_signals(bundle, notifier):
-    """
-    Test the ValidationManager validate method.
-    """
-
-    manager = ValidationManager(bundle, notifier=notifier)
+def test_manager_resolve_with_pre_validate_notifier_signals(manager):
+    """Test the ValidationManager validate method."""
 
     manager.resolve(pre_validate=True, retry_until_success=False)
 
-    manager.notifier.validate_all_begin.emit.assert_called_once()
-    manager.notifier.validate_all_finished.emit.assert_called_once()
+    manager.notifier.resolve_all_begin.emit.assert_called_once()
+    manager.notifier.resolve_all_finished.emit.assert_called_once()
 
+    assert not manager.notifier.validate_rule_begin.emit.assert_not_called()
+    assert not manager.notifier.validate_rule_finsihed.emit.assert_not_called()
+    assert not manager.notifier.validate_all_begin.emit.assert_not_called()
+    assert not manager.notifier.validate_all_finsihed.emit.assert_not_called()
     expected_calls = [call(r) for r in manager.rules]
-    manager.notifier.validate_rule_begin.emit.assert_has_calls(
+    manager.notifier.resolve_rule_begin.emit.assert_has_calls(
         expected_calls, any_order=True
     )
-    manager.notifier.validate_rule_finished.emit.assert_has_calls(
+    manager.notifier.resolve_rule_finished.emit.assert_has_calls(
         expected_calls, any_order=True
     )
+
+
+def test_manager_validate(manager):
+    """
+    Test the ValidationManager validate method.
+
+    The validation data used is mocked through the bundle (see conftest.py).
+    """
+
+    manager.accept_rule_fn = None
+
+    success = manager.validate()
+    assert not success
+
+    # Based on the hook data, there should be 2 errors.
+    # 1. rule_2 explicitly returns not valid using a object result
+    # 2. rule_3 does not have a check function (which makes it manual) and is not manually "checked"
+    # 3. rule_4 explicitly returns not valid using a dict result
+    assert "rule_2" in manager.errors
+    assert "rule_3" in manager.errors
+    assert "rule_4" in manager.errors
+    assert len(manager.errors) == 3
+
+
+def test_manager_validate_with_accept_fn(manager):
+    """
+    Test the ValidationManager validate method with the accept_fn defined.
+
+    The validation data used is mocked through the bundle (see conftest.py).
+    """
+
+    manager.accept_rule_fn = lambda r: r.check_func is not None
+
+    success = manager.validate()
+    assert not success
+
+    # Based on the hook data and accept function, there should be only 1 error.
+    # 1. rule_2 explicitly returns not valid using object result
+    # 2. rule_4 explicitly returns not valid using dict result
+    # Note that rule_3 is ignored by the accept_rule_fn
+    assert "rule_2" in manager.errors
+    assert "rule_4" in manager.errors
+    assert len(manager.errors) == 2
+
+
+def test_manager_validate_successfully(manager):
+    """
+    Test the ValidationManager validate method.
+
+    The validation data used is mocked through the bundle (see conftest.py).
+    """
+
+    manager.accept_rule_fn = lambda r: r.id == "rule_1"
+
+    success = manager.validate()
+    assert success
+    assert not manager.errors
+
+
+def test_manager_validate_with_dependencies(manager_with_dependencies):
+    """
+    Test the ValidationManager validate_rules method.
+
+    Ignore the ValidationManager rules, and pass in our own specific set for testing.
+    """
+
+    success = manager_with_dependencies.validate()
+    assert not success
+
+    assert "dep_1" in manager_with_dependencies.errors
+    assert "dep_2" in manager_with_dependencies.errors
+    assert "dep_3" in manager_with_dependencies.errors
+    assert "dep_6" in manager_with_dependencies.errors
+    assert "dep_7" in manager_with_dependencies.errors
+    assert len(manager_with_dependencies.errors) == 5
+
+    dep_1 = manager_with_dependencies.get_rule("dep_1")
+    assert dep_1.valid is False
+    assert not dep_1.has_failed_dependency()
+
+    dep_2 = manager_with_dependencies.get_rule("dep_2")
+    assert dep_2.valid is None
+    assert dep_2.has_failed_dependency()
+
+    dep_3 = manager_with_dependencies.get_rule("dep_3")
+    assert dep_3.valid is None
+    assert dep_3.has_failed_dependency()
+
+    dep_4 = manager_with_dependencies.get_rule("dep_4")
+    assert dep_4.valid is True
+    assert not dep_4.has_failed_dependency()
+
+    dep_5 = manager_with_dependencies.get_rule("dep_5")
+    assert dep_5.valid is True
+    assert not dep_5.has_failed_dependency()
+
+    dep_6 = manager_with_dependencies.get_rule("dep_6")
+    assert dep_6.valid is None
+    assert dep_6.has_failed_dependency()
+
+    dep_7 = manager_with_dependencies.get_rule("dep_7")
+    assert dep_7.valid is None
+    assert dep_7.has_failed_dependency()
+
+
+def test_manager_validate_rules_and_ignore_dependencies(manager_with_dependencies):
+    """
+    Test the ValidationManager validate_rules with dependencies.
+
+    Ignore the ValidationManager rules, and pass in our own specific set for testing.
+    """
+
+    dep_1 = manager_with_dependencies.get_rule("dep_1")
+    dep_2 = manager_with_dependencies.get_rule("dep_2")
+    dep_3 = manager_with_dependencies.get_rule("dep_3")
+    dep_5 = manager_with_dependencies.get_rule("dep_5")
+    dep_7 = manager_with_dependencies.get_rule("dep_7")
+
+    rules = [dep_2, dep_3, dep_5, dep_7]
+    manager_with_dependencies.validate_rules(rules)
+
+    assert "dep_1" in manager_with_dependencies.errors
+    assert "dep_2" in manager_with_dependencies.errors
+    assert "dep_3" in manager_with_dependencies.errors
+    assert "dep_7" in manager_with_dependencies.errors
+    assert len(manager_with_dependencies.errors) == 4
+
+    assert dep_1.valid is False
+    assert dep_5.valid is True
+
+    assert dep_2.valid is None
+    assert dep_3.valid is None
+    assert dep_7.valid is None
+
+    assert dep_2.has_failed_dependency()
+    assert dep_3.has_failed_dependency()
+    assert dep_7.has_failed_dependency()
+
+    # Now do not fetch dependencies - ignore dep_1
+    manager_with_dependencies.reset()
+    manager_with_dependencies.validate_rules(rules, fetch_dependencies=False)
+
+    assert dep_7.id in manager_with_dependencies.errors
+    assert len(manager_with_dependencies.errors) == 1
+
+    assert dep_2.valid is True
+    assert dep_3.valid is True
+    assert dep_5.valid is True
+    assert dep_7.valid is False
+
+    assert not dep_2.has_failed_dependency()
+    assert not dep_3.has_failed_dependency()
+    assert not dep_7.has_failed_dependency()
+
+
+@pytest.mark.skipif(sys.version_info.major < 3, reason="requires python 3 or higher")
+def test_manager_validate_detect_dependency_cycle(manager_with_dependency_cycle):
+    """
+    Test the validate method to catch if there is a dependency cycle.
+    """
+
+    with pytest.raises(RecursionError):
+        manager_with_dependency_cycle.validate()
+
+    dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
+    dep_2 = manager_with_dependency_cycle.get_rule("bad_dep_2")
+    dep_3 = manager_with_dependency_cycle.get_rule("bad_dep_3")
+    rules = [dep_1, dep_2, dep_3]
+
+    with pytest.raises(RecursionError):
+        manager_with_dependency_cycle.validate_rules(rules)
+
+    # OK if the cyclic dependency not included
+    rules = [dep_2, dep_3]
+    manager_with_dependency_cycle.validate_rules(rules, fetch_dependencies=False)
+
+
+@pytest.mark.skipif(sys.version_info.major < 3, reason="requires python 3 or higher")
+def test_manager_resolve_detect_dependency_cycle(manager_with_dependency_cycle):
+    """
+    Test the resolve method to catch if there is a dependency cycle.
+    """
+
+    with pytest.raises(RecursionError):
+        manager_with_dependency_cycle.resolve(pre_validate=True)
+
+    with pytest.raises(RecursionError):
+        manager_with_dependency_cycle.resolve(pre_validate=False)
+
+    dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
+    dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
+    dep_2 = manager_with_dependency_cycle.get_rule("bad_dep_2")
+    dep_3 = manager_with_dependency_cycle.get_rule("bad_dep_3")
+    rules = [dep_1, dep_2, dep_3]
+
+    with pytest.raises(RecursionError):
+        manager_with_dependency_cycle.resolve_rules(rules)
+
+    # OK if the cyclic dependency not included
+    rules = [dep_2, dep_3]
+    manager_with_dependency_cycle.resolve_rules(rules, fetch_dependencies=False)
+
+
+def test_manager_resolve(bundle):
+    """
+    Test the resolve method.
+
+    This test function does not test if the data was resolved, it only checks that the fix
+    functions for each rule was called.
+    """
+
+    manager = ValidationManager(bundle=bundle, include_rules=RULE_IDS)
+
+    # Hack the rules' fix function to track the call count
+    for rule in manager.rules:
+        rule._data["fix_func"] = MagicMock()
+
+    manager.resolve(pre_validate=False, retry_until_success=False)
+    for rule in manager.rules:
+        rule.fix_func.assert_called_once()
+
+    # Now check that the fix was called multiple times since we will retry until success
+    # The check functions will continue to return False since they are static, so the fix
+    # will never "succeed"
+    manager.resolve(pre_validate=False, retry_until_success=True)
+    for rule in manager.rules:
+        if rule.valid:
+            # If the rule is valid, we called the fix once before and once now (for total 2 times)
+            assert rule.fix_func.call_count == 2
+        else:
+            # IF the rule is not valid, the manager will have tried multiple times (over 2)
+            assert rule.fix_func.call_count > 2
+
+
+def test_manager_resolve_pre_validate(bundle):
+    """Test the resolve method."""
+
+    manager = ValidationManager(bundle=bundle, include_rules=RULE_IDS)
+
+    # Hack the rules' fix function to track the call count
+    for rule in manager.rules:
+        rule._data["check_func"] = MagicMock()
+
+    manager.resolve(pre_validate=False, post_validate=False, retry_until_success=False)
+    for rule in manager.rules:
+        rule.check_func.assert_not_called()
+
+    manager.resolve(pre_validate=True, post_validate=False, retry_until_success=False)
+    for rule in manager.rules:
+        rule.check_func.assert_called_once()
+
+
+def test_manager_resolve_post_validate(bundle):
+    """Test the resolve method."""
+
+    manager = ValidationManager(bundle=bundle, include_rules=RULE_IDS)
+
+    # Hack the rules' fix function to track the call count
+    for rule in manager.rules:
+        rule._data["check_func"] = MagicMock()
+
+    manager.resolve(pre_validate=False, post_validate=False, retry_until_success=False)
+    for rule in manager.rules:
+        rule.check_func.assert_not_called()
+
+    manager.resolve(pre_validate=False, post_validate=True, retry_until_success=False)
+    for rule in manager.rules:
+        rule.check_func.assert_called_once()

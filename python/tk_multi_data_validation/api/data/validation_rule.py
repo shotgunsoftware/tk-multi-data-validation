@@ -8,6 +8,8 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
+import sgtk
+
 from .validation_rule_type import ValidationRuleType
 
 
@@ -20,7 +22,7 @@ class ValidationRule(object):
     of class properties below for more information on what data is contained in the validation rule object.
     """
 
-    def __init__(self, rule_data):
+    def __init__(self, rule_data, bundle=None):
         """
         Create a validation rule with the provided data.
 
@@ -28,7 +30,7 @@ class ValidationRule(object):
         :type rule_data: dict
 
         **rule_data dict format**
-            key
+            id
                 :type: str
                 :description: The unique identifier for this rule.
             name
@@ -105,7 +107,13 @@ class ValidationRule(object):
             dependencies
                 :type: dict<str>
                 :description: A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.
+
+        :param bundle: (optional) The bundle instance for the app. If not specified, the
+            current bundle will be retrieved.
+        :type bundle: TankBundle
         """
+
+        self.check_data(rule_data)
 
         # Set the main rule data
         self._data = rule_data or {}
@@ -128,6 +136,27 @@ class ValidationRule(object):
         # Runtime exceptions caught - used to display error messages
         self._check_runtime_exception = None
         self._fix_runtime_exception = None
+
+        # Keep track of the rules that this rule depends on, which have failed to be checked
+        # upon attempting to check this rule
+        self._failed_dependency = None
+
+        # Store the hook method to sanitize validation results, as it will be used many times.
+        bundle = bundle or sgtk.platform.current_bundle()
+        hook_path = bundle.get_setting("hook_data_validation")
+        self._sanitize_check_result = bundle.create_hook_instance(
+            hook_path
+        ).sanitize_check_result
+
+    @staticmethod
+    def check_data(data):
+        """Raise an exception if the data is not valid to create a ValidationRule object."""
+
+        if "id" not in data:
+            raise ValueError("Missing id data for ValidationRule.")
+
+        if "name" not in data:
+            raise ValueError("Missing id data for ValidationRule.")
 
     @property
     def id(self):
@@ -199,15 +228,20 @@ class ValidationRule(object):
 
     @property
     def error_message(self):
-        """Get the text that describes how the data is not valid."""
-        default_msg = "Found errors." if self.check_func else ""
-        return self._data.get("error_msg", default_msg)
+        """Get or set the text that describes how the current data errors."""
+        msg = self._data.get("error_msg")
+        if msg is None:
+            if self.check_func:
+                msg = "Found errors."
+            else:
+                msg = ""
+            self._data["error_msg"] = msg
+        return msg
 
     @property
     def warn_message(self):
-        """Get the text that describes the warning for this rule."""
-        default_msg = "Validatoin must be manually checked." if self.manual else ""
-        return self._data.get("warn_msg", default_msg)
+        """Get or set the text that describes the current warnings."""
+        return self._data.get("warn_msg")
 
     @property
     def checked(self):
@@ -287,25 +321,27 @@ class ValidationRule(object):
         """
         Get the valid state of the rule.
 
-        This will reflect the status returned by the rule's check function the last time it was executed.
+        This will reflect the status returned by the rule's check function the last time it was
+        executed. If the value of this property is None, this indicates that the rule's check
+        function was not executed, or the rule's valid state cannot be determined because at
+        least one of the rule's dependencies is not valid or could not be checked (due to one
+        of its dependencies).
         """
         return self._valid
 
     @property
     def errors(self):
         """
-        Get the error data found for this rule.
+        Get the error data for this rule, based on the last time its check function executed.
 
-        This will contain the error data items found by the rule's check function the last time it was
-        executed.
+        This will contain the error data items found by the rule's check function the last time
+        it was executed.
         """
         return self._error_items or []
 
     @property
     def fix_executed(self):
-        """
-        Get the flag indicating if the rule's fix method was executed at least once.
-        """
+        """Get the flag indicating if the rule's fix method was executed at least once."""
         return self._fix_executed
 
     @property
@@ -333,6 +369,29 @@ class ValidationRule(object):
         """
 
         return self._data.get(field)
+
+    def get_actions_data(self, pre_validate=False):
+        """
+        Return the action data required to execute the action callback functions.
+
+        :param pre_validate: True will validate the rule before getting the errors to include
+            in the action data. This ensures that the error data included is not stale.
+        :type pre_validate: bool
+
+        :return: The action data required to execute the callback functions.
+        :rtype: List[dict]
+        """
+
+        actions = []
+
+        for action in self.actions:
+            # Add the current errors to the action data so that the action function can be
+            # applied to the current errors.
+            errors = self.get_errors() if pre_validate else self.errors
+            action["kwargs"] = {"errors": errors}
+            actions.append(action)
+
+        return actions
 
     def get_error_item_ids(self):
         """
@@ -372,13 +431,30 @@ class ValidationRule(object):
         if not self._check_runtime_exception and not self._fix_executed:
             # Only include the validation error message if both check and fix functions
             # executed successfully.
-            rule_error = self._data.get("error_msg")
+            if self.error_message:
+                messages.append(self.error_message)
 
-            if not rule_error and self.check_func:
-                rule_error = "Found errors."
+        return messages
 
-            if rule_error:
-                messages.append(rule_error)
+    def get_warning_messages(self):
+        """Return the list of current warning messages."""
+
+        messages = []
+
+        if self.warn_message:
+            messages.append(self.warn_message)
+
+        if (self.manual and not self.manual_checked) or (
+            not self.manual and not self.check_func
+        ):
+            messages.append("Validation must be manually checked.")
+
+        if self.has_failed_dependency():
+            messages.append(
+                "Validation/Fix not run because the dependency failed: {}".format(
+                    self._failed_dependency.name
+                )
+            )
 
         return messages
 
@@ -400,77 +476,170 @@ class ValidationRule(object):
         """
         return self.dependencies.values()
 
-    def exec_check(self, *args, **kwargs):
+    def get_errors(self):
+        """
+        Execute this rule's check function to get the most up to date error data.
+
+        The rule's check function will be executed, the `errors` property will be updated with
+        the check function's result, and the result will be returned.
+
+        :return: The most up to date error data.
+        :rtype: list
+        """
+
+        self.exec_check()
+        return self.errors
+
+    def set_failed_dependency(self, dependency_rule):
+        """
+        Set the failed dependency for this rule.
+
+        Set the failed dependency as None to indicate that this rule has no failed
+        dependencies.
+
+        This value is used to determine if it is safe to execute the rule's check and fix
+        functions. If a dependency does not succeed, then the data may not be in a proper
+        state for the dependent rule to act on; thus, attempting to execute the rule's
+        check or fix function on the data may yield incorrect results.
+
+        :param dependency_rule: The dependency rule that failed. Pass None to indicate that
+            the rule has no failed dependencies.
+        :type dependency_rule: ValidationRule
+        """
+
+        self._failed_dependency = dependency_rule
+
+    def has_failed_dependency(self):
+        """
+        Return True if this rule has a dependency that failed.
+
+        See `set_failed_dependency` for more information about the usage and purpose of this
+        value.
+        """
+
+        return self._failed_dependency is not None
+
+    def exec_check(self, force=False):
         """
         Execute the rule's check function.
 
-        :param args: The arguments lits to pass to the check function
-        :type args: list
-        :param kwargs: The keyword arguments to pass to the check function
-        :type kwargs: dict
+        It is reccommended to use this method to execute the rule's check function, instead of
+        directly invoking the check function, so that the rule's properties are updated
+        consistently after the check function is executed.
 
-        :return: The result returned by the check function
-        :rtype: any
+        :param force: Set to True to run the check function no matter if there are failed
+            dependencies. Set to False to only run the check if there there is not a failed
+            dependency. Default is False.
+        :type force: bool
+
+        :return: False is returned if failed to execute the check (there is a failed
+            dependency or the check function threw an exception). None is returned if the rule
+            does not have a check function. Otherwise, the result returned by the check
+            function is sanitized by `_process_check_result` and returned.
+        :rtype: list | bool | None
         """
 
-        func = self.check_func
+        # Reset teh check runtime exception
+        self._check_runtime_exception = None
 
-        if func:
-            kwargs.update(self.get_kwargs())
-            try:
-                result = func(*args, **kwargs)
-
-                # Try to set the valid and errors data properties on the rule from the result returned by
-                # the check function. If the result does not have the expected attributes, we will continue on
-                # but the rule will not be updated
-                self._process_check_result(result)
-
-                # Set the runtime exception to None since there was no error
-                self._check_runtime_exception = None
-
-            except Exception as runtime_error:
-                result = None
-                self._valid = False
-                self._error_items = []
-                self._check_runtime_exception = runtime_error
-
-        else:
-            # This is a manual check. It is considered valid if the user has checked it off.
-            self._valid = self.manual_checked
-            self._error_items = []
+        # Do not run the check function when it has a failed dependency, and not forcing.
+        if not force and self.has_failed_dependency():
+            # Set the rule state to indicate that the check function not run
+            self._valid = None
+            self._error_items = None
             result = None
+        else:
+            # Run the check function
+            if self.check_func:
+                kwargs = self.get_kwargs()
+                try:
+                    raw_result = self.check_func(**kwargs)
+                    result = self._process_check_result(raw_result)
+                except Exception as runtime_error:
+                    self._check_runtime_exception = runtime_error
+                    self._valid = False
+                    self._error_items = None
+                    result = None
+            else:
+                # This is a manual check. It is considered valid if the user has checked it off.
+                self._valid = self.manual_checked
+                self._error_items = None
+                result = None
 
         return result
 
-    def exec_fix(self, *args, **kwargs):
+    def exec_fix(self, pre_validate=True, force=False):
         """
         Execute the rule's fix function.
 
-        Note that if this rule has dependencies, this method does not take those into account. See the
-        ValidationManager resolve methods to handle rule dependencies.
+        It is reccommended to use this method to execute the rule's fix function, instead of
+        directly invoking the fix function, so that the rule's properties are updated
+        consistently after the fix function is executed.
 
-        :param args: The arguments lits to pass to the check function
-        :type args: list
-        :param kwargs: The keyword arguments to pass to the check function
-        :type kwargs: dict
+        Validate will run before executing the fix if `pre_validate=True`. It is encouraged to
+        pre validate so that the error data is always retrieved right before running the fix,
+        and the error data accurately reflects the current data. If not pre validated, then
+        the fix will be applied to the error data that was retrieved the last time the
+        validate was run (this requires user to always manually validate before fix, and
+        ensure the error data reflects the current data before running the fix).
+
+        Fetching nor fixing dependencies is not handled in this method (see the
+        :class:`ValidationManager` resolve methods), though it will fail immediately if there
+        are errors and it has the failed dependency property set.
+
+        :param pre_validate: Set to True to run the rule's validate function before fixing.
+            This ensures the error data passed to the fix function accurately reflect the
+            current data.
+        :type pre_validate: bool
+        :param force: Set to True to run the fix function no matter if there are failed
+            dependencies. Set to False to only run the fix if there there is not a failed
+            dependency. Default is False.
+        :type force: bool
+
+        :return: The result of the fix function.
+        :rtype: bool
 
         :raises Exception: If the fix operation was not successful.
         """
 
-        func = self.fix_func
+        # Reset the fix runtime exception
+        self._fix_runtime_exception = None
 
-        if not func:
-            return
+        # Before running the fix, first validate (if specified) to ensure the error data
+        # accurately reflects the current data.
+        if pre_validate:
+            self.exec_check()
 
-        kwargs.update(self.get_kwargs())
+        # If the rule has successfully validated, then no need to run the fix (since there is
+        # nothing to fix).
+        # NOTE it is encouraged to set pre_validate=True to ensure errors reflect the current
+        # data and does not require user to run validate before fix to gather the error data.
+        if self.valid:
+            return True
+
+        # If there is no fix function, the data can not be automatically fixed. Return failure.
+        if not self.fix_func:
+            return False
+
+        # Do not run the fix function if it has a failed dependency and not forcing. If a
+        # dependency has failed, the data may not be in the required state for this fix to be
+        # applicable. Return failure.
+        if not force and self.has_failed_dependency():
+            return False
+
+        # Get the key-word arguments and set the errors to pass to the fix function
+        kwargs = self.get_kwargs()
+        kwargs["errors"] = self.errors
+
         try:
-            func(*args, **kwargs)
-            self._fix_runtime_exception = None
-        except Exception as runtime_error:
-            self._fix_runtime_exception = runtime_error
-        finally:
+            fix_result = self.fix_func(**kwargs)
             # The fix function was executed - set the flag to True
             self._fix_executed = True
+        except Exception as runtime_error:
+            self._fix_runtime_exception = runtime_error
+            fix_result = False
+
+        return fix_result
 
     #########################################################################################################
     # Protected methods
@@ -486,38 +655,44 @@ class ValidationRule(object):
 
         :param result: The result returned by a validation rule check function.
         :type result: dict | object
+
+        :return: The sanitized result.
+        :rtype: dict
         """
 
-        if not result:
-            return
+        # First sanitize the result
+        sanitized_result = self._sanitize_check_result(result)
 
+        # Define the required fields for the check result
         required_fields = ("is_valid", "errors")
 
-        if isinstance(result, dict):
+        if isinstance(sanitized_result, dict):
             for field in required_fields:
-                if field not in result:
+                if field not in sanitized_result:
                     raise ValueError(
                         "Validation Rule check function dict result missing key '{field}'".format(
                             field=field
                         )
                     )
 
-            self._valid = result["is_valid"]
-            self._error_items = result["errors"]
+            self._valid = sanitized_result["is_valid"]
+            self._error_items = sanitized_result["errors"]
 
-        elif isinstance(result, object):
+        elif isinstance(sanitized_result, object):
             for field in required_fields:
-                if not hasattr(result, field):
+                if not hasattr(sanitized_result, field):
                     raise ValueError(
                         "Validation Rule check function object result missing attribute '{field}'".format(
                             field=field
                         )
                     )
 
-            self._valid = result.is_valid
-            self._error_items = result.errors
+            self._valid = sanitized_result.is_valid
+            self._error_items = sanitized_result.errors
 
         else:
             raise TypeError(
                 "Validation Rule check function result cannot be processed."
             )
+
+        return sanitized_result
