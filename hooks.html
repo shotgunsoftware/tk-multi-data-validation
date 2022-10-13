@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Validation Hooks &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  <title>Hooks &mdash; tk-multi-data-validation v0.1.2 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data" href="data.html" />
-    <link rel="prev" title="Data Validation" href="index.html" /> 
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Reference" href="reference.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,14 +94,19 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Validation Hooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#hook-data-validator">hook_data_validator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hooks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hook-data-validation">hook_data_validation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -125,16 +130,22 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
     
-        This documentation is part of the Shotgun Pipeline Toolkit.
+        This documentation is part of the ShotGrid Pipeline Toolkit.
     
     For more information, please visit
-    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
     The code associated with this documentation can be found
     <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
 
     </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
 
 
 
@@ -179,7 +190,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Data Validation Hooks</li>
+          <li><a href="reference.html">Reference</a> &raquo;</li>
+        
+      <li>Hooks</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -196,13 +209,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="data-validation-hooks">
-<span id="validation-hooks"></span><h1>Data Validation Hooks<a class="headerlink" href="#data-validation-hooks" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="hook-data-validator">
-<span id="validation-hooks-data-validator"></span><h2>hook_data_validator<a class="headerlink" href="#hook-data-validator" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="hooks">
+<span id="validation-hooks"></span><h1>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hook-data-validation">
+<span id="validation-hooks-data-validation"></span><h2>hook_data_validation<a class="headerlink" href="#hook-data-validation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="hooks.data_validator.AbstractDataValidatorHook">
-<em class="property">class </em><code class="descclassname">hooks.data_validator.</code><code class="descname">AbstractDataValidatorHook</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validator.html#AbstractDataValidatorHook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validator.AbstractDataValidatorHook" title="Permalink to this definition">¶</a></dt>
+<dt id="hooks.data_validation.AbstractDataValidationHook">
+<em class="property">class </em><code class="descclassname">hooks.data_validation.</code><code class="descname">AbstractDataValidationHook</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tank.hook.Hook</span></code></p>
 <p>Abstract hook class that defines the necessary methods for the Data Validation App to function.</p>
 <p>This is the main hook for the App and is essential for the App to display the validation data and to
@@ -212,12 +225,12 @@ and fix functionality for a specific DCC.</p>
 be validated will be specific to the running DCC. This hook class must be subclassed, for example, by the
 engine where DCC specific functionality is available.</p>
 <dl class="method">
-<dt id="hooks.data_validator.AbstractDataValidatorHook.get_validation_data">
-<code class="descname">get_validation_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validator.html#AbstractDataValidatorHook.get_validation_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validator.AbstractDataValidatorHook.get_validation_data" title="Permalink to this definition">¶</a></dt>
+<dt id="hooks.data_validation.AbstractDataValidationHook.get_validation_data">
+<code class="descname">get_validation_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook.get_validation_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook.get_validation_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the main data validation rule set that drives the App.</p>
 <p>This method must be implemented by the subclass.</p>
 <p>It is not enforced, but the dictionary returned by this function should be formated such that each
-key-value pair can be passed to create a <a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><code class="xref py py-class docutils literal notranslate"><span class="pre">tk_multi_data_validation.data.ValidationRule</span></code></a>.</p>
+key-value pair can be passed to create a <a class="reference internal" href="api.html#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><code class="xref py py-class docutils literal notranslate"><span class="pre">tk_multi_data_validation.api.data.ValidationRule</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -227,6 +240,61 @@ key-value pair can be passed to create a <a class="reference internal" href="dat
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>NotImplementedError</strong> – If the subclass does not implement this function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hooks.data_validation.AbstractDataValidationHook.sanitize_check_result">
+<code class="descname">sanitize_check_result</code><span class="sig-paren">(</span><em>errors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook.sanitize_check_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook.sanitize_check_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sanitize the value returned by any validate function to conform to the standard format.</p>
+<p>This method must be implemented by the subclass.</p>
+<p>Each engine will provide their own validation functions which should return the list of
+objects that do not follow the validation rule. These objects will be referred to as
+“errors”. In order for the Data Validation App to handle these objects coming from
+different DCCs, the error objects need to be sanitized into a format that the Data
+Validation App can handle. The standard format that the Data Validation App excepts
+is a list of dictionaries, where each dictionary defines a DCC error object with
+the following keys:</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">is_valid:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">bool</span></code> True if the validate function succeed with the current data, else False.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">errors:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">List[dict]</span></code> The list of error objects (found by the validate function). None or empty list if the current data is valid. List elements have the following keys:</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">id:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">|</span> <span class="pre">int</span></code> A unique identifier for the error object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">str</span></code> The display name for the error object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">str</span></code> The display name of the error object type (optional).</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>This method will be called by the Data Validation App after any validate function is
+called, in order to receive the validate result in the required format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>errors</strong> (<em>any</em>) – The value returned by a validate function that needs to be sanitized to
+the standard format.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The validation result in the standardized format.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -245,10 +313,10 @@ key-value pair can be passed to create a <a class="reference internal" href="dat
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="data.html" class="btn btn-neutral float-right" title="Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Data Validation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reference.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -285,15 +353,14 @@ key-value pair can be passed to create a <a class="reference internal" href="dat
   
  
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-2114792-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
 
 
 </body>

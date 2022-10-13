@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API Reference &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  <title>API &mdash; tk-multi-data-validation v0.1.2 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Widgets" href="widgets.html" />
-    <link rel="prev" title="Data" href="data.html" /> 
+    <link rel="next" title="Glossary" href="glossary.html" />
+    <link rel="prev" title="Hooks" href="hooks.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,14 +94,21 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="hooks.html">Data Validation Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#validation-manager">Validation Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hooks.html">Hooks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#validation-manager">Validation Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-rule">Validation Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-widget">Validation Widget</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -125,16 +132,22 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
     
-        This documentation is part of the Shotgun Pipeline Toolkit.
+        This documentation is part of the ShotGrid Pipeline Toolkit.
     
     For more information, please visit
-    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
     The code associated with this documentation can be found
     <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
 
     </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
 
 
 
@@ -179,7 +192,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>API Reference</li>
+          <li><a href="reference.html">Reference</a> &raquo;</li>
+        
+      <li>API</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -196,33 +211,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="api-reference">
-<span id="validation-api"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="api">
+<span id="validation-api"></span><h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <p>The Data Validation API provides an interface to use components of the App, without running the App from a GUI.</p>
 <div class="section" id="validation-manager">
-<h2>Validation Manager<a class="headerlink" href="#validation-manager" title="Permalink to this headline">¶</a></h2>
+<span id="validation-api-manager"></span><h2>Validation Manager<a class="headerlink" href="#validation-manager" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="tk_multi_data_validation.api.ValidationManager">
-<em class="property">class </em><code class="descclassname">tk_multi_data_validation.api.</code><code class="descname">ValidationManager</code><span class="sig-paren">(</span><em>rule_settings=None</em>, <em>include_rules=None</em>, <em>exclude_rules=None</em>, <em>validation_logger=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.api.</code><code class="descname">ValidationManager</code><span class="sig-paren">(</span><em>bundle=None</em>, <em>rule_settings=None</em>, <em>include_rules=None</em>, <em>exclude_rules=None</em>, <em>logger=None</em>, <em>notifier=None</em>, <em>has_ui=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Manager class for data validation.</p>
 <p>This class is responsible for retrieving the data validation rules from the current bundle’s settings,
 and creating the set of ValidationRule objects that define how the data should be validated.</p>
-<p>This class object may be passed to the <a class="reference internal" href="widgets.html#tk_multi_data_validation.widgets.ValidationWidget" title="tk_multi_data_validation.widgets.ValidationWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">tk_multi_data_validation.widgets.ValidationWidget</span></code></a> to help
+<p>This class object may be passed to the <a class="reference internal" href="#tk_multi_data_validation.widgets.ValidationWidget" title="tk_multi_data_validation.widgets.ValidationWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">tk_multi_data_validation.widgets.ValidationWidget</span></code></a> to help
 manager validation rules, and executing their actions.</p>
 <p>It also coordinates the execution of validation rule check and fix functions.</p>
 <p>Initialize the validation manager from the settings data.</p>
+<p>The hook “hook_data_validation” will be used to get the validation data for the
+manager by calling the hook’s method “get_validation_data”. NOTE the data returned
+by this hook method will be modified.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bundle</strong> (<em>TankBundle</em>) – The bundle instance for the app.</li>
 <li><strong>rule_settings</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – The rule settings to use for this manager. Default is to use the
 current bunlde’s settings.</li>
 <li><strong>include_rules</strong> (<em>list&lt;str&gt;</em>) – List of rule ids to include from the app’s default rules list.</li>
 <li><strong>exclude_rules</strong> (<em>list&lt;str&gt;</em>) – List of rule ids to exclude from the app’s default rules list.</li>
-<li><strong>validation_logger</strong> – This is a standard python logger to use during validation. A default logger
+<li><strong>logger</strong> (<em>A standard python logger.</em>) – This is a standard python logger to use during validation. A default logger
 will be provided if not supplied.</li>
+<li><strong>notifier</strong> (<em>ValidationNotifer</em>) – A notifier object to emit Qt signals.</li>
+<li><strong>has_ui</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True if the manager is being used with a UI, else False.</li>
 </ul>
 </td>
 </tr>
@@ -238,13 +259,6 @@ check function is executed. The returned parameter is the validation rule.</p>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="tk_multi_data_validation.api.ValidationManager.ValidationNotifier">
-<em class="property">class </em><code class="descname">ValidationNotifier</code><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.ValidationNotifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.ValidationNotifier" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PySide2.QtCore.QObject</span></code></p>
-<p>Inner helper class to emit signals around validation operations.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="tk_multi_data_validation.api.ValidationManager.notifier">
 <code class="descname">notifier</code><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.notifier" title="Permalink to this definition">¶</a></dt>
@@ -277,6 +291,12 @@ check function is executed. The returned parameter is the validation rule.</p>
 indicate if the rule should be validated or not.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.ValidationManager.has_ui">
+<code class="descname">has_ui</code><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.has_ui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the flag indicating if this manager is running with a User Interface.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.get_rule">
 <code class="descname">get_rule</code><span class="sig-paren">(</span><em>rule_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.get_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.get_rule" title="Permalink to this definition">¶</a></dt>
@@ -289,7 +309,7 @@ indicate if the rule should be validated or not.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The validation rule.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule">ValidationRule</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule">ValidationRule</a></td>
 </tr>
 </tbody>
 </table>
@@ -304,23 +324,18 @@ indicate if the rule should be validated or not.</p>
 
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the DCC data by executing all validation rule check functions.</p>
+<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the data by executing all validation rule check functions.</p>
+<p>This method will reset the current validation manager state before validating any
+rules. This means that any errors found on a previous validation operation will be
+removed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>emit_signals</strong> – Set to True to emit notifier signals for validation begin and finished.</li>
-<li><strong>emit_signals</strong> – bool</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if all validation rule checks passed (data is valid), else False.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if all validation rule checks passed (data is valid), else False.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -328,15 +343,23 @@ indicate if the rule should be validated or not.</p>
 
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.validate_rules">
-<code class="descname">validate_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.validate_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.validate_rules" title="Permalink to this definition">¶</a></dt>
+<code class="descname">validate_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>fetch_dependencies=True</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.validate_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.validate_rules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the given list of rules.</p>
+<p>This method will not reset the current validation manager state. This means that
+if a rule was found to have errors and it is not processed in this validation
+operation, than the error will remain.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The list of rules.</li>
-<li><strong>emit_signals</strong> – Set to True to emit notifier signals for validation begin and finished.</li>
+<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt; | ValidationRule</em>) – The list of rules to validate. This method will also accept a single
+validation object.</li>
+<li><strong>fetch_dependencies</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to ensure all dependencies for a rule are
+validated before the rule itself is validated. Set to False will not fetch any
+missing dependencies to validate first. Set to None to prompt user to fetch or
+not. Defaults to True.</li>
+<li><strong>emit_signals</strong> – True will emit notifier signals when validation begins and ends.</li>
 <li><strong>emit_signals</strong> – bool</li>
 </ul>
 </td>
@@ -348,7 +371,7 @@ indicate if the rule should be validated or not.</p>
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.validate_rule">
 <code class="descname">validate_rule</code><span class="sig-paren">(</span><em>rule</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.validate_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.validate_rule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the DCC data with the given rule.</p>
+<dd><p>Validate the data with the given rule.</p>
 <p>The check function executed to validate the DCC data is implemented by the ValidationRule (e.g. the
 manager does nothing to validate the data, it is just responsible for executing the validate
 functions).</p>
@@ -356,7 +379,7 @@ functions).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The rule to validate data by</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The rule to validate data by</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the validation rule check passed (data is valid for this rule), else False.</td>
 </tr>
@@ -368,7 +391,7 @@ functions).</p>
 
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.resolve">
-<code class="descname">resolve</code><span class="sig-paren">(</span><em>pre_validate=False</em>, <em>post_validate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resolve</code><span class="sig-paren">(</span><em>pre_validate=True</em>, <em>post_validate=False</em>, <em>retry_until_success=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve the current data violations found by the validate method.</p>
 <p>The fix function executed to resolve the DCC data violations is implemented by the ValidationRule
 (e.g. the manager does nothing to validate the data, it is just responsible for executing the
@@ -378,10 +401,14 @@ fix functions).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pre_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will run the validation step before the resovle step, to ensure the
-list of items to resolve is the most up to date.</li>
+<li><strong>pre_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will run each rule’s validation before its fix, to ensure the
+error data passed to the fix accurately reflects the most current data.</li>
 <li><strong>post_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will run the validation step after the resolve step, to check that
-the scene data is valid after resolution steps applied.</li>
+the scene data is valid after resolution steps applied. Default False.</li>
+<li><strong>retry_until_success</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True will try to fun the resolution operation until all
+rules have been resolved. The maximum number of tries to resolve will be equal to the
+number of rules in the manager. This will perform post validate step, evne if post validate
+has been set to False. Default True.</li>
 </ul>
 </td>
 </tr>
@@ -399,52 +426,21 @@ returned by post validating the data.</p>
 
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.resolve_rules">
-<code class="descname">resolve_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>fetch_dependencies=None</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve_rules" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resolve_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>pre_validate=True</em>, <em>fetch_dependencies=None</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve_rules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve the given list of rules.</p>
-<p>Steps to resolve rules
-1. Iterate over all rules</p>
-<blockquote>
-<div><ol class="loweralpha simple">
-<li>If the rule has no dependencies - resolve it immediately</li>
-<li>If the rule has dependencies - add it to the queue to process later</li>
-</ol>
-</div></blockquote>
-<ol class="arabic" start="2">
-<li><p class="first">If <cite>fetch_dependencies</cite> is not explicitly set as False, check if all dependencies are provided</p>
-<blockquote>
-<div><ol class="loweralpha simple">
-<li>If missing dependencies and <cite>fetch_dependencies</cite> not explicitly set to True then prompt user to fetch and resolve dependencies</li>
-<li>If <cite>fetch_dependencies</cite> is explicitly set to True or user answered YES to (a), then try to find any missing dependencies in the manager, and process them as done with the other rules</li>
-</ol>
-</div></blockquote>
-</li>
-<li><p class="first">Process the queue of rules (that have dependencies)</p>
-<blockquote>
-<div><ol class="loweralpha simple">
-<li>If the rule’s dependencies have been resolved or ignored - now resolve it and mark it as resolved</li>
-<li>If the rule’s dependencies have not been resolved - add it back to the end of the queue</li>
-</ol>
-</div></blockquote>
-</li>
-</ol>
-<p>Time complexity (n = number of rules)</p>
-<ol class="arabic simple">
-<li>O(n)</li>
-<li>O(n^2) - worst case</li>
-</ol>
-<p>NOTE: Time complexity is not the best with O(n^2) but is probably good enough since the list of
-validation rules is not expected to be so large. If the number of rules does grow to be a large
-list, then this fix operation may need to be optimized (e.g. build a dependency tree that defines
-the order of fixing the rules).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The list of rules to resolve.</li>
-<li><strong>fetch_dependencies</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to ensure all dependencies for a reule are resolved before
-the rule itself is resolved. Set to False will not fetch any missing dependencies to resolve.</li>
-<li><strong>emit_signals</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to emit notifier signals for resolve operation.</li>
+<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt; | ValidationRule</em>) – The list of rules to resolve. This method will also accept a single
+validation object.</li>
+<li><strong>pre_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will run each rule’s validation before its fix, to ensure the
+error data passed to the fix accurately reflects the most current data.</li>
+<li><strong>fetch_dependencies</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to ensure all dependencies for a rule are
+resolved before the rule itself is resolved. Set to False will not fetch any
+missing dependencies to resolve first. Set to None to prompt user to fetch or not.
+Defaults to None.</li>
 </ul>
 </td>
 </tr>
@@ -454,13 +450,13 @@ the rule itself is resolved. Set to False will not fetch any missing dependencie
 
 <dl class="method">
 <dt id="tk_multi_data_validation.api.ValidationManager.resolve_rule">
-<code class="descname">resolve_rule</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve_rule" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resolve_rule</code><span class="sig-paren">(</span><em>rule</em>, <em>pre_validate=True</em>, <em>emit_signals=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/manager.html#ValidationManager.resolve_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.ValidationManager.resolve_rule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve the validation rule.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="data.html#tk_multi_data_validation.data.ValidationRule" title="tk_multi_data_validation.data.ValidationRule"><em>ValidationRule</em></a>) – The validation rule to resolve</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The validation rule to resolve</td>
 </tr>
 </tbody>
 </table>
@@ -468,7 +464,1111 @@ the rule itself is resolved. Set to False will not fetch any missing dependencie
 
 </dd></dl>
 
-<span class="target" id="validation-api-manager"></span></div>
+</div>
+<div class="section" id="validation-rule">
+<h2>Validation Rule<a class="headerlink" href="#validation-rule" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tk_multi_data_validation.api.data.ValidationRule">
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.api.data.</code><code class="descname">ValidationRule</code><span class="sig-paren">(</span><em>rule_data</em>, <em>bundle=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A validation rule to be applied to the DCC data, which determines if the DCC data is valid or not.</p>
+<p>The key properties of the rule are the <cite>check_func</cite> and <cite>fix_func</cite>; these functions define the how the
+DCC data is validated and provides an automated function to resolve data that is not valid. See the list
+of class properties below for more information on what data is contained in the validation rule object.</p>
+<p>Create a validation rule with the provided data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule_data</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – The data that defines the rule.</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><strong>rule_data dict format</strong></dt>
+<dd><dl class="first last docutils">
+<dt>id</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The unique identifier for this rule.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>name</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The display name for this rule.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>data_type:</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The name of the data type that this rule pertains to.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>description</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text that describes what the rule checks for in the data.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>required</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">True indicates that this rule should be applied when validating the data.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>checked</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">True indicates that this rule has a checked state (for UI purposes), False indicates the rule is unchecked.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>check_name</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The display name for the rule’s check function.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>check_func</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The function the rule executes to check the data for violations agains the rule.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>fix_name</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The display name for the rule’s fix function.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>fix_func</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The function the rule executes to fix the data violations found after applying the rule’s check function to the data.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>fix_tooltip</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text that describes what the rule’s fix function will do.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>error_msg</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text that describes how the data is not valid.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>warn_msg</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text that describes the warning for this rule.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>get_kwargs</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">A function that returns a dictionary of keyword arguments to pass to the check and fix functions.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>actions</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">list&lt;dict&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">A list of actions that can be applied to the data to resolve any errors for this rule.</td>
+</tr>
+</tbody>
+</table>
+<dl class="last docutils">
+<dt><strong>Required Keys</strong></dt>
+<dd><dl class="first last docutils">
+<dt>name</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The display text for the action.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>callback</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The function to call when the action is invoked.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>Optional Keys</strong></dt>
+<dd><dl class="first last docutils">
+<dt>tooltip</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text to display as for the item action’s tooltip help messages.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>item_actions</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">list&lt;dict&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">A list of actions that can be applied to the particular data for this rule, to resolve the error.</td>
+</tr>
+</tbody>
+</table>
+<dl class="last docutils">
+<dt><strong>Required Keys</strong></dt>
+<dd><dl class="first last docutils">
+<dt>name</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The display text for the action.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>callback</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">function</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">The function to call when the action is invoked.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>Optional Keys</strong></dt>
+<dd><dl class="first last docutils">
+<dt>tooltip</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">str</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">Text to display as for the item action’s tooltip help messages.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>dependencies</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">dict&lt;str&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">description:</th><td class="field-body">A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bundle</strong> (<em>TankBundle</em>) – (optional) The bundle instance for the app. If not specified, the
+current bundle will be retrieved.</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.check_data">
+<em class="property">static </em><code class="descname">check_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.check_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.check_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise an exception if the data is not valid to create a ValidationRule object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.id">
+<code class="descname">id</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the unique identifier for this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.type">
+<code class="descname">type</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationRuleType</span></code> of this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.rule_type_name">
+<code class="descname">rule_type_name</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.rule_type_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the display name for the type of this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.data_type">
+<code class="descname">data_type</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.data_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data type that this rule peratins to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.name">
+<code class="descname">name</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the display name for thsi rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.description">
+<code class="descname">description</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the description text for what this rule does.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.required">
+<code class="descname">required</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the property flag indicating if this rule should be executed to validate the data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.manual">
+<code class="descname">manual</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.manual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the property flag indicating if this rule cannot be automatically checked.</p>
+<p>These types of rules must be manually validated by user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.optional">
+<code class="descname">optional</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.optional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the property flag indicating if this rule is optional.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.check_name">
+<code class="descname">check_name</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.check_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the display name for the check function of this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.fix_name">
+<code class="descname">fix_name</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.fix_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the display name for the fix function of this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.fix_tooltip">
+<code class="descname">fix_tooltip</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.fix_tooltip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the text that describes what the fix function does for this rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.error_message">
+<code class="descname">error_message</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.error_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the text that describes how the current data errors.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.warn_message">
+<code class="descname">warn_message</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.warn_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the text that describes the current warnings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.checked">
+<code class="descname">checked</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.checked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the set the property flag indicating that an optional rule is checked (turned on).</p>
+<p>This is meant to be used to set the UI check state for an optional rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.manual_checked">
+<code class="descname">manual_checked</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.manual_checked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the set the property flag indicating that a manual rule is checked (user set as valid).</p>
+<p>This is meant to be used to set the UI check state for a manual rule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.check_func">
+<code class="descname">check_func</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.check_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the function that this rule executes to validate the data.</p>
+<p>It is encouraged to use the <cite>exec_check</cite> method instead of getting this function and calling it
+directly.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.fix_func">
+<code class="descname">fix_func</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.fix_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the function that this rule executes to fix the data violations found by the rule.</p>
+<p>It is encouraged to use the <cite>exec_fix</cite> method instead of getting this function and calling it
+directly.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_kwargs">
+<code class="descname">get_kwargs</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the function that returns the extra keyword arguments dict to pass to the check and fix functions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.actions">
+<code class="descname">actions</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of actions that can be applied to all error items (as a group) for this rule.</p>
+<p>These do no include the primary check or fix functions. This property is a list of dicts, which contain
+a <cite>name</cite> and <cite>callback</cite> keys, and optionally contains keys: <cite>tooltip</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.item_actions">
+<code class="descname">item_actions</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.item_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of actions that can be applied invididual error items (one at a time) for this rule.</p>
+<p>These do no include the primary check or fix functions. This property is a list of dicts, which contain
+a <cite>name</cite> and <cite>callback</cite> keys, and optionally contains keys: <cite>tooltip</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.valid">
+<code class="descname">valid</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the valid state of the rule.</p>
+<p>This will reflect the status returned by the rule’s check function the last time it was
+executed. If the value of this property is None, this indicates that the rule’s check
+function was not executed, or the rule’s valid state cannot be determined because at
+least one of the rule’s dependencies is not valid or could not be checked (due to one
+of its dependencies).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.errors">
+<code class="descname">errors</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the error data for this rule, based on the last time its check function executed.</p>
+<p>This will contain the error data items found by the rule’s check function the last time
+it was executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.fix_executed">
+<code class="descname">fix_executed</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.fix_executed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the flag indicating if the rule’s fix method was executed at least once.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.dependencies">
+<code class="descname">dependencies</code><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dependencies information for this rule.</p>
+<p>Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+fixed in, when fixing in bulk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data from the rule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The field to get data for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The data for the specified field</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">any</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_actions_data">
+<code class="descname">get_actions_data</code><span class="sig-paren">(</span><em>pre_validate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_actions_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_actions_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the action data required to execute the action callback functions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pre_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will validate the rule before getting the errors to include
+in the action data. This ensures that the error data included is not stale.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The action data required to execute the callback functions.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List[<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_error_item_ids">
+<code class="descname">get_error_item_ids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_error_item_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_error_item_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to get a list of the item ids from the data errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The item ids of the error items.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_error_messages">
+<code class="descname">get_error_messages</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_error_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_error_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of current error messages.</p>
+<p>If there was a run time error during the check or fix function, the error messages will
+contain these run time error messages. The default error message will not be included.</p>
+<p>If the check and fix functions executed successfully, then return the default error
+message for the rule (e.g. assumes if the check/fix ran successfully than if there is
+an error, it will be due to finding actual validation errors related to the rule).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The error messages.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_warning_messages">
+<code class="descname">get_warning_messages</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_warning_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_warning_messages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of current warning messages.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_dependency_ids">
+<code class="descname">get_dependency_ids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_dependency_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_dependency_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the validation rules (ids) that this rule depends on.</p>
+<p>Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+fixed in, when fixing in bulk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_dependency_names">
+<code class="descname">get_dependency_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_dependency_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_dependency_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the validation rules (display names) that this rule depends on.</p>
+<p>Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are
+fixed in, when fixing in bulk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.get_errors">
+<code class="descname">get_errors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.get_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.get_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute this rule’s check function to get the most up to date error data.</p>
+<p>The rule’s check function will be executed, the <cite>errors</cite> property will be updated with
+the check function’s result, and the result will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The most up to date error data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.set_failed_dependency">
+<code class="descname">set_failed_dependency</code><span class="sig-paren">(</span><em>dependency_rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.set_failed_dependency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.set_failed_dependency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the failed dependency for this rule.</p>
+<p>Set the failed dependency as None to indicate that this rule has no failed
+dependencies.</p>
+<p>This value is used to determine if it is safe to execute the rule’s check and fix
+functions. If a dependency does not succeed, then the data may not be in a proper
+state for the dependent rule to act on; thus, attempting to execute the rule’s
+check or fix function on the data may yield incorrect results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dependency_rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The dependency rule that failed. Pass None to indicate that
+the rule has no failed dependencies.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.has_failed_dependency">
+<code class="descname">has_failed_dependency</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.has_failed_dependency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.has_failed_dependency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if this rule has a dependency that failed.</p>
+<p>See <cite>set_failed_dependency</cite> for more information about the usage and purpose of this
+value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.exec_check">
+<code class="descname">exec_check</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.exec_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.exec_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the rule’s check function.</p>
+<p>It is reccommended to use this method to execute the rule’s check function, instead of
+directly invoking the check function, so that the rule’s properties are updated
+consistently after the check function is executed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to run the check function no matter if there are failed
+dependencies. Set to False to only run the check if there there is not a failed
+dependency. Default is False.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">False is returned if failed to execute the check (there is a failed
+dependency or the check function threw an exception). None is returned if the rule
+does not have a check function. Otherwise, the result returned by the check
+function is sanitized by <cite>_process_check_result</cite> and returned.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list | bool | None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.api.data.ValidationRule.exec_fix">
+<code class="descname">exec_fix</code><span class="sig-paren">(</span><em>pre_validate=True</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.exec_fix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.exec_fix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the rule’s fix function.</p>
+<p>It is reccommended to use this method to execute the rule’s fix function, instead of
+directly invoking the fix function, so that the rule’s properties are updated
+consistently after the fix function is executed.</p>
+<p>Validate will run before executing the fix if <cite>pre_validate=True</cite>. It is encouraged to
+pre validate so that the error data is always retrieved right before running the fix,
+and the error data accurately reflects the current data. If not pre validated, then
+the fix will be applied to the error data that was retrieved the last time the
+validate was run (this requires user to always manually validate before fix, and
+ensure the error data reflects the current data before running the fix).</p>
+<p>Fetching nor fixing dependencies is not handled in this method (see the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationManager</span></code> resolve methods), though it will fail immediately if there
+are errors and it has the failed dependency property set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pre_validate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to run the rule’s validate function before fixing.
+This ensures the error data passed to the fix function accurately reflect the
+current data.</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to run the fix function no matter if there are failed
+dependencies. Set to False to only run the fix if there there is not a failed
+dependency. Default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The result of the fix function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>Exception</strong> – If the fix operation was not successful.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="validation-widget">
+<span id="id1"></span><h2>Validation Widget<a class="headerlink" href="#validation-widget" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget">
+<em class="property">class </em><code class="descclassname">tk_multi_data_validation.widgets.</code><code class="descname">ValidationWidget</code><span class="sig-paren">(</span><em>parent</em>, <em>group_rules_by=None</em>, <em>pre_validate_before_actions=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The main widget for the Data Validation App.</p>
+<p>This widget displays the provided data validation rules, and provides the user interface to execute the
+rule check and fix functions. When data violations are found, a details widget will display the
+individual data items that violate the rules.</p>
+<p>Create the validation widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<em>QWidget</em>) – The parent widget</li>
+<li><strong>group_rules_by</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The validation rule field that the view will group rules by</li>
+<li><strong>pre_validate_before_actions</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will run validation before executing actions
+so that the action callback acts on the most up to date error data. Default True. Default True.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.view_mode">
+<code class="descname">view_mode</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.view_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the current view mode.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.group_rules_by">
+<code class="descname">group_rules_by</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.group_rules_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the field to group the validation rules by in the main view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_button">
+<code class="descname">validate_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the validate all button.</p>
+<p>This may be useful to disconnect the default callback for the fix all button clicked signal, to
+execute a custom validate all operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_button">
+<code class="descname">fix_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the fix all button.</p>
+<p>This may be useful to disconnect the default callback for the fix all button clicked signal, to
+execute a custom fix all operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.publish_button">
+<code class="descname">publish_button</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.publish_button" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the publish button.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rules_callback">
+<code class="descname">validate_rules_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rules_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the validate button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a
+ValidationRule object or a list of ValidationRule objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_callback">
+<code class="descname">validate_all_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the validate button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_all_callback">
+<code class="descname">fix_all_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_all_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the fix button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a list of ValidationRule
+objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rules_callback">
+<code class="descname">fix_rules_callback</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rules_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the custom callback triggered when the fix button is clicked.</p>
+<p>This property must be a function that accepts a single parameter that is a single
+ValiationRule object or a list of ValidationRule objects.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.pre_validate_before_actions">
+<code class="descname">pre_validate_before_actions</code><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.pre_validate_before_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or set the property that decides if validation is ran before executing actions
+on the current affected (error) objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.save_state">
+<code class="descname">save_state</code><span class="sig-paren">(</span><em>user_settings</em>, <em>qsettings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.save_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.save_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the widget state in the settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_settings</strong> (<em>UserSettings</em>) – The Toolkit settings object to save the widget settings to.</li>
+<li><strong>qsettings</strong> – The Qt settings for the App to save the widget settings to. The Toolkit settings
+has some limitations to storing byte array objects, so the Qt settings are required for saving
+those unsupported data types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.restore_state">
+<code class="descname">restore_state</code><span class="sig-paren">(</span><em>user_settings</em>, <em>qsettings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.restore_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.restore_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the widget state from the settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>user_settings</strong> (<em>UserSettings</em>) – The Toolkit settings object to restore the widget settings to.</li>
+<li><strong>qsettings</strong> – The Qt settings for the App to restore the widget settings to. The Toolkit
+settings has some limitations to storing byte array objects, so the Qt settings are required for
+saving those unsupported data types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.turn_on_details">
+<code class="descname">turn_on_details</code><span class="sig-paren">(</span><em>on</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.turn_on_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.turn_on_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn details on to show the right-hand side details panel widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>on</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to turn on, or False to turn off.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.turn_on_rule_type_filter">
+<code class="descname">turn_on_rule_type_filter</code><span class="sig-paren">(</span><em>on</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.turn_on_rule_type_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.turn_on_rule_type_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn rule type filter on to show the left-hand side filter widget.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>on</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to turn on, or False to turn off.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.set_validation_rules">
+<code class="descname">set_validation_rules</code><span class="sig-paren">(</span><em>validation_rules</em>, <em>validation_rule_types=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.set_validation_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.set_validation_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the validation rule types and data for the widget.</p>
+<p>This will reinitialize the validation rule models with the given data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>validation_rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The validation rules data</li>
+<li><strong>validation_rule_types</strong> (<em>list&lt;ValidationRuleType&gt;</em>) – The type of validation rules to group the data by</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.get_active_rules">
+<code class="descname">get_active_rules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.get_active_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.get_active_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of the validation rules that are currently active.</p>
+<p>A validation rule is considered to be active if it is visible in the current view. Validation
+operations, like “Validate” and “Fix All”, may only be applied to active rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The list of validation rules.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list&lt;ValidationRule&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_validate_all">
+<code class="descname">on_validate_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_validate_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_validate_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered when the validation all button has been triggered.</p>
+<p>If the custom validate all callback is set, then get all rules from the model to resolve and pass it
+to the custom callback, else call the default validate all operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_fix_all">
+<code class="descname">on_fix_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_fix_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_fix_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered when the fix all button has been triggered.</p>
+<p>If the custom fix all callback is set, then get all rules from the model to resolve and pass it to
+the custom callback, else call the default fix all operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_validate_rules">
+<code class="descname">on_validate_rules</code><span class="sig-paren">(</span><em>rules</em>, <em>refresh_details=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_validate_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_validate_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered to validate a specific set of rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rule</strong> (<em>VaildationRule | list&lt;ValidationRule&gt;</em>) – The validation rule or list of rules to validate.</li>
+<li><strong>refresh_details</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to True to refresh the details widget after validation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.on_fix_rules">
+<code class="descname">on_fix_rules</code><span class="sig-paren">(</span><em>rules</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_fix_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_fix_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback triggered to fix a specific set of rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<em>VaildationRule | list&lt;ValidationRule&gt;</em>) – The validation rule or list of rules to fix.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rule_begin">
+<code class="descname">validate_rule_begin</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_rule_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before a validaiton rule is check function is executed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that is about to start executing its check function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished">
+<code class="descname">validate_rule_finished</code><span class="sig-paren">(</span><em>rule</em>, <em>update_rule_type=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_rule_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after a validation rule check function has finished executing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that finished executing its check function.</li>
+<li><strong>update_rule_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – True will update the rule type model data based on the updated rule.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">
+<code class="descname">validate_all_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before all validation rules are checked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished">
+<code class="descname">validate_all_finished</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after all validation rules have been checked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin">
+<code class="descname">fix_rule_begin</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_rule_begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method before a validaiton rule is fix function is executed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that is about to start executing its fix function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished">
+<code class="descname">fix_rule_finished</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_rule_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method after a validation rule fix function has finished executing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a>) – The rule that finished executing its fix function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_show_actions_callback">
+<code class="descname">rule_show_actions_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_show_actions_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_show_actions_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to show the list of action items was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback">
+<code class="descname">rule_check_action_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_check_action_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to execute the rule check function was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback">
+<code class="descname">rule_fix_action_callback</code><span class="sig-paren">(</span><em>view</em>, <em>index</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.rule_fix_action_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>The validation rule action to execute the rule fix function was triggered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>view</strong> (<em>QAbstractItemView</em>) – The view the index belongs to.</li>
+<li><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QModelIndex</span></code>) – The index to act on</li>
+<li><strong>pos</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sgtk.platform.qt.QtCore.QPoint</span></code>) – The mouse position captured on triggered this callback</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="validation-api-data-rule"></span></div>
 </div>
 
 
@@ -479,10 +1579,10 @@ the rule itself is resolved. Set to False will not fetch any missing dependencie
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="widgets.html" class="btn btn-neutral float-right" title="Widgets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="hooks.html" class="btn btn-neutral float-left" title="Hooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -519,15 +1619,14 @@ the rule itself is resolved. Set to False will not fetch any missing dependencie
   
  
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-2114792-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
 
 
 </body>

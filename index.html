@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Validation &mdash; tk-multi-data-validation v0.1.0 documentation</title>
+  <title>ShotGrid Data Validation App &mdash; tk-multi-data-validation v0.1.2 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Validation Hooks" href="hooks.html" /> 
+    <link rel="next" title="Using the Data Validation App" href="using_the_app.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,11 +93,11 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="hooks.html">Data Validation Hooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
 
             
@@ -121,16 +121,22 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.0.<br>
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
     
-        This documentation is part of the Shotgun Pipeline Toolkit.
+        This documentation is part of the ShotGrid Pipeline Toolkit.
     
     For more information, please visit
-    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>Shotgun Support</a>.
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
     The code associated with this documentation can be found
     <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
 
     </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
 
 
 
@@ -175,7 +181,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Data Validation</li>
+      <li>ShotGrid Data Validation App</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -192,43 +198,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="data-validation">
-<h1>Data Validation<a class="headerlink" href="#data-validation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="shotgrid-data-validation-app">
+<h1>ShotGrid Data Validation App<a class="headerlink" href="#shotgrid-data-validation-app" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>tk-multi-data-validation (Data Validation) is a customizable Toolkit App that allowws studios to define a set of guideline rules for users to follow when working within a DCC.</p>
-<div class="section" id="customizations">
-<h3>Customizations<a class="headerlink" href="#customizations" title="Permalink to this headline">¶</a></h3>
-<p>There is no default configuration since validating data is specific to each DCC. See <a class="reference internal" href="hooks.html#validation-hooks"><span class="std std-ref">Data Validation Hooks</span></a> to configure the App.</p>
+<p>The Data Validation App is a customizable workflow tool that allows studios to help control the quality and format of the data created by artists. To first get an understanding of what the app does, and how it performs the validation, see <a class="reference internal" href="using_the_app.html#using-data-validation-app"><span class="std std-ref">Using the Data Validation App</span></a>.</p>
+<p>Once you’re ready to start setting up the app, see the step-by-step guide in <a class="reference internal" href="getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="hooks.html">Data Validation Hooks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hooks.html#hook-data-validator">hook_data_validator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_the_app.html#understanding-how-data-is-validated-and-fixed">Understanding How Data is Validated and Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="data.html#validation-rule">Validation Rule</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#validation-rule-type">Validation Rule Type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#adding-data-validation-to-the-engine">Adding Data Validation to the Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#mapping-validation-rule-fields-to-the-user-interface">Mapping Validation Rule Fields to the User Interface</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#validation-manager">Validation Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="customization.html#adding-a-new-rule">Adding a New Rule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customization.html#removing-a-rule">Removing a Rule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customization.html#modifying-an-existing-rule">Modifying an Existing Rule</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widgets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="widgets.html#validation-widget">Validation Widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="widgets.html#validation-details-widget">Validation Details Widget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="widgets.html#list-view-auto-adjust-height">List View Auto Adjust Height</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models.html#validation-rule-model">Validation Rule Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#validation-rule-proxy-model">Validation Rule Proxy Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#validation-rule-type-model">Validation Rule Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hooks.html">Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 </li>
 </ul>
-</div>
 </div>
 </div>
 </div>
@@ -241,7 +241,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="hooks.html" class="btn btn-neutral float-right" title="Data Validation Hooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="using_the_app.html" class="btn btn-neutral float-right" title="Using the Data Validation App" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -279,15 +279,14 @@
   
  
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-2114792-1', 'auto');
-  ga('send', 'pageview');
-</script>
-
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
 
 
 </body>

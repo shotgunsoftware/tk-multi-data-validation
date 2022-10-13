@@ -1,0 +1,648 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; tk-multi-data-validation v0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Customizing the Validation" href="customization.html" />
+    <link rel="prev" title="Using the Data Validation App" href="using_the_app.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-data-validation-to-the-engine">Adding Data Validation to the Engine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-data-validation-hook">Setting Up the Data Validation Hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-the-validation-rule-set">Defining the Validation Rule Set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-validation-rule-callbacks">Defining Validation Rule Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#displaying-validation-rules-in-the-app">Displaying Validation Rules in the App</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mapping-validation-rule-fields-to-the-user-interface">Mapping Validation Rule Fields to the User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
+    
+        This documentation is part of the ShotGrid Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting Started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>The Data Validation App (DVA) is a Toolkit App that can be set up to be used with any DCC. It provides a flexible framework to validate the data within a DCC, according to the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> that you define.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Here are the steps to get started with the app:</dt>
+<dd><ol class="first last arabic simple">
+<li><a class="reference internal" href="#engine-setup"><span class="std std-ref">Adding Data Validation to the Engine</span></a></li>
+<li><a class="reference internal" href="#engine-setup-hook"><span class="std std-ref">Setting Up the Data Validation Hook</span></a></li>
+<li><a class="reference internal" href="#engine-setup-override-hook"><span class="std std-ref">Defining the Validation Rule Set</span></a></li>
+<li><a class="reference internal" href="#engine-setup-define-rule-callbacks"><span class="std std-ref">Defining Validation Rule Callbacks</span></a></li>
+<li><a class="reference internal" href="#engine-setup-config-add-rules"><span class="std std-ref">Displaying Validation Rules in the App</span></a></li>
+</ol>
+</dd>
+</dl>
+</div></blockquote>
+<p>Refer back to <a class="reference internal" href="using_the_app.html#using-data-validation-app"><span class="std std-ref">Using the Data Validation App</span></a> for more details about the app’s functionality and how it works.</p>
+<div class="section" id="adding-data-validation-to-the-engine">
+<span id="engine-setup"></span><h2>Adding Data Validation to the Engine<a class="headerlink" href="#adding-data-validation-to-the-engine" title="Permalink to this headline">¶</a></h2>
+<p>The DVA must be run within an Engine. The app can be added to an Engine using the config, as like any other Toolkit App:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Example: VRED Engine config settings file <em>tk-vred.yml</em></span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-vred.asset_step</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">apps</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">tk-multi-data-validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@settings.tk-multi-data-validation.vred&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>To start validating your DCC’s data, the Engine must be set up to support the data validation workflow. See next steps in <a class="reference internal" href="#engine-setup-hook"><span class="std std-ref">Setting Up the Data Validation Hook</span></a> on how to modify the Engine.</p>
+<p>For Engines that have already been set up, see <a class="reference internal" href="customization.html#validation-customization"><span class="std std-ref">Customizing the Validation</span></a> on how to modify the validation to your specific needs.</p>
+<div class="section" id="setting-up-the-data-validation-hook">
+<span id="engine-setup-hook"></span><h3>Setting Up the Data Validation Hook<a class="headerlink" href="#setting-up-the-data-validation-hook" title="Permalink to this headline">¶</a></h3>
+<p>The DVA requires information from the Engine to determine how it will display and perform the data validation. This information is retrieved using the <a class="reference internal" href="hooks.html#validation-hooks-data-validation"><span class="std std-ref">hook_data_validation</span></a>. The DVA config settings must be modified to specify the <code class="docutils literal notranslate"><span class="pre">hook_data_validation</span></code> file that the Engine will use to implement the hook methods:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Example: Data Validation App config settings file <em>tk-multi-data-validation.yml</em></span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-the-validation-rule-set">
+<span id="engine-setup-override-hook"></span><h3>Defining the Validation Rule Set<a class="headerlink" href="#defining-the-validation-rule-set" title="Permalink to this headline">¶</a></h3>
+<p>The DVA performs the validation on the data in the DCC by using a <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>. The DVA itself is not DCC specific, and thus does not define the validation rule set. The responsibility is on the Engine (which is DCC specific) to establish this rule set.</p>
+<p>In the previous step, the Engine’s <a class="reference internal" href="hooks.html#validation-hooks-data-validation"><span class="std std-ref">hook_data_validation</span></a> file was set up. Now in the hook file, we need to implement the hook method <a class="reference internal" href="hooks.html#hooks.data_validation.AbstractDataValidationHook.get_validation_data" title="hooks.data_validation.AbstractDataValidationHook.get_validation_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">get_validation_data</span></code></a> to return the validation rule set. See the example below on how to override this hook method:</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Example: VRED Engine hook file <em>data_validation.py</em></span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">sgtk</span>
+    <span class="n">HookBaseClass</span> <span class="o">=</span> <span class="n">sgtk</span><span class="o">.</span><span class="n">get_hook_baseclass</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">VREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subclass the base tk-multi-data-validation hook class AbstractDataValidationHook.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Override the base hook method to return the VRED Validation Rule Set.&quot;&quot;&quot;</span>
+
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;delete_hidden_nodes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Delete Hidden Nodes&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Find and delete all hidden nodes in the scene.&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;check_func&quot;</span><span class="p">:</span> <span class="n">find_hidden_nodes</span><span class="p">,</span>
+                    <span class="s2">&quot;fix_func&quot;</span><span class="p">:</span> <span class="n">do_delete_hidden_nodes</span><span class="p">,</span>
+                    <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Select All Hidden Nodes&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">select_nodes</span>
+                        <span class="p">}</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;item_actions&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Select Node&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">select_node</span>
+                        <span class="p">}</span>
+                    <span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>This is a simple example where there is only one rule in the set. The rule id is <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> and the data for the rule is in the key-value dictionary. More rules can be added by adding more items to the dictionary. The supported rule data key-values:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: (str) The rule display name</li>
+<li><code class="docutils literal notranslate"><span class="pre">description</span></code>: (str) The rule descriptive text</li>
+<li><code class="docutils literal notranslate"><span class="pre">check_func</span></code>: (function) The rule validate callback function, applied to all data</li>
+<li><code class="docutils literal notranslate"><span class="pre">fix_func</span></code>: (function) The rule fix callback function, applied to all data</li>
+<li><code class="docutils literal notranslate"><span class="pre">actions</span></code>: (List[dict]) A list of action callback functions, applied to all data. Item key-values: name (str): the action name, callback (function): the callback function</li>
+<li><code class="docutils literal notranslate"><span class="pre">item_actions</span></code>: (List[dict]) A list of action callback functions, applied to single afected object. Item key-values: name (str): the action name, callback (function): the callback function</li>
+<li><code class="docutils literal notranslate"><span class="pre">check_name</span></code>: (str) The validate button text label</li>
+<li><code class="docutils literal notranslate"><span class="pre">fix_name</span></code>: (str) The fix button text label</li>
+<li><code class="docutils literal notranslate"><span class="pre">fix_tooltip</span></code>: (str) Text to display on hovering over the fix button</li>
+<li><code class="docutils literal notranslate"><span class="pre">error_msg</span></code>: (str) Text that describes why the data is not valid</li>
+<li><code class="docutils literal notranslate"><span class="pre">warn_msg</span></code>: (str) Text that describes warnings for this rule</li>
+<li><code class="docutils literal notranslate"><span class="pre">kwargs</span></code>: (function) A function that returns a dictionary to pass as key-word arguments to fix and action callbacks</li>
+<li><code class="docutils literal notranslate"><span class="pre">dependcy_ids</span></code>: (List[str]) A list of rule ids which this rule depends on</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="defining-validation-rule-callbacks">
+<span id="engine-setup-define-rule-callbacks"></span><h3>Defining Validation Rule Callbacks<a class="headerlink" href="#defining-validation-rule-callbacks" title="Permalink to this headline">¶</a></h3>
+<p>Each validation rule defined in the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> dictionary may specify callback functions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">check_func</span></code>: callback to validate the data by this rule (see <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">fix_func</span></code>: callback to fix the data by this rule (see <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">actions</span></code>: callbacks to execute on all of the <a class="reference internal" href="glossary.html#validation-affected-objects"><span class="std std-ref">Affected Objects</span></a> for this rule (see <a class="reference internal" href="glossary.html#validation-rule-actions"><span class="std std-ref">Actions</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">item_actions</span></code>: callbacks to execute on a single <a class="reference internal" href="glossary.html#validation-affected-objects"><span class="std std-ref">Affected Object</span></a> for this rule (see <a class="reference internal" href="glossary.html#validation-rule-item-actions"><span class="std std-ref">Item Actions</span></a>)</li>
+</ul>
+</div></blockquote>
+<p>These callback functions can be implemented as hook methods; for example, these are the functions to implement to make the <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> rule effective:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Example: Hook methods for VRED rule <em>delete_hidden_nodes</em></span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span> <span class="nc">VREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subclass the base tk-multi-data-validation hook class AbstractDataValidationHook.&quot;&quot;&quot;</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># other class methods omitted</span>
+        <span class="c1">#</span>
+
+        <span class="k">def</span> <span class="nf">find_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Implement the check function for the delete hidden nodes rule.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">do_delete_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Implement the fix function for the delete hidden nodes rule.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">select_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Implement the select action function for the delete hidden nodes rule.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">select_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Implement the select item action function for the delete hidden nodes rule.&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>The purpose of the rule’s <code class="docutils literal notranslate"><span class="pre">check_func</span></code> is to validate the current data according to some criteria. For example, the <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> check function <code class="docutils literal notranslate"><span class="pre">find_hidden_nodes</span></code> method should look for hidden nodes in VRED and return the list of hidden node objects that were found:</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Example: Check function for <em>delete_hidden_nodes</em></span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">find_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find hidden nodes in VRED.</span>
+
+<span class="sd">        :return: A list of hidden nodes.</span>
+<span class="sd">        :rtype: List[vrdNode]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Assume the find_nodes function exists and returns a list VRED node objects</span>
+        <span class="k">return</span> <span class="n">find_nodes</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">find_hidden_nodes</span></code> returns a list of VRED objects. The DVA does not have any knowledge of VRED objects, so it will call the hook method
+<a class="reference internal" href="hooks.html#hooks.data_validation.AbstractDataValidationHook.sanitize_check_result" title="hooks.data_validation.AbstractDataValidationHook.sanitize_check_result"><code class="xref py py-class docutils literal notranslate"><span class="pre">sanitize_check_result</span></code></a> to convert the list of VRED objects into a standardized format, which it can handle. For example, the VRED Engine overrides this hook method:</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Example: VRED Engine override hook method <code class="docutils literal notranslate"><span class="pre">sanitize_check_result</span></code></span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span> <span class="nc">VREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subclass the base tk-multi-data-validation hook class AbstractDataValidationHook.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">sanitize_check_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Return the check result in the Data Validation standardized format.</span>
+
+<span class="sd">            :param result: A result returned by any of the VRED rule check functions.</span>
+<span class="sd">            :type result: We expect it to be a list of VRED objects</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="c1"># The result is the value returned by a check function, which is expected to be</span>
+            <span class="c1"># the list of error objects found. So this check result is valid if the</span>
+            <span class="c1"># result is an empty list, or None.</span>
+            <span class="c1">#</span>
+            <span class="c1"># NOTE: you may want to put in some safe guards against the result data</span>
+            <span class="c1"># passed to the method to ensure it is in the format you expect</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">result</span>
+
+            <span class="c1"># Gather the list of errors from the result and put it into the DVA format</span>
+            <span class="c1"># NOTE: VRED objects have the attributes getObjectID, getName, getType</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">error_item</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">getObjectID</span><span class="p">(),</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span>
+                <span class="p">}</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_item</span><span class="p">)</span>
+
+            <span class="c1"># The DVA expects a dictionary with key-values:</span>
+            <span class="c1">#   - is_valid (bool): True if result passed the check, else False</span>
+            <span class="c1">#   - errors (List[dict]): The errors found by the check</span>
+            <span class="c1">#       Each error item with keys-values:</span>
+            <span class="c1">#         - id (str|int): Unique identifier for the error object</span>
+            <span class="c1">#         - name (str): Display name for the error object</span>
+            <span class="c1">#         - type (str): Display name for the error object type (optional)</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;is_valid&quot;</span><span class="p">:</span> <span class="n">valid</span><span class="p">,</span>
+                <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">errors</span>
+            <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>Now that the rule’s <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a> is implemented, and the result is sanitized for the DVA to handle, the rule’s <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a> needs to be implemented next:</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Example: Fix function for <em>delete_hidden_nodes</em></span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">do_delete_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete the given error objects, which are hidden nodes.</span>
+
+<span class="sd">        The errors passed in will be the same errors as returned by the check function</span>
+<span class="sd">        ``find_hidden_nodes`` and sanitized by the ``sanitize_check_result`` function.</span>
+
+<span class="sd">        So for example if ``find_hidden_nodes`` returned:</span>
+
+<span class="sd">            [node_1, node_2]</span>
+
+<span class="sd">        , then the sanitize method would yield:</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;is_valid&quot;: False,</span>
+<span class="sd">                &quot;errors&quot;: [</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;id&quot;: node_1_id,</span>
+<span class="sd">                        &quot;name&quot;: &quot;Node 1&quot;,</span>
+<span class="sd">                        &quot;type&quot;: vrdNode</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;id&quot;: node_2_id,</span>
+<span class="sd">                        &quot;name&quot;: &quot;Node 2&quot;,</span>
+<span class="sd">                        &quot;type&quot;: vrdNode</span>
+<span class="sd">                    }</span>
+<span class="sd">                ]</span>
+<span class="sd">            }</span>
+
+<span class="sd">        , and so the ``errors`` key value in the dict of the sanitized result is the</span>
+<span class="sd">        value passed to this function:</span>
+
+<span class="sd">                [</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;id&quot;: node_1_id,</span>
+<span class="sd">                        &quot;name&quot;: &quot;Node 1&quot;,</span>
+<span class="sd">                        &quot;type&quot;: vrdNode</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;id&quot;: node_2_id,</span>
+<span class="sd">                        &quot;name&quot;: &quot;Node 2&quot;,</span>
+<span class="sd">                        &quot;type&quot;: vrdNode</span>
+<span class="sd">                    }</span>
+<span class="sd">                ]</span>
+
+<span class="sd">        If no errors are given, we will interpret this as delete all hidden nodes.</span>
+
+<span class="sd">        :param errors: The hidden nodes to delete. If None, delete all hidden nodes.</span>
+<span class="sd">        :type errors: List[dict] | None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">errors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No errors provided, find all hidden nodes to delete</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="n">find_hidden_nodes</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Errors are provided, gather the node objects from the error data</span>
+            <span class="c1"># Assume the get_node_by_id function exists and returns the node object for the given id</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">error_data</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">get_node_by_id</span><span class="p">(</span><span class="n">error_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Delete the hidden nodes found. Assume the delete_node function exists.</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">delete_node</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, the action and item action functions need to be implemented. These functions are called in the same way that the <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a> is called with the list of errors:</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-text">Hook methods for <em>delete_hidden_nodes</em></span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">select_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the given nodes.</span>
+
+<span class="sd">        :param errors: The list of nodes to select.</span>
+<span class="sd">        :type errors: List[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Don&#39;t select anything unless specified</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Errors are provided, gather the node objects from the error data</span>
+        <span class="c1"># Assume the get_node_by_id function exists and returns the node object for the given id</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">error_data</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">get_node_by_id</span><span class="p">(</span><span class="n">error_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Select the nodes in VRED</span>
+        <span class="n">vred_select_nodes</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">select_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the given node.</span>
+
+<span class="sd">        TODO double-check this</span>
+
+<span class="sd">        :param errors: A list containing a single node.</span>
+<span class="sd">        :type errors: List[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_nodes</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="displaying-validation-rules-in-the-app">
+<span id="engine-setup-config-add-rules"></span><h3>Displaying Validation Rules in the App<a class="headerlink" href="#displaying-validation-rules-in-the-app" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> returned by the <code class="docutils literal notranslate"><span class="pre">get_validation_data</span></code> method defines all of the available rules that can be added to the app. To have these rules show up in the DVA, the app config settings file must be updated:</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-text">tk-multi-data-validation.yml</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_hidden_nodes</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<p>If we wanted to hide the <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> rule and not show in the app, we can remove the <code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">id:</span> <span class="pre">delete_hidden_nodes</span></code> line from the config. See <a class="reference internal" href="settings.html#data-validation-settings"><span class="std std-ref">App Config Settings</span></a> for more details about the tk-multi-data-validation.yml settings file.</p>
+</div>
+</div>
+<div class="section" id="mapping-validation-rule-fields-to-the-user-interface">
+<h2>Mapping Validation Rule Fields to the User Interface<a class="headerlink" href="#mapping-validation-rule-fields-to-the-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>To help visualize and understand what each of the fields in the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> affect, here is a mapping of the user interface elements to the rule set dictionary fields:</p>
+<img alt="Data Validation User Interface" src="_images/mapping-ui-fields.png" />
+<p><strong>1. Validation rule</strong></p>
+<blockquote>
+<div>The highlighted item in the view is a <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a>. All rules in the view make up the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>. The rule’s display name and is set by the <code class="docutils literal notranslate"><span class="pre">name</span></code> field.</div></blockquote>
+<p><strong>2. Validation rule description</strong></p>
+<blockquote>
+<div>This is the rule’s descriptive text and is set by the <code class="docutils literal notranslate"><span class="pre">description</span></code> field.</div></blockquote>
+<p><strong>3. Validation rule error message</strong></p>
+<blockquote>
+<div>This is the rule’s error message. Error messages are shown when the rule’s <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a> has failed. The <code class="docutils literal notranslate"><span class="pre">error_msg</span></code> field will be appended to rule’s error message.</div></blockquote>
+<p><strong>4. Validation rule warning message</strong></p>
+<blockquote>
+<div>This is the rule’s warning message. Warning messages are always shown (in yellow). The <code class="docutils literal notranslate"><span class="pre">warn_msg</span></code> field will be appended to rule’s warning message.</div></blockquote>
+<p><strong>5. Validation rule status icon</strong></p>
+<blockquote>
+<div>This is the rule’s validation status from the last time its <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a> ran. The status is determined by running the function set by the <code class="docutils literal notranslate"><span class="pre">check_func</span></code> field.</div></blockquote>
+<p><strong>6. Validate rule button</strong></p>
+<blockquote>
+<div>Clicking this button will validate the data according to the rule’s criteria. The validation is performed by calling the function set by the <code class="docutils literal notranslate"><span class="pre">check_func</span></code> field, which is referred to as the <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a>. The button text is set by the <code class="docutils literal notranslate"><span class="pre">check_name</span></code> field.</div></blockquote>
+<p><strong>7. Fix rule button</strong></p>
+<blockquote>
+<div>Clicking this button will fix the data according to the rule. The fix is performed by calling the function set by the <code class="docutils literal notranslate"><span class="pre">fix_func</span></code> field, which is referred to as the <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a>. The button text is set by the <code class="docutils literal notranslate"><span class="pre">fix_name</span></code> field.</div></blockquote>
+<p><strong>8. Rule actions button menu</strong></p>
+<blockquote>
+<div>Clicking this button will pop up the actions menu for the rule. The list of menu actions are set by the <code class="docutils literal notranslate"><span class="pre">actions</span></code> field, which are referred to as the rule’s <a class="reference internal" href="glossary.html#validation-rule-actions"><span class="std std-ref">Actions</span></a>. Clicking on any of the menu actions will call that particular action callback function. The actions menu can also be opened by right-clicking on the rule item in the view, or clicking the button from the details panel.</div></blockquote>
+<p><strong>9. Details panel</strong></p>
+<blockquote>
+<div>The details panel will show more information for the currently select rule in the view. The row of buttons are function the same as the buttons on the rule item in the view. They will be shown in this order: validate button, fix button, all action buttons. See the particular button descriptions above for which fields affect these buttons.</div></blockquote>
+<p><strong>10. Validate all button</strong></p>
+<blockquote>
+<div>Clicking this button will run each of the rule’s own <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a>. The check function is set by the <code class="docutils literal notranslate"><span class="pre">check_func</span></code> field.</div></blockquote>
+<p><strong>11. Fix all button</strong></p>
+<blockquote>
+<div>Clicking this button will run each of the rule’s own <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a>. The fix function is set by the <code class="docutils literal notranslate"><span class="pre">fix_func</span></code> field.</div></blockquote>
+<p><strong>12. Details panel information</strong></p>
+<blockquote>
+<div>This is the currently selected rule’s detailed information. The details indicate that the rule in the example has no dependencies. The rule dependencies are set by the <code class="docutils literal notranslate"><span class="pre">dependency_ids</span></code> field. Dependencies determine the order in which rules are validated and fixed.</div></blockquote>
+<p><strong>13. Details panel affected objects</strong></p>
+<blockquote>
+<div>The view lists the <a class="reference internal" href="glossary.html#validation-affected-objects"><span class="std std-ref">Affected Objects</span></a> after validating the current data by the rule. These are essentially data errors found by running the rule’s <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a>.</div></blockquote>
+<p><strong>14. Affected object item</strong></p>
+<blockquote>
+<div>An <a class="reference internal" href="glossary.html#validation-affected-objects"><span class="std std-ref">affected object</span></a> is an error found by running the rule’s <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a>. Right click the item to see the list of <a class="reference internal" href="glossary.html#validation-rule-item-actions"><span class="std std-ref">Item Actions</span></a> set by the <code class="docutils literal notranslate"><span class="pre">item_actions</span></code> field. Hover over the item to see the first item action. Click any of the item actions to call the corresponding callback function.</div></blockquote>
+<p><strong>15. Rule grouping</strong></p>
+<blockquote>
+<div>This is a grouping of rules. A rule’s group is set by the <code class="docutils literal notranslate"><span class="pre">data_type</span></code> field, which can also be set in the app <a class="reference internal" href="settings.html#data-validation-settings"><span class="std std-ref">App Config Settings</span></a>.</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="customization.html" class="btn btn-neutral float-right" title="Customizing the Validation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="using_the_app.html" class="btn btn-neutral float-left" title="Using the Data Validation App" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
+
+
+</body>
+</html>

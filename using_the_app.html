@@ -1,0 +1,296 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using the Data Validation App &mdash; tk-multi-data-validation v0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting_started.html" />
+    <link rel="prev" title="ShotGrid Data Validation App" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using the Data Validation App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-how-data-is-validated-and-fixed">Understanding How Data is Validated and Fixed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rule-dependencies">Rule Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">App Config Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
+    
+        This documentation is part of the ShotGrid Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Using the Data Validation App</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-the-data-validation-app">
+<span id="using-data-validation-app"></span><h1>Using the Data Validation App<a class="headerlink" href="#using-the-data-validation-app" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of Data Validation App (DVA) is to validate the current DCC data accoding to a <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>, report any discepancies to the user, and provide the actions to modify the data to be compliant.</p>
+<p>This is the app being used in VRED. To point out a few basics:</p>
+<img alt="Data Validation User Interface" src="_images/basic-ui.png" />
+<p><strong>1. A Validation Rule Item</strong></p>
+<p>The main app view displays the list of available validation rules. A <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> defines how the data is evaluated to determine if the data is in the desired format; if this evaluation step can be automated, then the rule will provide a validate action. The rule may also provide a fix action, which will modify the data to be compliant to the rule’s validation.</p>
+<p><strong>2. Validate and Fix All Actions</strong></p>
+<p>Clicking the <strong>“Validate”</strong> button will execute the validate action for each of the validation rules. The status for each rule will be reported by displaying an icon to indicate success, errors or warnings. Additionally error and/or warning messages will be displayed, if applicable. Similarly, clicking the <strong>“Fix All”</strong> button will execute the fix action for each of the validation rules. The order in which the rule’s are validated and fixed is determined by the <a class="reference internal" href="#rule-dependencies"><span class="std std-ref">Rule Dependencies</span></a>.</p>
+<p><strong>3. The Details Panel</strong></p>
+<img alt="Data Validation Details Panel" src="_images/details-panel.png" />
+<p>The Details Panel can be shown by clicking the “i” button, or by right-clicking a rule item and selecting “Show Details”. The details panel will show additional information about the currently selected rule. After executing the rule’s validate action, any data that does not comply with the validation will be gathered and displayed as the <strong>Affected Objects</strong> in the details panel. The details panel will also provide convenience buttons to validate, fix and apply other actions for the currently selected rule (these are the same buttons as shown on hovering over a rule in the main view).</p>
+<div class="section" id="understanding-how-data-is-validated-and-fixed">
+<span id="understanding-validation"></span><h2>Understanding How Data is Validated and Fixed<a class="headerlink" href="#understanding-how-data-is-validated-and-fixed" title="Permalink to this headline">¶</a></h2>
+<p>The current data in the DCC can be validated by all rules at once, or by a single rule. In either case, when the data is validated by a rule, the app calls the rule’s <a class="reference internal" href="glossary.html#validation-rule-check-func"><span class="std std-ref">Check Function</span></a> to gather any data that is not compliant with the rule. The status for each rule will be reported, as well as any discrepancies that were found. Similarly for fixing, the data can be fixed by all rules once, or by a single rule. In either case, when the data is fixed by a rule, the app will call the rule’s <a class="reference internal" href="glossary.html#validation-rule-fix-func"><span class="std std-ref">Fix Function</span></a>.</p>
+<img alt="Data Validation Diagram" src="_images/validation-diagram.png" />
+<p>When fixing the data, the app will by default pre-validate the data to check if data needs to be fixed. This will prevent the fix action from executing, if there is no issue in the first place. As well by default, the app will post-validate the data to check that the data was fixed correctly. This will ensure that the status is reported for a rule after its fix is applied.</p>
+<div class="section" id="rule-dependencies">
+<span id="id1"></span><h3>Rule Dependencies<a class="headerlink" href="#rule-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>A validation rule may require another rule to be applied to the data before its own validation and fix can be applicable. For example, let’s say we have <code class="docutils literal notranslate"><span class="pre">rule_1</span></code> that checks for hidden nodes and fixes the data by deleting those hidden nodes, and <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> that checks for nodes without a shader assigned and fixes the data by assigning a default shader. If <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> is validated before <code class="docutils literal notranslate"><span class="pre">rule_1</span></code>, then we could find a node, call it <code class="docutils literal notranslate"><span class="pre">node_1</span></code>, that does not have a shader assigned but is also hidden. Finding <code class="docutils literal notranslate"><span class="pre">node_1</span></code> is not wrong, but if the fix for <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> is applied before <code class="docutils literal notranslate"><span class="pre">rule_1</span></code>, then we will do the work to assign a shader to the node but the node will eventually be deleted once the fix for <code class="docutils literal notranslate"><span class="pre">rule_1</span></code> is applied. In this example, it is only time that is wasted, but potentially there are other cases where the fix for <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> can modify the data in a way that is undesirable because <code class="docutils literal notranslate"><span class="pre">rule_1</span></code> was not applied first.</p>
+<p>The above example demonstrates the concept of rule dependencies; when a rule’s validation or fix depends on another rule to be applied first. These dependencies affect the order in which rules are validated and fixed. Rules are processed sequentially, as they appear top to bottom in the app’s view, but a rule will only be processed if all of its dependencies have been processed and were successful. This would mean, from our example before, <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> depends on <code class="docutils literal notranslate"><span class="pre">rule_1</span></code>, so the data will not be validated or fixed by <code class="docutils literal notranslate"><span class="pre">rule_2</span></code> until <code class="docutils literal notranslate"><span class="pre">rule_1</span></code> has been validated and fixed. From the previous diagram, dependcies are dealt with at the <strong>“For Each Rule”</strong> step as shown below:</p>
+<img alt="Dependencies Dialog" src="_images/dependencies.png" />
+<p>Notice that a rule will not be validated or fixed if any of its dependencies were not successfully processed. In this case, a warning message will be displayed indicating which dependency failed that caused the rule not to be processed.</p>
+<p>When fixing by a single rule that has dependencies, a dialog will pop up to inform the user that the rule has dependencies ans they must be applied first before running the selected rule’s fix. This is to ensure the user knows that their data may be modified by another rule which they did not explicitly ask to do.</p>
+<img alt="Dependencies Dialog" src="_images/dependencies-dialog.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="getting_started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="ShotGrid Data Validation App" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
+
+
+</body>
+</html>

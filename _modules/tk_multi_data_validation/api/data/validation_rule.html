@@ -1,0 +1,950 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+    <a href='http://developer.shotgridsoftware.com'>
+    
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='../../../../_static/logo@2x.png'/>
+    
+    </a>
+    
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> tk-multi-data-validation
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../using_the_app.html">Using the Data Validation App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../customization.html">Customizing the Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../settings.html">App Config Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">Reference</a></li>
+</ul>
+
+            
+          
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px;
+                color: #b3b3b3;
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>
+    <style>
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
+                             text-decoration: underline; }
+    </style>
+
+    <b>tk-multi-data-validation</b> v0.1.2.<br>
+    
+        This documentation is part of the ShotGrid Pipeline Toolkit.
+    
+    For more information, please visit
+    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
+    The code associated with this documentation can be found
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
+
+    </div>
+    <style>
+        p.privacy_links { margin: 4px 0px;}
+    </style>
+    <p class="privacy_links"><a data-opt-in-preferences href="javascript:;">Privacy settings</a></p>
+    <p class="privacy_links"><a data-wat-linkname="manage-ccpa-settings-footer-link" href="javascript:;">Do not sell my personal information</a></p>
+    <p class="privacy_links"><a href="https://www.autodesk.com/company/legal-notices-trademarks/privacy-statement">Privacy/Cookies</a></p>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">tk-multi-data-validation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>tk_multi_data_validation.api.data.validation_rule</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tk_multi_data_validation.api.data.validation_rule</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2022 Autodesk, Inc.</span>
+<span class="c1">#</span>
+<span class="c1"># CONFIDENTIAL AND PROPRIETARY</span>
+<span class="c1">#</span>
+<span class="c1"># This work is provided &quot;AS IS&quot; and subject to the ShotGrid Pipeline Toolkit</span>
+<span class="c1"># Source Code License included in this distribution package. See LICENSE.</span>
+<span class="c1"># By accessing, using, copying or modifying this work you indicate your</span>
+<span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
+<span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
+
+<span class="kn">import</span> <span class="nn">sgtk</span>
+
+<span class="kn">from</span> <span class="nn">.validation_rule_type</span> <span class="kn">import</span> <span class="n">ValidationRuleType</span>
+
+
+<div class="viewcode-block" id="ValidationRule"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule">[docs]</a><span class="k">class</span> <span class="nc">ValidationRule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A validation rule to be applied to the DCC data, which determines if the DCC data is valid or not.</span>
+
+<span class="sd">    The key properties of the rule are the `check_func` and `fix_func`; these functions define the how the</span>
+<span class="sd">    DCC data is validated and provides an automated function to resolve data that is not valid. See the list</span>
+<span class="sd">    of class properties below for more information on what data is contained in the validation rule object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_data</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a validation rule with the provided data.</span>
+
+<span class="sd">        :param rule_data: The data that defines the rule.</span>
+<span class="sd">        :type rule_data: dict</span>
+
+<span class="sd">        **rule_data dict format**</span>
+<span class="sd">            id</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The unique identifier for this rule.</span>
+<span class="sd">            name</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The display name for this rule.</span>
+<span class="sd">            data_type:</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The name of the data type that this rule pertains to.</span>
+<span class="sd">            description</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: Text that describes what the rule checks for in the data.</span>
+<span class="sd">            required</span>
+<span class="sd">                :type: bool</span>
+<span class="sd">                :description: True indicates that this rule should be applied when validating the data.</span>
+<span class="sd">            checked</span>
+<span class="sd">                :type: bool</span>
+<span class="sd">                :description: True indicates that this rule has a checked state (for UI purposes), False indicates the rule is unchecked.</span>
+<span class="sd">            check_name</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The display name for the rule&#39;s check function.</span>
+<span class="sd">            check_func</span>
+<span class="sd">                :type: function</span>
+<span class="sd">                :description: The function the rule executes to check the data for violations agains the rule.</span>
+<span class="sd">            fix_name</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: The display name for the rule&#39;s fix function.</span>
+<span class="sd">            fix_func</span>
+<span class="sd">                :type: function</span>
+<span class="sd">                :description: The function the rule executes to fix the data violations found after applying the rule&#39;s check function to the data.</span>
+<span class="sd">            fix_tooltip</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: Text that describes what the rule&#39;s fix function will do.</span>
+<span class="sd">            error_msg</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: Text that describes how the data is not valid.</span>
+<span class="sd">            warn_msg</span>
+<span class="sd">                :type: str</span>
+<span class="sd">                :description: Text that describes the warning for this rule.</span>
+<span class="sd">            get_kwargs</span>
+<span class="sd">                :type: function</span>
+<span class="sd">                :description: A function that returns a dictionary of keyword arguments to pass to the check and fix functions.</span>
+<span class="sd">            actions</span>
+<span class="sd">                :type: list&lt;dict&gt;</span>
+<span class="sd">                :description: A list of actions that can be applied to the data to resolve any errors for this rule.</span>
+
+<span class="sd">                **Required Keys**</span>
+<span class="sd">                    name</span>
+<span class="sd">                        :type: str</span>
+<span class="sd">                        :description: The display text for the action.</span>
+<span class="sd">                    callback</span>
+<span class="sd">                        :type: function</span>
+<span class="sd">                        :description: The function to call when the action is invoked.</span>
+
+<span class="sd">                **Optional Keys**</span>
+<span class="sd">                    tooltip</span>
+<span class="sd">                        :type: str</span>
+<span class="sd">                        :description: Text to display as for the item action&#39;s tooltip help messages.</span>
+<span class="sd">            item_actions</span>
+<span class="sd">                :type: list&lt;dict&gt;</span>
+<span class="sd">                :description: A list of actions that can be applied to the particular data for this rule, to resolve the error.</span>
+
+<span class="sd">                **Required Keys**</span>
+<span class="sd">                    name</span>
+<span class="sd">                        :type: str</span>
+<span class="sd">                        :description: The display text for the action.</span>
+<span class="sd">                    callback</span>
+<span class="sd">                        :type: function</span>
+<span class="sd">                        :description: The function to call when the action is invoked.</span>
+
+<span class="sd">                **Optional Keys**</span>
+<span class="sd">                    tooltip</span>
+<span class="sd">                        :type: str</span>
+<span class="sd">                        :description: Text to display as for the item action&#39;s tooltip help messages.</span>
+<span class="sd">            dependencies</span>
+<span class="sd">                :type: dict&lt;str&gt;</span>
+<span class="sd">                :description: A dict of the valiation rule ids that this rule depends on and their display name. All dependency rules must be fixed before this rule can be fixed.</span>
+
+<span class="sd">        :param bundle: (optional) The bundle instance for the app. If not specified, the</span>
+<span class="sd">            current bundle will be retrieved.</span>
+<span class="sd">        :type bundle: TankBundle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="n">rule_data</span><span class="p">)</span>
+
+        <span class="c1"># Set the main rule data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">rule_data</span> <span class="ow">or</span> <span class="p">{}</span>
+
+        <span class="c1"># The checked property can be updated at runtime by user interaction. Initailzie the default value.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optional_checked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># This indicates whether the user checked the manual rule as being &quot;done&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_manual_checked</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Get the validatin rule type object for this rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type</span> <span class="o">=</span> <span class="n">ValidationRuleType</span><span class="o">.</span><span class="n">get_type_for_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Initialize valid property to None, indicating that this rule has not been checked yet.</span>
+        <span class="c1"># Set to True once check has been run and the rule fails, or False if it passes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># The error items found the last time the rule&#39;s check function was executed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Flag indicating that the rule fix method was executed at least once</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Runtime exceptions caught - used to display error messages</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Keep track of the rules that this rule depends on, which have failed to be checked</span>
+        <span class="c1"># upon attempting to check this rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Store the hook method to sanitize validation results, as it will be used many times.</span>
+        <span class="n">bundle</span> <span class="o">=</span> <span class="n">bundle</span> <span class="ow">or</span> <span class="n">sgtk</span><span class="o">.</span><span class="n">platform</span><span class="o">.</span><span class="n">current_bundle</span><span class="p">()</span>
+        <span class="n">hook_path</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;hook_data_validation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_check_result</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">create_hook_instance</span><span class="p">(</span>
+            <span class="n">hook_path</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">sanitize_check_result</span>
+
+<div class="viewcode-block" id="ValidationRule.check_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.check_data">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Raise an exception if the data is not valid to create a ValidationRule object.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing id data for ValidationRule.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing id data for ValidationRule.&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the unique identifier for this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the :class:`ValidationRuleType` of this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rule_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the display name for the type of this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the data type that this rule peratins to.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the display name for thsi rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the description text for what this rule does.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the property flag indicating if this rule should be executed to validate the data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">manual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the property flag indicating if this rule cannot be automatically checked.</span>
+
+<span class="sd">        These types of rules must be manually validated by user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fix_func</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">optional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the property flag indicating if this rule is optional.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the display name for the check function of this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;check_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Validate&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fix_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the display name for the fix function of this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Fix&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fix_tooltip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the text that describes what the fix function does for this rule.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_tooltip&quot;</span><span class="p">,</span> <span class="s2">&quot;Click to fix this data violation.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get or set the text that describes how the current data errors.&quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_msg&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Found errors.&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;error_msg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="k">return</span> <span class="n">msg</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">warn_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get or set the text that describes the current warnings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warn_msg&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">checked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the set the property flag indicating that an optional rule is checked (turned on).</span>
+
+<span class="sd">        This is meant to be used to set the UI check state for an optional rule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optional_checked</span>
+
+    <span class="nd">@checked</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">checked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optional_checked</span> <span class="o">=</span> <span class="n">checked</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">manual_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the set the property flag indicating that a manual rule is checked (user set as valid).</span>
+
+<span class="sd">        This is meant to be used to set the UI check state for a manual rule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manual_checked</span>
+
+    <span class="nd">@manual_checked</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">manual_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_manual_checked</span> <span class="o">=</span> <span class="n">checked</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the function that this rule executes to validate the data.</span>
+
+<span class="sd">        It is encouraged to use the `exec_check` method instead of getting this function and calling it</span>
+<span class="sd">        directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;check_func&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fix_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the function that this rule executes to fix the data violations found by the rule.</span>
+
+<span class="sd">        It is encouraged to use the `exec_fix` method instead of getting this function and calling it</span>
+<span class="sd">        directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_func&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">get_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the function that returns the extra keyword arguments dict to pass to the check and fix functions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;get_kwargs&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of actions that can be applied to all error items (as a group) for this rule.</span>
+
+<span class="sd">        These do no include the primary check or fix functions. This property is a list of dicts, which contain</span>
+<span class="sd">        a `name` and `callback` keys, and optionally contains keys: `tooltip`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;actions&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">item_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of actions that can be applied invididual error items (one at a time) for this rule.</span>
+
+<span class="sd">        These do no include the primary check or fix functions. This property is a list of dicts, which contain</span>
+<span class="sd">        a `name` and `callback` keys, and optionally contains keys: `tooltip`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;item_actions&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the valid state of the rule.</span>
+
+<span class="sd">        This will reflect the status returned by the rule&#39;s check function the last time it was</span>
+<span class="sd">        executed. If the value of this property is None, this indicates that the rule&#39;s check</span>
+<span class="sd">        function was not executed, or the rule&#39;s valid state cannot be determined because at</span>
+<span class="sd">        least one of the rule&#39;s dependencies is not valid or could not be checked (due to one</span>
+<span class="sd">        of its dependencies).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the error data for this rule, based on the last time its check function executed.</span>
+
+<span class="sd">        This will contain the error data items found by the rule&#39;s check function the last time</span>
+<span class="sd">        it was executed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="ow">or</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fix_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the flag indicating if the rule&#39;s fix method was executed at least once.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the dependencies information for this rule.</span>
+
+<span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
+<span class="sd">        fixed in, when fixing in bulk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Public methods</span>
+
+<div class="viewcode-block" id="ValidationRule.get_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the data from the rule.</span>
+
+<span class="sd">        :param field: The field to get data for</span>
+<span class="sd">        :type field: str</span>
+
+<span class="sd">        :return: The data for the specified field</span>
+<span class="sd">        :rtype: any</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_actions_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_actions_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_actions_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the action data required to execute the action callback functions.</span>
+
+<span class="sd">        :param pre_validate: True will validate the rule before getting the errors to include</span>
+<span class="sd">            in the action data. This ensures that the error data included is not stale.</span>
+<span class="sd">        :type pre_validate: bool</span>
+
+<span class="sd">        :return: The action data required to execute the callback functions.</span>
+<span class="sd">        :rtype: List[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+            <span class="c1"># Add the current errors to the action data so that the action function can be</span>
+            <span class="c1"># applied to the current errors.</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_errors</span><span class="p">()</span> <span class="k">if</span> <span class="n">pre_validate</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span>
+            <span class="n">action</span><span class="p">[</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">errors</span><span class="p">}</span>
+            <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">actions</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_error_item_ids"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_error_item_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_item_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience method to get a list of the item ids from the data errors.</span>
+
+<span class="sd">        :return: The item ids of the error items.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_error_messages"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_error_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the list of current error messages.</span>
+
+<span class="sd">        If there was a run time error during the check or fix function, the error messages will</span>
+<span class="sd">        contain these run time error messages. The default error message will not be included.</span>
+
+<span class="sd">        If the check and fix functions executed successfully, then return the default error</span>
+<span class="sd">        message for the rule (e.g. assumes if the check/fix ran successfully than if there is</span>
+<span class="sd">        an error, it will be due to finding actual validation errors related to the rule).</span>
+
+<span class="sd">        :return: The error messages.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Validation Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Fix Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span><span class="p">:</span>
+            <span class="c1"># Only include the validation error message if both check and fix functions</span>
+            <span class="c1"># executed successfully.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">messages</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_warning_messages"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_warning_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_warning_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of current warning messages.&quot;&quot;&quot;</span>
+
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warn_message</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warn_message</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_checked</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span>
+        <span class="p">):</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Validation must be manually checked.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_failed_dependency</span><span class="p">():</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Validation/Fix not run because the dependency failed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span><span class="o">.</span><span class="n">name</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">messages</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_dependency_ids"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_dependency_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_dependency_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the validation rules (ids) that this rule depends on.</span>
+
+<span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
+<span class="sd">        fixed in, when fixing in bulk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_dependency_names"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_dependency_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_dependency_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the validation rules (display names) that this rule depends on.</span>
+
+<span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
+<span class="sd">        fixed in, when fixing in bulk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationRule.get_errors"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_errors">[docs]</a>    <span class="k">def</span> <span class="nf">get_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute this rule&#39;s check function to get the most up to date error data.</span>
+
+<span class="sd">        The rule&#39;s check function will be executed, the `errors` property will be updated with</span>
+<span class="sd">        the check function&#39;s result, and the result will be returned.</span>
+
+<span class="sd">        :return: The most up to date error data.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exec_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span></div>
+
+<div class="viewcode-block" id="ValidationRule.set_failed_dependency"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.set_failed_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">set_failed_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dependency_rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the failed dependency for this rule.</span>
+
+<span class="sd">        Set the failed dependency as None to indicate that this rule has no failed</span>
+<span class="sd">        dependencies.</span>
+
+<span class="sd">        This value is used to determine if it is safe to execute the rule&#39;s check and fix</span>
+<span class="sd">        functions. If a dependency does not succeed, then the data may not be in a proper</span>
+<span class="sd">        state for the dependent rule to act on; thus, attempting to execute the rule&#39;s</span>
+<span class="sd">        check or fix function on the data may yield incorrect results.</span>
+
+<span class="sd">        :param dependency_rule: The dependency rule that failed. Pass None to indicate that</span>
+<span class="sd">            the rule has no failed dependencies.</span>
+<span class="sd">        :type dependency_rule: ValidationRule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span> <span class="o">=</span> <span class="n">dependency_rule</span></div>
+
+<div class="viewcode-block" id="ValidationRule.has_failed_dependency"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.has_failed_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">has_failed_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if this rule has a dependency that failed.</span>
+
+<span class="sd">        See `set_failed_dependency` for more information about the usage and purpose of this</span>
+<span class="sd">        value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ValidationRule.exec_check"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.exec_check">[docs]</a>    <span class="k">def</span> <span class="nf">exec_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the rule&#39;s check function.</span>
+
+<span class="sd">        It is reccommended to use this method to execute the rule&#39;s check function, instead of</span>
+<span class="sd">        directly invoking the check function, so that the rule&#39;s properties are updated</span>
+<span class="sd">        consistently after the check function is executed.</span>
+
+<span class="sd">        :param force: Set to True to run the check function no matter if there are failed</span>
+<span class="sd">            dependencies. Set to False to only run the check if there there is not a failed</span>
+<span class="sd">            dependency. Default is False.</span>
+<span class="sd">        :type force: bool</span>
+
+<span class="sd">        :return: False is returned if failed to execute the check (there is a failed</span>
+<span class="sd">            dependency or the check function threw an exception). None is returned if the rule</span>
+<span class="sd">            does not have a check function. Otherwise, the result returned by the check</span>
+<span class="sd">            function is sanitized by `_process_check_result` and returned.</span>
+<span class="sd">        :rtype: list | bool | None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reset teh check runtime exception</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Do not run the check function when it has a failed dependency, and not forcing.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_failed_dependency</span><span class="p">():</span>
+            <span class="c1"># Set the rule state to indicate that the check function not run</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Run the check function</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kwargs</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_check_result</span><span class="p">(</span><span class="n">raw_result</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">runtime_error</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="o">=</span> <span class="n">runtime_error</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This is a manual check. It is considered valid if the user has checked it off.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_checked</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="ValidationRule.exec_fix"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.exec_fix">[docs]</a>    <span class="k">def</span> <span class="nf">exec_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the rule&#39;s fix function.</span>
+
+<span class="sd">        It is reccommended to use this method to execute the rule&#39;s fix function, instead of</span>
+<span class="sd">        directly invoking the fix function, so that the rule&#39;s properties are updated</span>
+<span class="sd">        consistently after the fix function is executed.</span>
+
+<span class="sd">        Validate will run before executing the fix if `pre_validate=True`. It is encouraged to</span>
+<span class="sd">        pre validate so that the error data is always retrieved right before running the fix,</span>
+<span class="sd">        and the error data accurately reflects the current data. If not pre validated, then</span>
+<span class="sd">        the fix will be applied to the error data that was retrieved the last time the</span>
+<span class="sd">        validate was run (this requires user to always manually validate before fix, and</span>
+<span class="sd">        ensure the error data reflects the current data before running the fix).</span>
+
+<span class="sd">        Fetching nor fixing dependencies is not handled in this method (see the</span>
+<span class="sd">        :class:`ValidationManager` resolve methods), though it will fail immediately if there</span>
+<span class="sd">        are errors and it has the failed dependency property set.</span>
+
+<span class="sd">        :param pre_validate: Set to True to run the rule&#39;s validate function before fixing.</span>
+<span class="sd">            This ensures the error data passed to the fix function accurately reflect the</span>
+<span class="sd">            current data.</span>
+<span class="sd">        :type pre_validate: bool</span>
+<span class="sd">        :param force: Set to True to run the fix function no matter if there are failed</span>
+<span class="sd">            dependencies. Set to False to only run the fix if there there is not a failed</span>
+<span class="sd">            dependency. Default is False.</span>
+<span class="sd">        :type force: bool</span>
+
+<span class="sd">        :return: The result of the fix function.</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        :raises Exception: If the fix operation was not successful.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reset the fix runtime exception</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Before running the fix, first validate (if specified) to ensure the error data</span>
+        <span class="c1"># accurately reflects the current data.</span>
+        <span class="k">if</span> <span class="n">pre_validate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec_check</span><span class="p">()</span>
+
+        <span class="c1"># If the rule has successfully validated, then no need to run the fix (since there is</span>
+        <span class="c1"># nothing to fix).</span>
+        <span class="c1"># NOTE it is encouraged to set pre_validate=True to ensure errors reflect the current</span>
+        <span class="c1"># data and does not require user to run validate before fix to gather the error data.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If there is no fix function, the data can not be automatically fixed. Return failure.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Do not run the fix function if it has a failed dependency and not forcing. If a</span>
+        <span class="c1"># dependency has failed, the data may not be in the required state for this fix to be</span>
+        <span class="c1"># applicable. Return failure.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_failed_dependency</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Get the key-word arguments and set the errors to pass to the fix function</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kwargs</span><span class="p">()</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fix_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># The fix function was executed - set the flag to True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">runtime_error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span> <span class="o">=</span> <span class="n">runtime_error</span>
+            <span class="n">fix_result</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">fix_result</span></div>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Protected methods</span>
+
+    <span class="k">def</span> <span class="nf">_process_check_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the result returned by the validation rule check function and update the</span>
+<span class="sd">        validation rule based on the result.</span>
+
+<span class="sd">        The result can be one of:</span>
+<span class="sd">            - dict with required keys: &#39;is_valid&#39;, &#39;errors&#39;</span>
+<span class="sd">            - object with required attributes: &#39;is_valid&#39;, &#39;errors&#39;</span>
+
+<span class="sd">        :param result: The result returned by a validation rule check function.</span>
+<span class="sd">        :type result: dict | object</span>
+
+<span class="sd">        :return: The sanitized result.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># First sanitize the result</span>
+        <span class="n">sanitized_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># Define the required fields for the check result</span>
+        <span class="n">required_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;is_valid&quot;</span><span class="p">,</span> <span class="s2">&quot;errors&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sanitized_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sanitized_result</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Validation Rule check function dict result missing key &#39;</span><span class="si">{field}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">field</span><span class="o">=</span><span class="n">field</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sanitized_result</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sanitized_result</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Validation Rule check function object result missing attribute &#39;</span><span class="si">{field}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">field</span><span class="o">=</span><span class="n">field</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">is_valid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">errors</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Validation Rule check function result cannot be processed.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sanitized_result</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Autodesk
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+ 
+
+  <script type="text/javascript">
+    window.wafCCPAForceShow = true;
+    (function(a,b,c,d){
+      a='https://tags.tiqcdn.com/utag/autodesk/micro-basic/prod/utag.js';
+      b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+      a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+    })();
+  </script>
+
+
+</body>
+</html>
