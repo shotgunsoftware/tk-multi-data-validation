@@ -201,17 +201,28 @@ class ValidationDetailsWidget(SGQWidget):
             text = None
             warnings = None
 
-            if self.rule.valid is not None:
+            if self.rule.valid is None:
+                # Rule has not executed validate or fix yet
+                if self.rule.check_func is not None and self.rule.fix_func is not None:
+                    text = "Click {} or {} to see details.".format(
+                        self.rule.check_name,
+                        self.rule.fix_name,
+                    )
+                elif self.rule.check_func is not None:
+                    text = "Click {} to see details.".format(self.rule.check_name)
+                elif self.rule.fix_func is not None:
+                    text = "Click {} to see details.".format(self.rule.fix_name)
+            elif self.rule.valid:
+                # Rule was validated and it succeedederrors
                 text = "Success! No errors found."
-            elif self.rule.check_func is not None and self.rule.fix_func is not None:
-                text = "Click {} or {} to see details.".format(
-                    self.rule.check_name,
-                    self.rule.fix_name,
-                )
-            elif self.rule.check_func is not None:
-                text = "Click {} to see details.".format(self.rule.check_name)
-            elif self.rule.fix_func is not None:
-                text = "Click {} to see details.".format(self.rule.fix_name)
+            else:
+                # Rule was validated and it failed but did not report any error items.
+                # Show the rule's error message.
+                error_messages = self.rule.get_error_messages()
+                if error_messages:
+                    text = "<span style='color:#EB5555;'>{}</span>".format(
+                        "<br/><br/>".join(error_messages)
+                    )
 
             warning_messages = self.rule.get_warning_messages()
             if warning_messages:
