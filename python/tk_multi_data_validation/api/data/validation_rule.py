@@ -451,7 +451,7 @@ class ValidationRule(object):
 
         if self.has_failed_dependency():
             messages.append(
-                "Validation/Fix not run because the dependency failed: {}".format(
+                "Validation/Fix not run because the dependency failed: {}.".format(
                     self._failed_dependency.name
                 )
             )
