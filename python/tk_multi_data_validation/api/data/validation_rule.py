@@ -337,7 +337,7 @@ class ValidationRule(object):
         This will contain the error data items found by the rule's check function the last time
         it was executed.
         """
-        return self._error_items or []
+        return self._error_items or None
 
     @property
     def fix_executed(self):
