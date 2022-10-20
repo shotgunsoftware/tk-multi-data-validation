@@ -24,48 +24,94 @@ from tk_multi_data_validation.api.data import ValidationRule, ValidationRuleType
 
 
 #########################################################################################################
-# Fixtures and mock data for ValidationRule pytests
-
-
-@pytest.fixture
-
-
-#########################################################################################################
 # ValidationRule pytests
 
 
-def test_validadtion_rule_init_defaults(rule_data, bundle):
-    """
-    Test the ValidationRule init.
-    """
+def test_validadtion_rule_init_defaults(bundle):
+    """Test the ValidationRule init default values."""
+
+    # The bare minimum data to create a Validation Rule object
+    rule_data = {
+        "id": "rule_1",
+        "name": "Rule #1",
+    }
+    rule = ValidationRule(rule_data, bundle=bundle)
+
+    assert rule._data is rule_data
+    assert rule.id == rule_data["id"]
+    assert rule.name == rule_data["name"]
+    assert rule.description == ""
+    assert rule.check_func is None
+    assert rule.fix_func is None
+    assert rule.error_message == ""
+    assert rule.warn_message is None
+    assert rule.check_name == "Validate"
+    assert rule.fix_name == "Fix"
+    assert rule.fix_tooltip == "Click to fix this data violation."
+    assert rule.actions == []
+    assert rule.item_actions == []
+    assert rule.dependencies == {}
+    assert rule.data_type is None
+    assert rule.required is True
+    assert rule.optional is False
+    assert rule.checked is False
+    assert rule.manual is True
+    assert rule.manual_checked is False
+    assert rule.valid is None
+    assert rule.errors == None
+    assert rule.fix_executed is False
+
+
+def test_validadtion_rule_init_with_data(bundle):
+    """Test the ValidationRule init sets the given data."""
 
     rule_data = {
         "id": "rule_1",
         "name": "Rule #1",
         "description": "This is the first test rule.",
         "error_msg": "This is the error message",
-        "check_func": lambda: {"is_valid": True, "errors": None},
-        "fix_func": lambda: {"is_valid": True, "errors": None},
+        "warn_msg": "This is the warning message",
+        "check_name": "My Check Name",
+        "fix_name": "My Fix Name",
+        "fix_tooltip": "My fix tooltip",
+        "data_type": "My data type",
+        "actions": "My actions should be a list, but this is enough to test init",
+        "item_actions": "My item actions should be a list, but this is enough to test init",
+        "dependencies": "My dependencies should be a dict, but this is enough to test init",
+        "check_func": "My check func should be function, but this is enough to test init",
+        "fix_func": "My fix func should be function, but this is enough to test init",
+        "get_kwargs": "My get_kwargs should be a function, but this is enough to test init",
     }
     rule = ValidationRule(rule_data, bundle=bundle)
 
     assert rule._data is rule_data
-    assert rule.checked is rule_data.get("checked", False)
+    assert rule.id == rule_data["id"]
+    assert rule.name == rule_data["name"]
+    assert rule.description == rule_data["description"]
+    assert rule.check_func == rule_data["check_func"]
+    assert rule.fix_func == rule_data["fix_func"]
+    assert rule.error_message == rule_data["error_msg"]
+    assert rule.warn_message == rule_data["warn_msg"]
+    assert rule.check_name == rule_data["check_name"]
+    assert rule.fix_name == rule_data["fix_name"]
+    assert rule.fix_tooltip == rule_data["fix_tooltip"]
+    assert rule.data_type == rule_data["data_type"]
+    assert rule.actions == rule_data["actions"]
+    assert rule.item_actions == rule_data["item_actions"]
+    assert rule.dependencies == rule_data["dependencies"]
+    assert rule.get_kwargs == rule_data["get_kwargs"]
+    assert rule.required is True
+    assert rule.optional is False
+    assert rule.checked is False
+    assert rule.manual is False
     assert rule.manual_checked is False
     assert rule.valid is None
-    assert rule.errors == []
+    assert rule.errors == None
     assert rule.fix_executed is False
-
-    for key, value in rule_data.items():
-        if hasattr(rule, key):
-            assert value == getattr(rule, key)
-        assert value == rule.get_data(key)
 
 
 def test_validadtion_rule_type(bundle):
-    """
-    Test the ValidationRule type object.
-    """
+    """Test the ValidationRule type object."""
 
     rule_data = {
         "required_rule": {
@@ -92,9 +138,7 @@ def test_validadtion_rule_type(bundle):
 
 
 def test_validadtion_rule_manual_property(bundle):
-    """
-    Test the ValidationRule type object.
-    """
+    """Test the ValidationRule manual property."""
 
     rule_data = {
         "manual_rule": {
@@ -132,10 +176,8 @@ def test_validadtion_rule_manual_property(bundle):
     assert non_manual_3.manual is False
 
 
-def test_validadtion_rule_dependencies(bundle):
-    """
-    Test the ValidationRule dependencies.
-    """
+def test_validadtion_rule_dependencies_property(bundle):
+    """Test the ValidationRule dependencies."""
 
     rule_data = {
         "id": "rule",
@@ -153,12 +195,10 @@ def test_validadtion_rule_dependencies(bundle):
     rule.get_dependency_names() == rule_data["dependencies"].values()
 
 
-def test_validadtion_rule_exec_check(bundle):
-    """
-    Test the ValidationRule check function.
-    """
+def test_validadtion_rule_exec_check_success(bundle):
+    """Test the ValidationRule check function."""
 
-    success_rule_result = {"is_valid": True, "errors": None}
+    success_rule_result = {"is_valid": True, "errors": []}
     success_rule = {
         "id": "rule",
         "name": "Rule",
@@ -168,8 +208,13 @@ def test_validadtion_rule_exec_check(bundle):
     result = rule.exec_check()
     assert result == success_rule_result
     assert rule.valid is True
-    assert not rule.errors
+    assert rule.errors == None
+    assert rule._check_runtime_exception is None
     success_rule["check_func"].assert_called_once()
+
+
+def test_validadtion_rule_exec_check_with_errors(bundle):
+    """Test the ValidationRule check function."""
 
     error_rule_result = {"is_valid": False, "errors": None}
     error_rule = {
@@ -218,19 +263,17 @@ def test_validadtion_rule_exec_check(bundle):
     result = rule.exec_check()
     assert result is None
     assert rule.valid is False
-    assert rule.errors == []
+    assert rule.errors == None
 
     rule.manual_checked = True
     result = rule.exec_check()
     assert result is None
     assert rule.valid is True
-    assert rule.errors == []
+    assert rule.errors == None
 
 
 def test_validadtion_rule_exec_fix(bundle):
-    """
-    Test the ValidationRule fix function.
-    """
+    """Test the ValidationRule fix function."""
 
     rule_with_fix = {
         "id": "rule",
