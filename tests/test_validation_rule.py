@@ -307,3 +307,109 @@ def test_validadtion_rule_exec_fix(bundle):
         assert str(fix_error) == errmsg
         assert rule.fix_executed is False
         rule_with_fix_throws_exception["fix_func"].assert_called_once()
+
+
+def test_validadtion_rule_exec_fix_exit_early(bundle):
+    """Test the ValidationRule fix function."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+        "check_func": MagicMock(),
+        "fix_func": MagicMock(),
+    }
+
+    rule = ValidationRule(rule_data, bundle=bundle)
+    # Hack the valid property to mimic the pre validate found the rule to already be valid
+    rule._valid = True
+    assert rule.valid is True
+    assert rule.fix_executed is False
+
+    rule.exec_fix()
+    # Since the rule was already marked valid and it has a check function, the fix will not execute
+    assert rule.fix_executed is False
+    rule.fix_func.assert_not_called()
+
+
+def test_validadtion_rule_exec_fix_do_not_exit_early_because_no_check_func(bundle):
+    """Test the ValidationRule fix function."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+        "fix_func": MagicMock(),
+    }
+
+    rule = ValidationRule(rule_data, bundle=bundle)
+    # Hack the valid property to mimic the pre validate found the rule to already be valid
+    rule._valid = True
+    assert rule.valid is True
+    assert rule.fix_executed is False
+
+    rule.exec_fix()
+    # The rule was already marked valid but it does not have a check function, the fix will execute
+    assert rule.fix_executed is True
+    rule.fix_func.assert_called_once()
+
+
+def test_validadtion_rule_exec_fix_do_not_exit_early_because_not_valid(bundle):
+    """Test the ValidationRule fix function."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+        "fix_func": MagicMock(),
+    }
+
+    rule = ValidationRule(rule_data, bundle=bundle)
+    assert not rule.valid
+    assert rule.fix_executed is False
+
+    rule.exec_fix()
+    # The rule was not marked valid (does not matter if it has a check function), the fix will execute
+    assert rule.fix_executed is True
+    rule.fix_func.assert_called_once()
+
+
+def test_validation_rule_exec_fix_has_failed_dependencies(bundle):
+    """Test the ValidationRule fix function."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+        "fix_func": MagicMock(),
+    }
+
+    rule = ValidationRule(rule_data, bundle=bundle)
+    # Just set it to something that is not None
+    rule.set_failed_dependency(True)
+    assert not rule.valid
+    assert rule.fix_executed is False
+    assert rule.has_failed_dependency()
+
+    rule.exec_fix()
+    # The fix not executed because it has failed dependencies
+    assert rule.fix_executed is False
+    rule.fix_func.assert_not_called()
+
+
+def test_validation_rule_exec_fix_has_failed_dependencies_but_force(bundle):
+    """Test the ValidationRule fix function."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+        "fix_func": MagicMock(),
+    }
+
+    rule = ValidationRule(rule_data, bundle=bundle)
+    # Just set it to something that is not None
+    rule.set_failed_dependency(True)
+    assert not rule.valid
+    assert rule.fix_executed is False
+    assert rule.has_failed_dependency()
+
+    rule.exec_fix(force=True)
+    # The fix executed because it has failed dependencies but is forcing
+    assert rule.fix_executed is True
+    rule.fix_func.assert_called_once()
