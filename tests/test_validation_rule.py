@@ -208,7 +208,7 @@ def test_validadtion_rule_exec_check_success(bundle):
     result = rule.exec_check()
     assert result == success_rule_result
     assert rule.valid is True
-    assert rule.errors == None
+    assert rule.errors == []
     assert rule._check_runtime_exception is None
     success_rule["check_func"].assert_called_once()
 
@@ -226,7 +226,7 @@ def test_validadtion_rule_exec_check_with_errors(bundle):
     result = rule.exec_check()
     assert result == error_rule_result
     assert rule.valid is False
-    assert not rule.errors
+    assert rule.errors is None
     error_rule["check_func"].assert_called_once()
 
     error_list = [1, 2, 3]
