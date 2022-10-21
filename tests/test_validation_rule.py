@@ -177,7 +177,7 @@ def test_validadtion_rule_manual_property(bundle):
 
 
 def test_validadtion_rule_dependencies_property(bundle):
-    """Test the ValidationRule dependencies."""
+    """Test the ValidationRule dependencies property."""
 
     rule_data = {
         "id": "rule",
@@ -196,7 +196,7 @@ def test_validadtion_rule_dependencies_property(bundle):
 
 
 def test_validadtion_rule_exec_check_success(bundle):
-    """Test the ValidationRule check function."""
+    """Test the ValidationRule exec check function successfully executes."""
 
     success_rule_result = {"is_valid": True, "errors": []}
     success_rule = {
@@ -213,8 +213,8 @@ def test_validadtion_rule_exec_check_success(bundle):
     success_rule["check_func"].assert_called_once()
 
 
-def test_validadtion_rule_exec_check_with_errors(bundle):
-    """Test the ValidationRule check function."""
+def test_validadtion_rule_exec_check_not_valid(bundle):
+    """Test the ValidationRule exec check function executes but not valid."""
 
     error_rule_result = {"is_valid": False, "errors": None}
     error_rule = {
@@ -227,7 +227,12 @@ def test_validadtion_rule_exec_check_with_errors(bundle):
     assert result == error_rule_result
     assert rule.valid is False
     assert rule.errors is None
+    assert rule._check_runtime_exception is None
     error_rule["check_func"].assert_called_once()
+
+
+def test_validadtion_rule_exec_check_with_errors_list(bundle):
+    """Test the ValidationRule exec check function executes but not valid and has error list."""
 
     error_list = [1, 2, 3]
     error_rule_with_data_result = {"is_valid": False, "errors": error_list}
@@ -241,21 +246,12 @@ def test_validadtion_rule_exec_check_with_errors(bundle):
     assert result == error_rule_with_data_result
     assert rule.valid is False
     assert rule.errors == error_list
+    assert rule._check_runtime_exception is None
     error_rule_with_data["check_func"].assert_called_once()
 
-    dict_errors = [4, 5, 6]
-    dict_result = {"is_valid": True, "errors": dict_errors}
-    error_rule_with_dict_result = {
-        "id": "rule",
-        "name": "Rule",
-        "check_func": MagicMock(return_value=dict_result),
-    }
-    rule = ValidationRule(error_rule_with_dict_result, bundle=bundle)
-    result = rule.exec_check()
-    assert result == dict_result
-    assert rule.valid is True
-    assert rule.errors == dict_errors
-    error_rule_with_dict_result["check_func"].assert_called_once()
+
+def test_validadtion_rule_exec_manual_not_valid(bundle):
+    """Test the ValidationRule exec check function when rule is manual (has no check function nor fix function)."""
 
     manual_rule = {"id": "rule", "name": "No check function provided"}
     rule = ValidationRule(manual_rule, bundle=bundle)
@@ -264,53 +260,107 @@ def test_validadtion_rule_exec_check_with_errors(bundle):
     assert result is None
     assert rule.valid is False
     assert rule.errors == None
+    assert rule._check_runtime_exception is None
 
+
+def test_validadtion_rule_exec_manual_valid(bundle):
+    """Test the ValidationRule exec check function when rule is manual (has no check function nor fix function) and not valid."""
+
+    manual_rule = {"id": "rule", "name": "No check function provided"}
+    rule = ValidationRule(manual_rule, bundle=bundle)
     rule.manual_checked = True
     result = rule.exec_check()
     assert result is None
     assert rule.valid is True
-    assert rule.errors == None
+    assert rule.errors is None
+    assert rule._check_runtime_exception is None
+
+
+def test_validadtion_rule_exec_semi_automatied(bundle):
+    """Test the ValidationRule exec check function when rule has fix function but not check function."""
+
+    # A semi-automated rule has a fix func but not a check func
+    semi_automated_rule = {
+        "id": "rule",
+        "name": "No check function provided",
+        "fix_func": True,
+    }
+    rule = ValidationRule(semi_automated_rule, bundle=bundle)
+    result = rule.exec_check()
+    assert rule.valid is True
+    assert result is None
+    assert rule.errors is None
+    assert rule._check_runtime_exception is None
+
+
+def test_validadtion_rule_exec_throws_exception(bundle):
+    """Test the ValidationRule exec check function when rule check func throws an exception."""
+
+    exception = Exception("check threw an exception")
+    semi_automated_rule = {
+        "id": "rule",
+        "name": "Throw exception",
+        "check_func": MagicMock(side_effect=exception),
+    }
+    rule = ValidationRule(semi_automated_rule, bundle=bundle)
+    result = rule.exec_check()
+    assert rule.valid is False
+    assert result is None
+    assert rule.errors is None
+    assert rule._check_runtime_exception == exception
 
 
 def test_validadtion_rule_exec_fix(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule fix function executes successfully."""
 
     rule_with_fix = {
         "id": "rule",
         "name": "Rule",
         "fix_func": MagicMock(),
     }
-    rule_without_fix = {"id": "rule", "name": "Rule", "name": "No fix func provided"}
-    errmsg = "Fix threw an exception"
-    rule_with_fix_throws_exception = {
-        "id": "rule",
-        "name": "Rule",
-        "fix_func": MagicMock(side_effect=Exception(errmsg)),
-    }
 
     rule = ValidationRule(rule_with_fix, bundle=bundle)
     assert rule.fix_executed is False
     rule.exec_fix()
     assert rule.fix_executed is True
+    assert rule._fix_runtime_exception is None
     rule_with_fix["fix_func"].assert_called_once()
+
+
+def test_validadtion_rule_exec_fix_no_func(bundle):
+    """Test the ValidationRule exec fix function when rule has no fix function defined."""
+
+    rule_without_fix = {"id": "rule", "name": "Rule", "name": "No fix func provided"}
 
     rule = ValidationRule(rule_without_fix, bundle=bundle)
     assert rule.fix_executed is False
     rule.exec_fix()
     # Nothing should have happened, and the flag that fix was executed should remain False
     assert rule.fix_executed is False
+    assert rule._fix_runtime_exception is None
+
+
+def test_validadtion_rule_exec_fix_throws_exception(bundle):
+    """Test the ValidationRule exec fix function when fix function throws an exception."""
+
+    exception = Exception("Fix threw an exception")
+    rule_with_fix_throws_exception = {
+        "id": "rule",
+        "name": "Rule",
+        "fix_func": MagicMock(side_effect=exception),
+    }
 
     rule = ValidationRule(rule_with_fix_throws_exception, bundle=bundle)
     assert rule.fix_executed is False
-    with pytest.raises(Exception) as fix_error:
-        rule.exec_fix()
-        assert str(fix_error) == errmsg
-        assert rule.fix_executed is False
-        rule_with_fix_throws_exception["fix_func"].assert_called_once()
+
+    rule.exec_fix()
+    assert rule.fix_executed is False
+    assert rule._fix_runtime_exception == exception
+    rule_with_fix_throws_exception["fix_func"].assert_called_once()
 
 
 def test_validadtion_rule_exec_fix_exit_early(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule exec fix function exits early (does not execute fix func) because rule is already valid."""
 
     rule_data = {
         "id": "rule",
@@ -332,7 +382,7 @@ def test_validadtion_rule_exec_fix_exit_early(bundle):
 
 
 def test_validadtion_rule_exec_fix_do_not_exit_early_because_no_check_func(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule exec fix function does not exit early because no check func to say that the rule is truly valid."""
 
     rule_data = {
         "id": "rule",
@@ -353,7 +403,7 @@ def test_validadtion_rule_exec_fix_do_not_exit_early_because_no_check_func(bundl
 
 
 def test_validadtion_rule_exec_fix_do_not_exit_early_because_not_valid(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule exec fix function does not exit early because rule is not valid."""
 
     rule_data = {
         "id": "rule",
@@ -372,7 +422,7 @@ def test_validadtion_rule_exec_fix_do_not_exit_early_because_not_valid(bundle):
 
 
 def test_validation_rule_exec_fix_has_failed_dependencies(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule exec fix function does not run fix because it has failed dependencies."""
 
     rule_data = {
         "id": "rule",
@@ -394,7 +444,7 @@ def test_validation_rule_exec_fix_has_failed_dependencies(bundle):
 
 
 def test_validation_rule_exec_fix_has_failed_dependencies_but_force(bundle):
-    """Test the ValidationRule fix function."""
+    """Test the ValidationRule exec fix function does execute the fix because it is forcing, even with failed dependenceis."""
 
     rule_data = {
         "id": "rule",
