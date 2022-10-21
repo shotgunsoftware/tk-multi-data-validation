@@ -24,6 +24,40 @@ from tk_multi_data_validation.api.data import ValidationRule, ValidationRuleType
 
 
 #########################################################################################################
+# Helper classes
+
+
+class CheckResultMissingIsValid:
+    """Mock a check result object passed to the validation rule _process_check_result."""
+
+    def __init__(self, errors):
+        self.errors = errors
+
+
+class CheckResultMissingErrors:
+    """Mock a check result object passed to the validation rule _process_check_result."""
+
+    def __init__(self, is_valid):
+        self.is_valid = is_valid
+
+
+class CheckResultMissingBothIsValidAndErrors:
+    """Mock a check result object passed to the validation rule _process_check_result."""
+
+    def __init__(self, name):
+        self.name = name
+
+
+class ACorrectCheckResult:
+    """Mock a check result object passed to the validation rule _process_check_result."""
+
+    def __init__(self, is_valid, errors):
+        self.is_valid = is_valid
+        self.errors = errors
+        self.it_can_have_other_stuff_but_is_ignored = True
+
+
+#########################################################################################################
 # ValidationRule pytests
 
 
@@ -463,3 +497,98 @@ def test_validation_rule_exec_fix_has_failed_dependencies_but_force(bundle):
     # The fix executed because it has failed dependencies but is forcing
     assert rule.fix_executed is True
     rule.fix_func.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "result_data",
+    [
+        (None, ValueError),
+        (1, ValueError),
+        ("bad result", ValueError),
+    ],
+)
+def test_validaiton_rule_process_check_result_bad_result_type(bundle, result_data):
+    """Test the ValidationRule _process_check_result function with unsupported result object type."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+    }
+    rule = ValidationRule(rule_data, bundle=bundle)
+
+    result, exception_class = result_data
+    with pytest.raises(exception_class):
+        rule._process_check_result(result)
+
+
+@pytest.mark.parametrize(
+    "result_data",
+    [
+        ({}, ValueError),
+        ({"is_valid": True}, ValueError),
+        ({"errors": []}, ValueError),
+        (CheckResultMissingIsValid([]), ValueError),
+        (CheckResultMissingErrors(True), ValueError),
+        (CheckResultMissingBothIsValidAndErrors("bad result"), ValueError),
+    ],
+)
+def test_validaiton_rule_process_check_result_bad_result_data(bundle, result_data):
+    """Test the ValidationRule _process_check_result function with bad result object data."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+    }
+    rule = ValidationRule(rule_data, bundle=bundle)
+
+    result, exception_class = result_data
+    with pytest.raises(exception_class):
+        rule._process_check_result(result)
+
+
+@pytest.mark.parametrize(
+    "result",
+    [
+        {"is_valid": True, "errors": []},
+        {"is_valid": False, "errors": [1, 2, 3]},
+    ],
+)
+def test_validaiton_rule_process_check_result_with_dict(bundle, result):
+    """Test the ValidationRule _process_check_result function with result dict data."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+    }
+    rule = ValidationRule(rule_data, bundle=bundle)
+
+    sanitized_result = rule._process_check_result(result)
+    # Our mock should just return the result as is
+    assert sanitized_result == result
+    # Now actually validate the data
+    assert rule.valid == result["is_valid"]
+    assert rule.errors == result["errors"]
+
+
+@pytest.mark.parametrize(
+    "result",
+    [
+        ACorrectCheckResult(True, None),
+        ACorrectCheckResult(False, [4, 5, 6]),
+    ],
+)
+def test_validaiton_rule_process_check_result_with_object(bundle, result):
+    """Test the ValidationRule _process_check_result function with result object data."""
+
+    rule_data = {
+        "id": "rule",
+        "name": "Rule",
+    }
+    rule = ValidationRule(rule_data, bundle=bundle)
+
+    sanitized_result = rule._process_check_result(result)
+    # Our mock should just return the result as is
+    assert sanitized_result == result
+    # Now actually validate the data
+    assert rule.valid == result.is_valid
+    assert rule.errors == result.errors
