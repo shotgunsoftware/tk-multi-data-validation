@@ -337,7 +337,7 @@ class ValidationRule(object):
         This will contain the error data items found by the rule's check function the last time
         it was executed.
         """
-        return self._error_items or []
+        return self._error_items
 
     @property
     def fix_executed(self):
@@ -451,7 +451,7 @@ class ValidationRule(object):
 
         if self.has_failed_dependency():
             messages.append(
-                "Validation/Fix not run because the dependency failed: {}".format(
+                "Validation/Fix not run because the dependency failed: {}.".format(
                     self._failed_dependency.name
                 )
             )
@@ -560,9 +560,14 @@ class ValidationRule(object):
                     self._valid = False
                     self._error_items = None
                     result = None
-            else:
+            elif self.manual:
                 # This is a manual check. It is considered valid if the user has checked it off.
                 self._valid = self.manual_checked
+                self._error_items = None
+                result = None
+            else:
+                # This rule does not have a check function but it does have a fix
+                self._valid = True
                 self._error_items = None
                 result = None
 
@@ -612,9 +617,12 @@ class ValidationRule(object):
 
         # If the rule has successfully validated, then no need to run the fix (since there is
         # nothing to fix).
+        # NOTE that rules may not have a check function, so only exit early if there was
+        # actually a check function that executed to set the rule valid. Otherwise, we need
+        # to run the fix since the pre validation step did not do anything
         # NOTE it is encouraged to set pre_validate=True to ensure errors reflect the current
         # data and does not require user to run validate before fix to gather the error data.
-        if self.valid:
+        if self.check_func and self.valid:
             return True
 
         # If there is no fix function, the data can not be automatically fixed. Return failure.

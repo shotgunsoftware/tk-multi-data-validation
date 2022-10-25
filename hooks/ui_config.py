@@ -25,4 +25,10 @@ class UIConfig(HookBaseClass):
         :rtype: QtGui.QColor
         """
 
-        return QtGui.QApplication.palette().midlight()
+        parent_index = index.parent()
+        if parent_index and parent_index.isValid():
+            # Return the brush to paint the group header item row
+            return QtGui.QApplication.palette().midlight()
+
+        # Return the brush to paint the item row
+        return QtGui.QApplication.palette().base()
