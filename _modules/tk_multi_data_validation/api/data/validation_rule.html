@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.1.2 documentation</title>
+  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.1.3 documentation</title>
   
 
   
@@ -120,7 +120,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.2.<br>
+    <b>tk-multi-data-validation</b> v0.1.3.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -537,7 +537,7 @@
 <span class="sd">        This will contain the error data items found by the rule&#39;s check function the last time</span>
 <span class="sd">        it was executed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -651,7 +651,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_failed_dependency</span><span class="p">():</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="s2">&quot;Validation/Fix not run because the dependency failed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;Validation/Fix not run because the dependency failed: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span><span class="o">.</span><span class="n">name</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -760,9 +760,14 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual</span><span class="p">:</span>
                 <span class="c1"># This is a manual check. It is considered valid if the user has checked it off.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_checked</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This rule does not have a check function but it does have a fix</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -812,9 +817,12 @@
 
         <span class="c1"># If the rule has successfully validated, then no need to run the fix (since there is</span>
         <span class="c1"># nothing to fix).</span>
+        <span class="c1"># NOTE that rules may not have a check function, so only exit early if there was</span>
+        <span class="c1"># actually a check function that executed to set the rule valid. Otherwise, we need</span>
+        <span class="c1"># to run the fix since the pre validation step did not do anything</span>
         <span class="c1"># NOTE it is encouraged to set pre_validate=True to ensure errors reflect the current</span>
         <span class="c1"># data and does not require user to run validate before fix to gather the error data.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="c1"># If there is no fix function, the data can not be automatically fixed. Return failure.</span>
