@@ -369,10 +369,12 @@ class ValidationManager(object):
                     # Update the previous errors to the current set
                     prev_errors = set(self.errors)
 
-                    # Attempt to resolve again
+                    # Attempt to resolve again. This time we need to fetch dependencies since
+                    # we are only passing the errors and not all dependencies may be present
+                    # in the errors list.
                     self.resolve_rules(
                         self.errors.values(),
-                        fetch_dependencies=False,
+                        fetch_dependencies=True,
                         emit_signals=False,
                     )
                     # Check for errors
