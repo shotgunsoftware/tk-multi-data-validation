@@ -9,6 +9,7 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 from .api import ValidationManager
+from .utils.validation_notifier import ValidationNotifier
 
 try:
     from .dialog import AppDialog
