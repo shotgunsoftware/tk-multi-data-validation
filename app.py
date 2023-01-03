@@ -32,9 +32,11 @@ class DataValidation(sgtk.platform.Application):
         # the data validation functionality
         #   - ValidationManager: class provides the interface for validatin.
         #   - ValidationWidget: class provides the user interface to perform data validation
+        #   - ValidationNotifier: class provides notifer object for mangaer to emit signals to widget
         self._manager_class = tk_multi_data_validation.ValidationManager
         try:
             self._widget_class = tk_multi_data_validation.ValidationWidget
+            self._notifier_class = tk_multi_data_validation.ValidationNotifier
         except:
             # Temporary work around to allow pytests to run. Unit tests do not have
             # access to sgtk.platform.qt for QtCore and QtGui so attempting to import
@@ -115,7 +117,7 @@ class DataValidation(sgtk.platform.Application):
         include_rules=None,
         exclude_rules=None,
         logger=None,
-        notifier=None,
+        has_notifier=False,
         has_ui=False,
     ):
         """
@@ -130,14 +132,17 @@ class DataValidation(sgtk.platform.Application):
         :param logger: This is a standard python logger to use during validation. A default logger
             will be provided if not supplied.
         :type logger: A standard python logger.
-        :param notifier: A notifier object to emit Qt signals.
-        :type notifier: ValidationNotifer
+        :param has_notifier: True will create a notifier in the manager, else False will not.
+            Default is False.
+        :type has_notifier: bool
         :param has_ui: Set to True if the manager is being used with a UI, else False.
         :type has_ui: bool
 
         :return: The validation manager.
         :rtype: :class:`tk_multi_data_validation.ValidationManager`
         """
+
+        notifier = self._notifier_class() if has_notifier else None
 
         return self._manager_class(
             rule_settings=rule_settings,

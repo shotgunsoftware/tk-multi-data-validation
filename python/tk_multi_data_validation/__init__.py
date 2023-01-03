@@ -13,6 +13,7 @@ from .api import ValidationManager
 try:
     from .dialog import AppDialog
     from .widgets import ValidationWidget
+    from .utils.validation_notifier import ValidationNotifier
 except:
     # Temporary work around to allow pytests to run. Unit tests do not have
     # access to sgtk.platform.qt for QtCore and QtGui so attempting to import
