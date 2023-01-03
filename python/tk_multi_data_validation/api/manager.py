@@ -97,6 +97,7 @@ class ValidationManager(object):
         # Create the set of ValidationRules from the validation data and the rules defined in
         # the settings
         rule_settings = rule_settings or self._bundle.get_setting("rules", [])
+        rule_settings_ids = [r["id"] for r in rule_settings]
         for rule_item in rule_settings:
             rule_id = rule_item["id"]
 
@@ -115,11 +116,18 @@ class ValidationManager(object):
 
             # Collect dependencies first, if any
             for dependency_id in rule_data.get("dependency_ids", []):
+                if dependency_id not in rule_settings_ids:
+                    # Do not include dependencies that are not specified in the settings.
+                    continue
+
                 dependency_data = self.__data.get(dependency_id)
-                if dependency_data:
-                    rule_data.setdefault("dependencies", {})[
-                        dependency_id
-                    ] = dependency_data.get("name")
+                if not dependency_data:
+                    # Cannot include a dependency if there is not data for it.
+                    continue
+
+                rule_data.setdefault("dependencies", {})[
+                    dependency_id
+                ] = dependency_data.get("name")
 
             rule_data.update(rule_item)
             rule = ValidationRule(rule_data, bundle=self._bundle)
