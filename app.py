@@ -34,9 +34,9 @@ class DataValidation(sgtk.platform.Application):
         #   - ValidationWidget: class provides the user interface to perform data validation
         #   - ValidationNotifier: class provides notifer object for mangaer to emit signals to widget
         self._manager_class = tk_multi_data_validation.ValidationManager
-        self._notifier_class = tk_multi_data_validation.ValidationNotifier
         try:
             self._widget_class = tk_multi_data_validation.ValidationWidget
+            self._notifier_class = tk_multi_data_validation.ValidationNotifier
         except:
             # Temporary work around to allow pytests to run. Unit tests do not have
             # access to sgtk.platform.qt for QtCore and QtGui so attempting to import
