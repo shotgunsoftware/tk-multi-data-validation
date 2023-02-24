@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>App Config Settings &mdash; tk-multi-data-validation v0.1.3 documentation</title>
+  <title>App Config Settings &mdash; tk-multi-data-validation v0.1.4 documentation</title>
   
 
   
@@ -122,7 +122,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.3.<br>
+    <b>tk-multi-data-validation</b> v0.1.4.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -213,24 +213,24 @@
 <p>An example of the settings file that is set up for Alias and VRED:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example: tk-multi-data-validation.yml settings set up for the Alias and VRED Engines</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.alias</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_null_nodes</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zero_transforms</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remove_empty_layers</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.alias</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span>
+<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span>
+<span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_null_nodes</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zero_transforms</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remove_empty_layers</span>
 
-<span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_hidden_nodes</span><span class="w"></span>
-<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Scene Graph</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_unused_materials</span><span class="w"></span>
-<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Materials</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unload_references</span><span class="w"></span>
-<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">References</span><span class="w"></span>
+<span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span>
+<span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py&quot;</span>
+<span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_hidden_nodes</span>
+<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Scene Graph</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delete_unused_materials</span>
+<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Materials</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unload_references</span>
+<span class="w">      </span><span class="nt">data_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">References</span>
 </pre></div>
 </div>
 </div>
@@ -257,7 +257,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2022, Autodesk
+        &copy; Copyright 2023, Autodesk
 
     </p>
   </div> 

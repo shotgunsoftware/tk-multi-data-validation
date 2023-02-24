@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tk_multi_data_validation.widgets.validation_widget &mdash; tk-multi-data-validation v0.1.3 documentation</title>
+  <title>tk_multi_data_validation.widgets.validation_widget &mdash; tk-multi-data-validation v0.1.4 documentation</title>
   
 
   
@@ -120,7 +120,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.3.<br>
+    <b>tk-multi-data-validation</b> v0.1.4.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -239,7 +239,7 @@
 
 
 <div class="viewcode-block" id="ValidationWidget"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget">[docs]</a><span class="k">class</span> <span class="nc">ValidationWidget</span><span class="p">(</span><span class="n">SGQWidget</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The main widget for the Data Validation App.</span>
 
 <span class="sd">    This widget displays the provided data validation rules, and provides the user interface to execute the</span>
@@ -279,7 +279,7 @@
     <span class="n">details_execute_action_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">group_rules_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pre_validate_before_actions</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the validation widget.</span>
 
 <span class="sd">        :param parent: The parent widget</span>
@@ -344,7 +344,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">view_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get or set the current view mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the current view mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_view_mode</span>
 
     <span class="nd">@view_mode</span><span class="o">.</span><span class="n">setter</span>
@@ -353,12 +353,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">group_rules_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the field to group the validation rules by in the main view.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the field to group the validation rules by in the main view.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_rules_by</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">validate_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the validate all button.</span>
 
 <span class="sd">        This may be useful to disconnect the default callback for the fix all button clicked signal, to</span>
@@ -368,7 +368,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the fix all button.</span>
 
 <span class="sd">        This may be useful to disconnect the default callback for the fix all button clicked signal, to</span>
@@ -378,14 +378,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">publish_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the publish button.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_publish_button</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">validate_rules_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the custom callback triggered when the validate button is clicked.</span>
 
 <span class="sd">        This property must be a function that accepts a single parameter that is a</span>
@@ -399,7 +399,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">validate_all_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the custom callback triggered when the validate button is clicked.</span>
 
 <span class="sd">        This property must be a function that accepts a single parameter that is a list of ValidationRule</span>
@@ -413,7 +413,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_all_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the custom callback triggered when the fix button is clicked.</span>
 
 <span class="sd">        This property must be a function that accepts a single parameter that is a list of ValidationRule</span>
@@ -427,7 +427,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_rules_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the custom callback triggered when the fix button is clicked.</span>
 
 <span class="sd">        This property must be a function that accepts a single parameter that is a single</span>
@@ -441,7 +441,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pre_validate_before_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the property that decides if validation is ran before executing actions</span>
 <span class="sd">        on the current affected (error) objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -455,7 +455,7 @@
     <span class="c1"># Public methods</span>
 
 <div class="viewcode-block" id="ValidationWidget.save_state"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.save_state">[docs]</a>    <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_settings</span><span class="p">,</span> <span class="n">qsettings</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the widget state in the settings.</span>
 
 <span class="sd">        :param user_settings: The Toolkit settings object to save the widget settings to.</span>
@@ -490,7 +490,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.restore_state"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.restore_state">[docs]</a>    <span class="k">def</span> <span class="nf">restore_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_settings</span><span class="p">,</span> <span class="n">qsettings</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Restore the widget state from the settings.</span>
 
 <span class="sd">        :param user_settings: The Toolkit settings object to restore the widget settings to.</span>
@@ -541,7 +541,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_view_details_splitter</span><span class="o">.</span><span class="n">setChildrenCollapsible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.turn_on_details"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.turn_on_details">[docs]</a>    <span class="k">def</span> <span class="nf">turn_on_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Turn details on to show the right-hand side details panel widget.</span>
 
 <span class="sd">        :param on: Set to True to turn on, or False to turn off.</span>
@@ -558,7 +558,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_details_overlay_widget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.turn_on_rule_type_filter"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.turn_on_rule_type_filter">[docs]</a>    <span class="k">def</span> <span class="nf">turn_on_rule_type_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Turn rule type filter on to show the left-hand side filter widget.</span>
 
 <span class="sd">        :param on: Set to True to turn on, or False to turn off.</span>
@@ -573,7 +573,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types_widget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.set_validation_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.set_validation_rules">[docs]</a>    <span class="k">def</span> <span class="nf">set_validation_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_rules</span><span class="p">,</span> <span class="n">validation_rule_types</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the validation rule types and data for the widget.</span>
 
 <span class="sd">        This will reinitialize the validation rule models with the given data.</span>
@@ -597,7 +597,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rules_model</span><span class="o">.</span><span class="n">initialize_data</span><span class="p">(</span><span class="n">validation_rules</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.get_active_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.get_active_rules">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of the validation rules that are currently active.</span>
 
 <span class="sd">        A validation rule is considered to be active if it is visible in the current view. Validation</span>
@@ -635,7 +635,7 @@
     <span class="c1"># Protected methods</span>
 
     <span class="k">def</span> <span class="nf">_setup_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up the models for the widget.</span>
 
 <span class="sd">        This should be called once when creating the widget, and it should be called before _setup_ui.</span>
@@ -650,7 +650,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rules_proxy_model</span><span class="o">.</span><span class="n">setSourceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rules_model</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up the widget UI.</span>
 
 <span class="sd">        This should be called once when creating the widget.</span>
@@ -825,7 +825,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_connect_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up and connect signal slots between widgets.</span>
 
 <span class="sd">        This should be called once when creating the widget.</span>
@@ -906,7 +906,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fix_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_fix_all</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_rule_types_delegate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the delegate for the rule types view and set it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -950,7 +950,7 @@
         <span class="k">return</span> <span class="n">delegate</span>
 
     <span class="k">def</span> <span class="nf">_create_rules_delegate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the delegate for the rules view and set it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1039,7 +1039,7 @@
         <span class="k">return</span> <span class="n">delegate</span>
 
     <span class="k">def</span> <span class="nf">_set_view_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_mode</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the current view mode for the main validation rules view.</span>
 
 <span class="sd">        :param view_mode: The view mode (id) to set</span>
@@ -1079,7 +1079,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rules_model</span><span class="o">.</span><span class="n">initialize_data</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_show_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the details widget visibility and update the widget according to the current selection.</span>
 
 <span class="sd">        If the details functionality is turned off, nothing will happen.</span>
@@ -1107,7 +1107,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_details</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_indexes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the details widget with the current seleciton.</span>
 
 <span class="sd">        :param selected_indexes: The selected indexes to update the widget with</span>
@@ -1135,7 +1135,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_details_widget</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_refresh_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Refresh the details widget to reflect the latest changes to the data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1152,7 +1152,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_details_widget</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_update_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the errors label text to indicated how many errors ther are currently.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1166,7 +1166,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_errors_label</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_show_context_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show a context menu for the selected items.</span>
 
 <span class="sd">        :param widget: The source widget.</span>
@@ -1222,7 +1222,7 @@
 
     <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
     <span class="k">def</span> <span class="nf">_validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">refresh_details</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The default validate operation that executes the validate function for each of the rules.</span>
 
 <span class="sd">        :param rules: The list of rules, or single rule, to validate.</span>
@@ -1246,7 +1246,7 @@
 
     <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
     <span class="k">def</span> <span class="nf">_fix_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The default fix operation that executes the fix function for each of the rules.</span>
 
 <span class="sd">        NOTE this default fix operation does not take into account rule dependencies. Rules will be executed</span>
@@ -1267,7 +1267,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fix_rule_finished</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_view_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the main rules view overlay widget.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the main rules view overlay widget.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_view_overlay_widget</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;No data.&quot;</span><span class="p">)</span>
@@ -1313,7 +1313,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.on_validate_all"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.on_validate_all">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">on_validate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the validation all button has been triggered.</span>
 
 <span class="sd">        If the custom validate all callback is set, then get all rules from the model to resolve and pass it</span>
@@ -1329,7 +1329,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.on_fix_all"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.on_fix_all">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">on_fix_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the fix all button has been triggered.</span>
 
 <span class="sd">        If the custom fix all callback is set, then get all rules from the model to resolve and pass it to</span>
@@ -1341,7 +1341,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.on_validate_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.on_validate_rules">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">on_validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">refresh_details</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered to validate a specific set of rules.</span>
 
 <span class="sd">        :param rule: The validation rule or list of rules to validate.</span>
@@ -1369,7 +1369,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.on_fix_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.on_fix_rules">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">on_fix_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered to fix a specific set of rules.</span>
 
 <span class="sd">        :param rule: The validation rule or list of rules to fix.</span>
@@ -1388,7 +1388,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fix_rules_callback</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.validate_rule_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_begin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_rule_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method before a validaiton rule is check function is executed.</span>
 
 <span class="sd">        :param rule: The rule that is about to start executing its check function.</span>
@@ -1402,7 +1402,7 @@
         <span class="c1"># rule_item = self._rules_model.get_item_for_rule(rule)</span>
 
 <div class="viewcode-block" id="ValidationWidget.validate_rule_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished">[docs]</a>    <span class="k">def</span> <span class="nf">validate_rule_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">update_rule_type</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method after a validation rule check function has finished executing.</span>
 
 <span class="sd">        :param rule: The rule that finished executing its check function.</span>
@@ -1444,7 +1444,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_details</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.validate_all_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_all_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method before all validation rules are checked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1455,7 +1455,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.validate_all_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished">[docs]</a>    <span class="k">def</span> <span class="nf">validate_all_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method after all validation rules have been checked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1489,7 +1489,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_details</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.fix_rule_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin">[docs]</a>    <span class="k">def</span> <span class="nf">fix_rule_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method before a validaiton rule is fix function is executed.</span>
 
 <span class="sd">        :param rule: The rule that is about to start executing its fix function.</span>
@@ -1503,7 +1503,7 @@
         <span class="c1"># rule_item = self._rules_model.get_item_for_rule(rule)</span>
 
 <div class="viewcode-block" id="ValidationWidget.fix_rule_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished">[docs]</a>    <span class="k">def</span> <span class="nf">fix_rule_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method after a validation rule fix function has finished executing.</span>
 
 <span class="sd">        :param rule: The rule that finished executing its fix function.</span>
@@ -1521,7 +1521,7 @@
         <span class="n">rule_item</span><span class="o">.</span><span class="n">emitDataChanged</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_on_rule_item_context_menu_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when a rule from the view has been right-clicked.</span>
 
 <span class="sd">        :param pos: The mouse position, relative to the sender (widget), captured when triggering this</span>
@@ -1532,7 +1532,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_show_context_menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">(),</span> <span class="n">pos</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rule_item_double_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when a rule from the view has been double-clicked.</span>
 
 <span class="sd">        :param index: The index the mouse double-clicked on.</span>
@@ -1543,7 +1543,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">on_validate_rules</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">refresh_details</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_search_text_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the search widget text has been updated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1553,7 +1553,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rules_model_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the rules model has been reset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1562,14 +1562,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter_menu</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rules_proxy_model_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the rules proxy model has been reset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_view_overlay</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_on_rule_check_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">check_state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when a rule has been checked.</span>
 
 <span class="sd">        When a rule is checked, this will affect the data of the rule types model.</span>
@@ -1582,7 +1582,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types_model</span><span class="o">.</span><span class="n">set_check_state_for_rule_type</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rule_type_check_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">,</span> <span class="n">check_state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when a rule type has been checked.</span>
 
 <span class="sd">        When a rule type is checked, thsi will affect the data of the rules model.</span>
@@ -1601,7 +1601,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rule_type_selection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the rule type selection has changed.</span>
 
 <span class="sd">        The rules list will be updated to reflect the current rule type selection.</span>
@@ -1627,7 +1627,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_rule_selection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered when the rule selection has chagned.</span>
 
 <span class="sd">        The details widget will be updated to reflect the current rule selection.</span>
@@ -1637,7 +1637,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_details</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_toggle_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback triggered to show only the validation rules with errors.</span>
 
 <span class="sd">        :param show_errors: Set to True to show only errors, False to show all, and None to toggle the current state.</span>
@@ -1654,7 +1654,7 @@
     <span class="c1">#</span>
 
 <div class="viewcode-block" id="ValidationWidget.rule_show_actions_callback"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.rule_show_actions_callback">[docs]</a>    <span class="k">def</span> <span class="nf">rule_show_actions_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The validation rule action to show the list of action items was triggered.</span>
 
 <span class="sd">        :param view: The view the index belongs to.</span>
@@ -1674,7 +1674,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.rule_check_action_callback"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">rule_check_action_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The validation rule action to execute the rule check function was triggered.</span>
 
 <span class="sd">        :param view: The view the index belongs to.</span>
@@ -1699,7 +1699,7 @@
 
 <div class="viewcode-block" id="ValidationWidget.rule_fix_action_callback"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">rule_fix_action_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The validation rule action to execute the rule fix function was triggered.</span>
 
 <span class="sd">        :param view: The view the index belongs to.</span>
@@ -1729,7 +1729,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_expand_action_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying the rule group header expand action.</span>
@@ -1755,7 +1755,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_type_icon_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying the rule type icon.</span>
@@ -1776,7 +1776,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_type_status_icon_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying the rule type status.</span>
@@ -1797,7 +1797,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_type_checkbox_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying the rule type checkbox widget.</span>
@@ -1845,7 +1845,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_manual_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying a manual rule.</span>
@@ -1883,7 +1883,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_optional_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying an optional rule.</span>
@@ -1926,7 +1926,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_show_actions_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying and executing the rule action items.</span>
@@ -1948,7 +1948,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_check_action_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying and executing the rule check action.</span>
@@ -1979,7 +1979,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_fix_action_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying and executing the rule fix action.</span>
@@ -2006,7 +2006,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_rule_status_action_data</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Callback function triggered by the ViewItemDelegate.</span>
 
 <span class="sd">    Get the data for displaying the rule status.</span>
@@ -2034,7 +2034,7 @@
 
 
 <span class="k">def</span> <span class="nf">_ensure_source_index</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience method to get the source index from the given index.</span>
 
 <span class="sd">    :param index: The index to ensure is the source index</span>
@@ -2061,7 +2061,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2022, Autodesk
+        &copy; Copyright 2023, Autodesk
 
     </p>
   </div> 

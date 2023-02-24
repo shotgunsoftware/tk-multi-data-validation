@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.1.3 documentation</title>
+  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.1.4 documentation</title>
   
 
   
@@ -120,7 +120,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.3.<br>
+    <b>tk-multi-data-validation</b> v0.1.4.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -214,7 +214,7 @@
 
 
 <div class="viewcode-block" id="ValidationRule"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule">[docs]</a><span class="k">class</span> <span class="nc">ValidationRule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A validation rule to be applied to the DCC data, which determines if the DCC data is valid or not.</span>
 
 <span class="sd">    The key properties of the rule are the `check_func` and `fix_func`; these functions define the how the</span>
@@ -223,7 +223,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_data</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a validation rule with the provided data.</span>
 
 <span class="sd">        :param rule_data: The data that defines the rule.</span>
@@ -350,7 +350,7 @@
 
 <div class="viewcode-block" id="ValidationRule.check_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.check_data">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raise an exception if the data is not valid to create a ValidationRule object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise an exception if the data is not valid to create a ValidationRule object.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing id data for ValidationRule.&quot;</span><span class="p">)</span>
@@ -360,43 +360,43 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the unique identifier for this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the unique identifier for this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the :class:`ValidationRuleType` of this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the :class:`ValidationRuleType` of this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rule_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the display name for the type of this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the display name for the type of this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the data type that this rule peratins to.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the data type that this rule peratins to.&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the display name for thsi rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the display name for thsi rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the description text for what this rule does.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the description text for what this rule does.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">required</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the property flag indicating if this rule should be executed to validate the data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the property flag indicating if this rule should be executed to validate the data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">manual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the property flag indicating if this rule cannot be automatically checked.</span>
 
 <span class="sd">        These types of rules must be manually validated by user.</span>
@@ -406,29 +406,29 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">optional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the property flag indicating if this rule is optional.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">check_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the display name for the check function of this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the display name for the check function of this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;check_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Validate&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the display name for the fix function of this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the display name for the fix function of this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_name&quot;</span><span class="p">,</span> <span class="s2">&quot;Fix&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_tooltip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the text that describes what the fix function does for this rule.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the text that describes what the fix function does for this rule.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fix_tooltip&quot;</span><span class="p">,</span> <span class="s2">&quot;Click to fix this data violation.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get or set the text that describes how the current data errors.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the text that describes how the current data errors.&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_msg&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_func</span><span class="p">:</span>
@@ -440,12 +440,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">warn_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get or set the text that describes the current warnings.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the text that describes the current warnings.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warn_msg&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">checked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the set the property flag indicating that an optional rule is checked (turned on).</span>
 
 <span class="sd">        This is meant to be used to set the UI check state for an optional rule.</span>
@@ -459,7 +459,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">manual_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the set the property flag indicating that a manual rule is checked (user set as valid).</span>
 
 <span class="sd">        This is meant to be used to set the UI check state for a manual rule.</span>
@@ -473,7 +473,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">check_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the function that this rule executes to validate the data.</span>
 
 <span class="sd">        It is encouraged to use the `exec_check` method instead of getting this function and calling it</span>
@@ -483,7 +483,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the function that this rule executes to fix the data violations found by the rule.</span>
 
 <span class="sd">        It is encouraged to use the `exec_fix` method instead of getting this function and calling it</span>
@@ -493,12 +493,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">get_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the function that returns the extra keyword arguments dict to pass to the check and fix functions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the function that returns the extra keyword arguments dict to pass to the check and fix functions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;get_kwargs&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of actions that can be applied to all error items (as a group) for this rule.</span>
 
 <span class="sd">        These do no include the primary check or fix functions. This property is a list of dicts, which contain</span>
@@ -508,7 +508,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">item_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the list of actions that can be applied invididual error items (one at a time) for this rule.</span>
 
 <span class="sd">        These do no include the primary check or fix functions. This property is a list of dicts, which contain</span>
@@ -518,7 +518,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the valid state of the rule.</span>
 
 <span class="sd">        This will reflect the status returned by the rule&#39;s check function the last time it was</span>
@@ -531,7 +531,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the error data for this rule, based on the last time its check function executed.</span>
 
 <span class="sd">        This will contain the error data items found by the rule&#39;s check function the last time</span>
@@ -541,12 +541,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the flag indicating if the rule&#39;s fix method was executed at least once.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the flag indicating if the rule&#39;s fix method was executed at least once.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the dependencies information for this rule.</span>
 
 <span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
@@ -558,7 +558,7 @@
     <span class="c1"># Public methods</span>
 
 <div class="viewcode-block" id="ValidationRule.get_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the data from the rule.</span>
 
 <span class="sd">        :param field: The field to get data for</span>
@@ -571,7 +571,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_actions_data"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_actions_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_actions_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the action data required to execute the action callback functions.</span>
 
 <span class="sd">        :param pre_validate: True will validate the rule before getting the errors to include</span>
@@ -594,7 +594,7 @@
         <span class="k">return</span> <span class="n">actions</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_error_item_ids"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_error_item_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_item_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience method to get a list of the item ids from the data errors.</span>
 
 <span class="sd">        :return: The item ids of the error items.</span>
@@ -604,7 +604,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_error_messages"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_error_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the list of current error messages.</span>
 
 <span class="sd">        If there was a run time error during the check or fix function, the error messages will</span>
@@ -637,7 +637,7 @@
         <span class="k">return</span> <span class="n">messages</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_warning_messages"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_warning_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_warning_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the list of current warning messages.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of current warning messages.&quot;&quot;&quot;</span>
 
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -659,7 +659,7 @@
         <span class="k">return</span> <span class="n">messages</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_dependency_ids"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_dependency_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_dependency_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the validation rules (ids) that this rule depends on.</span>
 
 <span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
@@ -668,7 +668,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_dependency_names"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_dependency_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_dependency_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the validation rules (display names) that this rule depends on.</span>
 
 <span class="sd">        Dependent rules must be fixed before this rule can be fixed. This defines the order that rules are</span>
@@ -677,7 +677,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationRule.get_errors"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.get_errors">[docs]</a>    <span class="k">def</span> <span class="nf">get_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute this rule&#39;s check function to get the most up to date error data.</span>
 
 <span class="sd">        The rule&#39;s check function will be executed, the `errors` property will be updated with</span>
@@ -691,7 +691,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span></div>
 
 <div class="viewcode-block" id="ValidationRule.set_failed_dependency"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.set_failed_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">set_failed_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dependency_rule</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the failed dependency for this rule.</span>
 
 <span class="sd">        Set the failed dependency as None to indicate that this rule has no failed</span>
@@ -710,7 +710,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span> <span class="o">=</span> <span class="n">dependency_rule</span></div>
 
 <div class="viewcode-block" id="ValidationRule.has_failed_dependency"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.has_failed_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">has_failed_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if this rule has a dependency that failed.</span>
 
 <span class="sd">        See `set_failed_dependency` for more information about the usage and purpose of this</span>
@@ -720,7 +720,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_failed_dependency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="ValidationRule.exec_check"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.exec_check">[docs]</a>    <span class="k">def</span> <span class="nf">exec_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the rule&#39;s check function.</span>
 
 <span class="sd">        It is reccommended to use this method to execute the rule&#39;s check function, instead of</span>
@@ -774,7 +774,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="ValidationRule.exec_fix"><a class="viewcode-back" href="../../../../api.html#tk_multi_data_validation.api.data.ValidationRule.exec_fix">[docs]</a>    <span class="k">def</span> <span class="nf">exec_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the rule&#39;s fix function.</span>
 
 <span class="sd">        It is reccommended to use this method to execute the rule&#39;s fix function, instead of</span>
@@ -853,7 +853,7 @@
     <span class="c1"># Protected methods</span>
 
     <span class="k">def</span> <span class="nf">_process_check_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the result returned by the validation rule check function and update the</span>
 <span class="sd">        validation rule based on the result.</span>
 
@@ -916,7 +916,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2022, Autodesk
+        &copy; Copyright 2023, Autodesk
 
     </p>
   </div> 
