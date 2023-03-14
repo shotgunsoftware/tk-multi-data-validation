@@ -171,7 +171,10 @@ class DataValidation(sgtk.platform.Application):
         if not self._widget_class:
             return None
 
-        return self._widget_class(parent, group_rules_by)
+        widget = self._widget_class(parent, group_rules_by)
+        self.engine._apply_external_stylesheet(self, widget)
+
+        return widget
 
     def _log_metric_viewed_app(self):
         """
