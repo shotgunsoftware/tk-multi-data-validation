@@ -73,6 +73,9 @@ class ValidationManager(object):
         self._logger = logger or self._bundle.logger
         self._notifier = notifier
         self._has_ui = has_ui
+        self._rule_settings = rule_settings
+        self._include_rules = include_rules
+        self._exclude_rules = exclude_rules
 
         # Set the default rule types (in order). This can be set using the rule_types property.
         # TODO allow this to be config-based
@@ -86,52 +89,10 @@ class ValidationManager(object):
         # Default accept function is not set, which will accept all rules
         self._accept_rule_fn = None
 
-        # Retrieve the validation data from the hook method. NOTE the data returned by this
-        # hook method will be modified
-        self.__data = self._bundle.execute_hook_method(
-            "hook_data_validation", "get_validation_data"
-        )
-        self.__rules_by_id = {}
         self.__errors = {}
+        self.__rules_by_id = {}
 
-        # Create the set of ValidationRules from the validation data and the rules defined in
-        # the settings
-        rule_settings = rule_settings or self._bundle.get_setting("rules", [])
-        rule_settings_ids = [r["id"] for r in rule_settings]
-        for rule_item in rule_settings:
-            rule_id = rule_item["id"]
-
-            if include_rules and not rule_id in include_rules:
-                continue
-
-            if exclude_rules and rule_id in exclude_rules:
-                continue
-
-            rule_data = self.__data.get(rule_id)
-            if not rule_data:
-                self._logger.error(
-                    "Data was not found for validation rule id '{}'".format(rule_id)
-                )
-                continue
-
-            # Collect dependencies first, if any
-            for dependency_id in rule_data.get("dependency_ids", []):
-                if dependency_id not in rule_settings_ids:
-                    # Do not include dependencies that are not specified in the settings.
-                    continue
-
-                dependency_data = self.__data.get(dependency_id)
-                if not dependency_data:
-                    # Cannot include a dependency if there is not data for it.
-                    continue
-
-                rule_data.setdefault("dependencies", {})[
-                    dependency_id
-                ] = dependency_data.get("name")
-
-            rule_data.update(rule_item)
-            rule = ValidationRule(rule_data, bundle=self._bundle)
-            self.__rules_by_id[rule.id] = rule
+        self.load_rules()
 
     #########################################################################################################
     # Properties
@@ -181,6 +142,56 @@ class ValidationManager(object):
 
     #########################################################################################################
     # Public functions
+
+    def load_rules(self):
+        """"""
+
+        self.__rules_by_id.clear()
+
+        # Retrieve the validation data from the hook method. NOTE the data returned by this
+        # hook method will be modified
+        data = self._bundle.execute_hook_method(
+            "hook_data_validation", "get_validation_data"
+        )
+
+        # Create the set of ValidationRules from the validation data and the rules defined in
+        # the settings
+        rule_settings = self._rule_settings or self._bundle.get_setting("rules", [])
+        rule_settings_ids = [r["id"] for r in rule_settings]
+        for rule_item in rule_settings:
+            rule_id = rule_item["id"]
+
+            if self._include_rules and rule_id not in self._include_rules:
+                continue
+
+            if self._exclude_rules and rule_id in self._exclude_rules:
+                continue
+
+            rule_data = data.get(rule_id)
+            if not rule_data:
+                self._logger.error(
+                    "Data was not found for validation rule id '{}'".format(rule_id)
+                )
+                continue
+
+            # Collect dependencies first, if any
+            for dependency_id in rule_data.get("dependency_ids", []):
+                if dependency_id not in rule_settings_ids:
+                    # Do not include dependencies that are not specified in the settings.
+                    continue
+
+                dependency_data = data.get(dependency_id)
+                if not dependency_data:
+                    # Cannot include a dependency if there is not data for it.
+                    continue
+
+                rule_data.setdefault("dependencies", {})[
+                    dependency_id
+                ] = dependency_data.get("name")
+
+            rule_data.update(rule_item)
+            rule = ValidationRule(rule_data, bundle=self._bundle)
+            self.__rules_by_id[rule.id] = rule
 
     def get_rule(self, rule_id):
         """
