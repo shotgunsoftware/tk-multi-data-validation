@@ -86,7 +86,5 @@ class AbstractDataValidationHook(HookBaseClass):
         self.logger.debug(f"Executing post_fix_action() for rules {rule_ids}...")
 
     def post_fix_all_action(self):
-        """
-        Called once all the fixes have been resolved when the "Fix All" button have been entered
-        """
+        """Called once all the fixes have been resolved when the "Fix All" button have been entered"""
         self.logger.debug("Executing post_fix_all_action()...")
