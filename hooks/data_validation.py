@@ -76,3 +76,17 @@ class AbstractDataValidationHook(HookBaseClass):
         """
 
         raise NotImplementedError()
+
+    def post_fix_action(self, rule_ids):
+        """
+        Called once an individual fix has been resolved
+
+        :param rule_ids: List of rule IDs linked to the executed fix
+        """
+        self.logger.debug(f"Executing post_fix_action() for rules {rule_ids}...")
+
+    def post_fix_all_action(self):
+        """
+        Called once all the fixes have been resolved when the "Fix All" button have been entered
+        """
+        self.logger.debug("Executing post_fix_all_action()...")

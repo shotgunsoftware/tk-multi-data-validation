@@ -114,9 +114,7 @@ class AppDialog(QtGui.QWidget):
             lambda rules: self._manager.validate()
         )
         self._validation_widget.fix_rules_callback = self._resolve_rules
-        self._validation_widget.fix_all_callback = lambda rules: self._manager.resolve(
-            pre_validate=True, post_validate=True
-        )
+        self._validation_widget.fix_all_callback = lambda rules: self._resolve_all_rules()
 
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
@@ -243,9 +241,34 @@ class AppDialog(QtGui.QWidget):
 
         try:
             self._manager.resolve_rules(rules)
+            self._bundle.execute_hook_method(
+                "hook_data_validation",
+                "post_fix_action",
+                rule_ids=[r.id for r in rules]
+            )
             self._manager.validate_rules(rules)
         finally:
             self.hide_busy_popup(busy_id)
+
+    def _resolve_all_rules(self):
+        """
+        Helper function to execute the manager resolve rule and then call validate post resolution for all the rules
+        when the "Fix All" button has been entered.
+
+        :param rule: The rule or list of rules to resolve and then validate.
+        :type rule: ValidationRule | list<ValidationRule>
+        """
+
+        # first, call the manager to resolve all the rules
+        self._manager.resolve(
+            pre_validate=True, post_validate=True
+        )
+
+        # then, execute the post fix hook action
+        self._bundle.execute_hook_method(
+            "hook_data_validation",
+            "post_fix_all_action"
+        )
 
     ######################################################################################################
     # Override Qt methods
