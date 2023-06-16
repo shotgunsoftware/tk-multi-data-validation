@@ -109,4 +109,6 @@ class AbstractDataValidationHook(HookBaseClass):
         :param rules: The list of rules to resolve.
         :type rules: list<ValidationRule>
         """
-        self.logger.debug(f"Executing post_fix_action() for rules {[rule.id for rule in rules]}...")
+        self.logger.debug(
+            f"Executing post_fix_action() for rules {[rule.id for rule in rules]}..."
+        )

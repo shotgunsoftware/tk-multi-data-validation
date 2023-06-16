@@ -118,7 +118,7 @@ class AppDialog(QtGui.QWidget):
                 "hook_data_validation",
                 "resolve_rules",
                 manager=self._manager,
-                rules=rules
+                rules=rules,
             )
         )
         self._validation_widget.fix_all_callback = (
@@ -126,7 +126,7 @@ class AppDialog(QtGui.QWidget):
                 "hook_data_validation",
                 "resolve_all_rules",
                 manager=self._manager,
-                rules=rules
+                rules=rules,
             )
         )
 
