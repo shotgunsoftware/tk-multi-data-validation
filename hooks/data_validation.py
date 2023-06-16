@@ -87,8 +87,8 @@ class AbstractDataValidationHook(HookBaseClass):
         :type rules: list<ValidationRule>
         """
         manager.resolve_rules(rules)
-        self.post_fix_action(rules)
         manager.validate_rules(rules)
+        self.post_fix_action(rules)
 
     def resolve_all_rules(self, manager, rules):
         """
