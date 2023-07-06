@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; tk-multi-data-validation v0.1.4 documentation</title>
+  <title>Index &mdash; tk-multi-data-validation v0.1.5 documentation</title>
   
 
   
@@ -121,7 +121,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.4.<br>
+    <b>tk-multi-data-validation</b> v0.1.5.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -414,10 +414,12 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.pre_validate_before_actions">pre_validate_before_actions (tk_multi_data_validation.widgets.ValidationWidget attribute)</a>
+      <li><a href="hooks.html#hooks.data_validation.AbstractDataValidationHook.post_fix_action">post_fix_action() (hooks.data_validation.AbstractDataValidationHook method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.pre_validate_before_actions">pre_validate_before_actions (tk_multi_data_validation.widgets.ValidationWidget attribute)</a>
+</li>
       <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.publish_button">publish_button (tk_multi_data_validation.widgets.ValidationWidget attribute)</a>
 </li>
   </ul></td>
@@ -432,14 +434,20 @@
 </li>
       <li><a href="api.html#tk_multi_data_validation.api.ValidationManager.resolve">resolve() (tk_multi_data_validation.api.ValidationManager method)</a>
 </li>
+      <li><a href="hooks.html#hooks.data_validation.AbstractDataValidationHook.resolve_all_rules">resolve_all_rules() (hooks.data_validation.AbstractDataValidationHook method)</a>
+</li>
       <li><a href="api.html#tk_multi_data_validation.api.ValidationManager.resolve_rule">resolve_rule() (tk_multi_data_validation.api.ValidationManager method)</a>
 </li>
-      <li><a href="api.html#tk_multi_data_validation.api.ValidationManager.resolve_rules">resolve_rules() (tk_multi_data_validation.api.ValidationManager method)</a>
+      <li><a href="hooks.html#hooks.data_validation.AbstractDataValidationHook.resolve_rules">resolve_rules() (hooks.data_validation.AbstractDataValidationHook method)</a>
+
+      <ul>
+        <li><a href="api.html#tk_multi_data_validation.api.ValidationManager.resolve_rules">(tk_multi_data_validation.api.ValidationManager method)</a>
 </li>
-      <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.restore_state">restore_state() (tk_multi_data_validation.widgets.ValidationWidget method)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.restore_state">restore_state() (tk_multi_data_validation.widgets.ValidationWidget method)</a>
+</li>
       <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.rule_check_action_callback">rule_check_action_callback() (tk_multi_data_validation.widgets.ValidationWidget method)</a>
 </li>
       <li><a href="api.html#tk_multi_data_validation.widgets.ValidationWidget.rule_fix_action_callback">rule_fix_action_callback() (tk_multi_data_validation.widgets.ValidationWidget method)</a>

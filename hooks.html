@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hooks &mdash; tk-multi-data-validation v0.1.4 documentation</title>
+  <title>Hooks &mdash; tk-multi-data-validation v0.1.5 documentation</title>
   
 
   
@@ -130,7 +130,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.4.<br>
+    <b>tk-multi-data-validation</b> v0.1.5.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -295,6 +295,56 @@ the standard format.</td>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The validation result in the standardized format.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hooks.data_validation.AbstractDataValidationHook.resolve_rules">
+<code class="descname">resolve_rules</code><span class="sig-paren">(</span><em>manager</em>, <em>rules</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook.resolve_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook.resolve_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to execute the manager resolve rule and then call validate post resolution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>manager</strong> (<em>&lt;ValidationManager&gt;</em>) – Data validation manager</li>
+<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The list of rules to resolve and then validate.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hooks.data_validation.AbstractDataValidationHook.resolve_all_rules">
+<code class="descname">resolve_all_rules</code><span class="sig-paren">(</span><em>manager</em>, <em>rules</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook.resolve_all_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook.resolve_all_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to execute the manager resolve rule for all the rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>manager</strong> (<em>&lt;ValidationManager&gt;</em>) – Data validation manager</li>
+<li><strong>rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The list of rules to resolve.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hooks.data_validation.AbstractDataValidationHook.post_fix_action">
+<code class="descname">post_fix_action</code><span class="sig-paren">(</span><em>rules</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hooks/data_validation.html#AbstractDataValidationHook.post_fix_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hooks.data_validation.AbstractDataValidationHook.post_fix_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to execute post fix actions once all the rules have been resolved</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rules</strong> (<em>list&lt;ValidationRule&gt;</em>) – The list of rules to resolve.</td>
 </tr>
 </tbody>
 </table>

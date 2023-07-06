@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>hooks.data_validation &mdash; tk-multi-data-validation v0.1.4 documentation</title>
+  <title>hooks.data_validation &mdash; tk-multi-data-validation v0.1.5 documentation</title>
   
 
   
@@ -120,7 +120,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.4.<br>
+    <b>tk-multi-data-validation</b> v0.1.5.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -275,7 +275,43 @@
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractDataValidationHook.resolve_rules"><a class="viewcode-back" href="../../hooks.html#hooks.data_validation.AbstractDataValidationHook.resolve_rules">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method to execute the manager resolve rule and then call validate post resolution.</span>
+
+<span class="sd">        :param manager: Data validation manager</span>
+<span class="sd">        :type manager: &lt;ValidationManager&gt;</span>
+<span class="sd">        :param rules: The list of rules to resolve and then validate.</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">resolve_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">validate_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_fix_action</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractDataValidationHook.resolve_all_rules"><a class="viewcode-back" href="../../hooks.html#hooks.data_validation.AbstractDataValidationHook.resolve_all_rules">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_all_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method to execute the manager resolve rule for all the rules.</span>
+
+<span class="sd">        :param manager: Data validation manager</span>
+<span class="sd">        :type manager: &lt;ValidationManager&gt;</span>
+<span class="sd">        :param rules: The list of rules to resolve.</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">manager</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_fix_action</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractDataValidationHook.post_fix_action"><a class="viewcode-back" href="../../hooks.html#hooks.data_validation.AbstractDataValidationHook.post_fix_action">[docs]</a>    <span class="k">def</span> <span class="nf">post_fix_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method to execute post fix actions once all the rules have been resolved</span>
+
+<span class="sd">        :param rules: The list of rules to resolve.</span>
+<span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Executing post_fix_action() for rules </span><span class="si">{</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">rule</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">rules</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

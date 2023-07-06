@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.1.4 documentation</title>
+  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.1.5 documentation</title>
   
 
   
@@ -120,7 +120,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.4.<br>
+    <b>tk-multi-data-validation</b> v0.1.5.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
@@ -273,6 +273,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span> <span class="o">=</span> <span class="n">notifier</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_ui</span> <span class="o">=</span> <span class="n">has_ui</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_settings</span> <span class="o">=</span> <span class="n">rule_settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_include_rules</span> <span class="o">=</span> <span class="n">include_rules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_rules</span> <span class="o">=</span> <span class="n">exclude_rules</span>
 
         <span class="c1"># Set the default rule types (in order). This can be set using the rule_types property.</span>
         <span class="c1"># TODO allow this to be config-based</span>
@@ -286,52 +289,10 @@
         <span class="c1"># Default accept function is not set, which will accept all rules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Retrieve the validation data from the hook method. NOTE the data returned by this</span>
-        <span class="c1"># hook method will be modified</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">execute_hook_method</span><span class="p">(</span>
-            <span class="s2">&quot;hook_data_validation&quot;</span><span class="p">,</span> <span class="s2">&quot;get_validation_data&quot;</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># Create the set of ValidationRules from the validation data and the rules defined in</span>
-        <span class="c1"># the settings</span>
-        <span class="n">rule_settings</span> <span class="o">=</span> <span class="n">rule_settings</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">rule_settings_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rule_settings</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">rule_item</span> <span class="ow">in</span> <span class="n">rule_settings</span><span class="p">:</span>
-            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">rule_item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">include_rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">include_rules</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="k">if</span> <span class="n">exclude_rules</span> <span class="ow">and</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="n">exclude_rules</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="n">rule_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule_data</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="s2">&quot;Data was not found for validation rule id &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="k">continue</span>
-
-            <span class="c1"># Collect dependencies first, if any</span>
-            <span class="k">for</span> <span class="n">dependency_id</span> <span class="ow">in</span> <span class="n">rule_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependency_ids&quot;</span><span class="p">,</span> <span class="p">[]):</span>
-                <span class="k">if</span> <span class="n">dependency_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rule_settings_ids</span><span class="p">:</span>
-                    <span class="c1"># Do not include dependencies that are not specified in the settings.</span>
-                    <span class="k">continue</span>
-
-                <span class="n">dependency_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dependency_id</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">dependency_data</span><span class="p">:</span>
-                    <span class="c1"># Cannot include a dependency if there is not data for it.</span>
-                    <span class="k">continue</span>
-
-                <span class="n">rule_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">{})[</span>
-                    <span class="n">dependency_id</span>
-                <span class="p">]</span> <span class="o">=</span> <span class="n">dependency_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
-
-            <span class="n">rule_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rule_item</span><span class="p">)</span>
-            <span class="n">rule</span> <span class="o">=</span> <span class="n">ValidationRule</span><span class="p">(</span><span class="n">rule_data</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_rules</span><span class="p">()</span>
 
     <span class="c1">#########################################################################################################</span>
     <span class="c1"># Properties</span>
@@ -381,6 +342,56 @@
 
     <span class="c1">#########################################################################################################</span>
     <span class="c1"># Public functions</span>
+
+    <span class="k">def</span> <span class="nf">load_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Retrieve the validation data from the hook method. NOTE the data returned by this</span>
+        <span class="c1"># hook method will be modified</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">execute_hook_method</span><span class="p">(</span>
+            <span class="s2">&quot;hook_data_validation&quot;</span><span class="p">,</span> <span class="s2">&quot;get_validation_data&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the set of ValidationRules from the validation data and the rules defined in</span>
+        <span class="c1"># the settings</span>
+        <span class="n">rule_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_settings</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">rule_settings_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rule_settings</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">rule_item</span> <span class="ow">in</span> <span class="n">rule_settings</span><span class="p">:</span>
+            <span class="n">rule_id</span> <span class="o">=</span> <span class="n">rule_item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_rules</span> <span class="ow">and</span> <span class="n">rule_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_rules</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_rules</span> <span class="ow">and</span> <span class="n">rule_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_rules</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">rule_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rule_data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Data was not found for validation rule id &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Collect dependencies first, if any</span>
+            <span class="k">for</span> <span class="n">dependency_id</span> <span class="ow">in</span> <span class="n">rule_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependency_ids&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="k">if</span> <span class="n">dependency_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rule_settings_ids</span><span class="p">:</span>
+                    <span class="c1"># Do not include dependencies that are not specified in the settings.</span>
+                    <span class="k">continue</span>
+
+                <span class="n">dependency_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dependency_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dependency_data</span><span class="p">:</span>
+                    <span class="c1"># Cannot include a dependency if there is not data for it.</span>
+                    <span class="k">continue</span>
+
+                <span class="n">rule_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">{})[</span>
+                    <span class="n">dependency_id</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">dependency_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+            <span class="n">rule_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rule_item</span><span class="p">)</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">ValidationRule</span><span class="p">(</span><span class="n">rule_data</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
 
 <div class="viewcode-block" id="ValidationManager.get_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.get_rule">[docs]</a>    <span class="k">def</span> <span class="nf">get_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
