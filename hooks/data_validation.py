@@ -76,3 +76,39 @@ class AbstractDataValidationHook(HookBaseClass):
         """
 
         raise NotImplementedError()
+
+    def resolve_rules(self, manager, rules):
+        """
+        Helper method to execute the manager resolve rule and then call validate post resolution.
+
+        :param manager: Data validation manager
+        :type manager: <ValidationManager>
+        :param rules: The list of rules to resolve and then validate.
+        :type rules: list<ValidationRule>
+        """
+        manager.resolve_rules(rules)
+        manager.validate_rules(rules)
+        self.post_fix_action(rules)
+
+    def resolve_all_rules(self, manager, rules):
+        """
+        Helper method to execute the manager resolve rule for all the rules.
+
+        :param manager: Data validation manager
+        :type manager: <ValidationManager>
+        :param rules: The list of rules to resolve.
+        :type rules: list<ValidationRule>
+        """
+        manager.resolve(pre_validate=True, post_validate=True)
+        self.post_fix_action(rules)
+
+    def post_fix_action(self, rules):
+        """
+        Helper method to execute post fix actions once all the rules have been resolved
+
+        :param rules: The list of rules to resolve.
+        :type rules: list<ValidationRule>
+        """
+        self.logger.debug(
+            f"Executing post_fix_action() for rules {[rule.id for rule in rules]}..."
+        )

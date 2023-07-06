@@ -113,9 +113,21 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.validate_all_callback = (
             lambda rules: self._manager.validate()
         )
-        self._validation_widget.fix_rules_callback = self._resolve_rules
-        self._validation_widget.fix_all_callback = lambda rules: self._manager.resolve(
-            pre_validate=True, post_validate=True
+        self._validation_widget.fix_rules_callback = (
+            lambda rules: self._bundle.execute_hook_method(
+                "hook_data_validation",
+                "resolve_rules",
+                manager=self._manager,
+                rules=rules,
+            )
+        )
+        self._validation_widget.fix_all_callback = (
+            lambda rules: self._bundle.execute_hook_method(
+                "hook_data_validation",
+                "resolve_all_rules",
+                manager=self._manager,
+                rules=rules,
+            )
         )
 
         self._validation_widget.set_validation_rules(
@@ -215,37 +227,6 @@ class AppDialog(QtGui.QWidget):
                 "exec_action_{}".format(action.get("name"))
             )
         )
-
-    def _resolve_rules(self, rules):
-        """
-        Helper function to execute the manager resolve rule and then call validate post resolution.
-
-        :param rule: The rule or list of rules to resolve and then validate.
-        :type rule: ValidationRule | list<ValidationRule>
-        """
-
-        if isinstance(rules, ValidationRule):
-            rule_id = rules.id
-            rule_name = rules.name
-            rules = [rules]
-        else:
-            rule_id = "all"
-            rule_name = None
-
-        busy_id = "{}_{}".format(self.RESOLVE_ID, rule_id)
-        self.show_busy_popup(
-            busy_id,
-            "Resolving Data{}...".format(
-                " '{}'".format(rule_name) if rule_name else ""
-            ),
-            "Please hold on.",
-        )
-
-        try:
-            self._manager.resolve_rules(rules)
-            self._manager.validate_rules(rules)
-        finally:
-            self.hide_busy_popup(busy_id)
 
     ######################################################################################################
     # Override Qt methods
