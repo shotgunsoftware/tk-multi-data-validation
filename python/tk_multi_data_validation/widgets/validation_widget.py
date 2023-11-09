@@ -548,7 +548,7 @@ class ValidationWidget(SGQWidget):
         self._search_text_widget.setMaximumWidth(150)
 
         # Filter menu
-        self._filter_menu = FilterMenu(self)
+        self._filter_menu = FilterMenu(self, refresh_on_show=False)
         self._filter_menu.set_filter_roles(
             [
                 self._rules_model.RULE_ITEM_ROLE,
@@ -567,7 +567,6 @@ class ValidationWidget(SGQWidget):
             ]
         )
         self._filter_menu.set_filter_model(self._rules_proxy_model)
-        self._filter_menu.initialize_menu()
 
         # Filter menu button
         self._filter_menu_button = FilterMenuButton()
