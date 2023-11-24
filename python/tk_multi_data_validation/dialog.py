@@ -70,7 +70,9 @@ class AppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Restore settings
 
-        widget_geometry = self._settings_manager.retrieve(self.SETTINGS_WIDGET_GEOMETRY, None)
+        widget_geometry = self._settings_manager.retrieve(
+            self.SETTINGS_WIDGET_GEOMETRY, None
+        )
         if widget_geometry:
             self.restoreGeometry(widget_geometry)
 

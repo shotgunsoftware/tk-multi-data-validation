@@ -302,8 +302,8 @@ class ValidationWidget(SGQWidget):
         menu_state = settings_manager.retrieve(self.SETTINGS_FILTER_MENU_STATE, None)
         if not menu_state:
             menu_state = {
-                "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE) : {},
-                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE) : {},
+                "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE): {},
+                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE): {},
             }
         self._filter_menu.restore_state(menu_state)
 
@@ -326,9 +326,7 @@ class ValidationWidget(SGQWidget):
                 self.SETTINGS_SELECTED_RULE_TYPE_ID,
                 ValidationRuleType.RULE_TYPE_NONE,
             )
-            rule_type_item = self._rule_types_model.get_item_for_rule_type(
-                rule_type_id
-            )
+            rule_type_item = self._rule_types_model.get_item_for_rule_type(rule_type_id)
             if rule_type_item:
                 rule_type_index = rule_type_item.index()
             else:
@@ -339,7 +337,9 @@ class ValidationWidget(SGQWidget):
                 | QtGui.QItemSelectionModel.Current,
             )
 
-        splitter_state = settings_manager.retrieve(self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE, None)
+        splitter_state = settings_manager.retrieve(
+            self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE, None
+        )
         self._view_details_splitter.restoreState(splitter_state)
 
         # Must set the splitter collapsible property after the state is restored, or else this property is overwritten
@@ -873,8 +873,6 @@ class ValidationWidget(SGQWidget):
 
         else:
             assert False, "Unsupported view mode"
-
-        self._rules_model.initialize_data()
 
     def _show_details(self, show=None):
         """
