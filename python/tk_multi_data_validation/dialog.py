@@ -60,13 +60,6 @@ class AppDialog(QtGui.QWidget):
 
         self._settings_manager = settings.UserSettings(self._bundle)
 
-        # Define another QSettings object to store raw values. This is a work around for storing QByteArray objects in Python 3,
-        # since the settings manager converts QByteArray objects to str, which causes an error when retrieving it and trying
-        # to set the splitter state with a str instead of QByteArray object.
-        self._raw_values_settings = QtCore.QSettings(
-            "ShotGrid Software", "{app}_raw_values".format(app=self._bundle.name)
-        )
-
         # -----------------------------------------------------
         # Set up UI
 
@@ -77,14 +70,17 @@ class AppDialog(QtGui.QWidget):
         # -----------------------------------------------------
         # Restore settings
 
-        widget_geometry = self._raw_values_settings.value(
-            self.SETTINGS_WIDGET_GEOMETRY, None
-        )
+        widget_geometry = self._settings_manager.retrieve(self.SETTINGS_WIDGET_GEOMETRY, None)
         if widget_geometry:
             self.restoreGeometry(widget_geometry)
 
-        self._validation_widget.restore_state(
-            self._settings_manager, self._raw_values_settings
+        self._validation_widget.restore_state(self._settings_manager)
+
+        # -----------------------------------------------------
+        # Initialize app
+
+        self._validation_widget.set_validation_rules(
+            self._manager.rules, self._manager.rule_types
         )
 
         # -----------------------------------------------------
@@ -128,10 +124,6 @@ class AppDialog(QtGui.QWidget):
                 manager=self._manager,
                 rules=rules,
             )
-        )
-
-        self._validation_widget.set_validation_rules(
-            self._manager.rules, self._manager.rule_types
         )
 
         # -----------------------------------------------------
@@ -240,12 +232,10 @@ class AppDialog(QtGui.QWidget):
         """
 
         # Save settings
-        self._raw_values_settings.setValue(
-            self.SETTINGS_WIDGET_GEOMETRY, self.saveGeometry()
+        self._settings_manager.store(
+            self.SETTINGS_WIDGET_GEOMETRY, self.saveGeometry(), pickle_setting=False
         )
-        self._validation_widget.save_state(
-            self._settings_manager, self._raw_values_settings
-        )
+        self._validation_widget.save_state(self._settings_manager)
 
         return QtGui.QWidget.closeEvent(self, event)
 
