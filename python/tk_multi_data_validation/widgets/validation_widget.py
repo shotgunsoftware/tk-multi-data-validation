@@ -314,7 +314,7 @@ class ValidationWidget(SGQWidget):
         show_only_errors = settings_manager.retrieve(
             self.SETTINGS_SHOW_ONLY_ERRORS, False
         )
-        # self._toggle_errors(show_only_errors)
+        self._toggle_errors(show_only_errors)
 
         show_details = settings_manager.retrieve(
             self.SETTINGS_DETAILS_VISIBILITY, False
@@ -1444,6 +1444,7 @@ class ValidationWidget(SGQWidget):
             self._errors_toggle.setChecked(show_errors)
 
         self._rules_proxy_model.turn_on_error_filter(on=show_errors)
+        self._filter_menu.refresh()
 
     ######################################################################################################
     # ViewItemDelegate callback functions
