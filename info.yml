@@ -10,6 +10,16 @@
 
 configuration:
 
+    display_name:
+        type: str
+        default_value: Data Validation
+        description: Specify a name for the app, its' menu item and the ui.
+
+    panel_mode:
+        type: bool
+        default_value: True
+        description: Specify if the app window should launch as panel or dialog.
+
     hook_data_validation:
         type: hook
         description: "Define the rules for validating data in a DCC and functions to resolve data violations."

@@ -27,6 +27,7 @@ class DataValidation(sgtk.platform.Application):
         # Keep track of the dialog and panel widgets for this app
         self._current_dialog = None
         self._current_panel = None
+        self._display_name = self.get_setting("display_name")
 
         # Store references to validation class objects such that other modules have access to
         # the data validation functionality
@@ -43,14 +44,21 @@ class DataValidation(sgtk.platform.Application):
             # any classes that requires qt will fail while running tests.
             pass
 
-        # Register the app as a panel.
-        self._unique_panel_id = self.engine.register_panel(self.create_panel)
+        if self.get_setting("panel_mode"):
+            # App will open in as a panel window
+            app_callback = self.create_panel
+            app_type = "panel"
+            self._unique_panel_id = self.engine.register_panel(app_callback)
+        else:
+            # App will open in a dialog window
+            app_callback = self.create_dialog
+            app_type = "dialog"
 
         # Register a menu entry on the ShotGrid menu so that users can launch the panel.
         self.engine.register_command(
-            "Data Validation...",
-            self.create_panel,
-            {"type": "panel", "short_name": "data_validation"},
+            f"{self._display_name}...",
+            app_callback,
+            {"type": app_type, "short_name": "data_validation"},
         )
 
     def show_dialog(self, modal=False):
@@ -96,7 +104,7 @@ class DataValidation(sgtk.platform.Application):
         try:
             widget = self.engine.show_panel(
                 self._unique_panel_id,
-                "Data Validation",
+                self._display_name,
                 self,
                 tk_multi_data_validation.AppDialog,
             )
