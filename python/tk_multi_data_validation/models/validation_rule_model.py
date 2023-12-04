@@ -599,7 +599,6 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
         """
 
         self._rules = []
-
         super(ValidationRuleModel, self).clear()
 
     def initialize_data(self, rules=None):
@@ -618,7 +617,13 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
             # No rules provided, this will refresh the model. Save the current rules before resetting them.
             rules = self._rules
 
-        self.clear()
+        # Clear the model before rebuilding it. Block signals to avoid emitting another model reset signal.
+        restore_state = self.blockSignals(True)
+        try:
+            self.clear()
+        finally:
+            self.blockSignals(restore_state)
+
         self._rules = rules
 
         # Set up the groupings for hierarchical model mode

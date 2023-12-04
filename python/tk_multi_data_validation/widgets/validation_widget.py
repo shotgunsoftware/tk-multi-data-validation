@@ -64,6 +64,7 @@ class ValidationWidget(SGQWidget):
     SETTINGS_SELECTED_RULE_TYPE_ID = "{prefix}_selected_rule_type_id".format(
         prefix=SETTINGS_PREFIX
     )
+    SETTINGS_FILTER_MENU_STATE = "filter_menu_state"
 
     #
     # List of view modes
@@ -254,88 +255,92 @@ class ValidationWidget(SGQWidget):
     #########################################################################################################
     # Public methods
 
-    def save_state(self, user_settings, qsettings):
+    def save_state(self, settings_manager):
         """
         Save the widget state in the settings.
 
-        :param user_settings: The Toolkit settings object to save the widget settings to.
-        :type user_settings: UserSettings
-        :param qsettings: The Qt settings for the App to save the widget settings to. The Toolkit settings
-            has some limitations to storing byte array objects, so the Qt settings are required for saving
-            those unsupported data types.
+        :param settings_manager: The Toolkit settings object to save the widget settings to.
+        :type settings_manager: UserSettings
         """
 
-        if user_settings:
-            user_settings.store(self.SETTINGS_VIEW_MODE, self._view_mode)
-            user_settings.store(
-                self.SETTINGS_SHOW_ONLY_ERRORS, self._errors_toggle.isChecked()
-            )
-            user_settings.store(
-                self.SETTINGS_DETAILS_VISIBILITY, self._details_widget.isVisible()
-            )
+        settings_manager.store(self.SETTINGS_VIEW_MODE, self._view_mode)
+        settings_manager.store(
+            self.SETTINGS_SHOW_ONLY_ERRORS, self._errors_toggle.isChecked()
+        )
+        settings_manager.store(
+            self.SETTINGS_DETAILS_VISIBILITY, self._details_widget.isVisible()
+        )
 
-            rule_type_selected = self._rule_types_view.selectedIndexes()
-            if rule_type_selected:
-                rule_type_selected = rule_type_selected[0]
-                rule_type_id = rule_type_selected.data(
-                    ValidationRuleTypeModel.RULE_TYPE_ID_ROLE
-                )
-                user_settings.store(self.SETTINGS_SELECTED_RULE_TYPE_ID, rule_type_id)
-
-        if qsettings:
-            # SG Toolkit settings cannot handle byte arrays, so just save it in the QSettings objects
-            qsettings.setValue(
-                self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE,
-                self._view_details_splitter.saveState(),
+        rule_type_selected = self._rule_types_view.selectedIndexes()
+        if rule_type_selected:
+            rule_type_selected = rule_type_selected[0]
+            rule_type_id = rule_type_selected.data(
+                ValidationRuleTypeModel.RULE_TYPE_ID_ROLE
             )
+            settings_manager.store(self.SETTINGS_SELECTED_RULE_TYPE_ID, rule_type_id)
 
-    def restore_state(self, user_settings, qsettings):
+        # SG Toolkit settings cannot handle byte arrays, so just save it in the QSettings objects
+        settings_manager.store(
+            self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE,
+            self._view_details_splitter.saveState(),
+            pickle_setting=False,
+        )
+
+        settings_manager.store(
+            self.SETTINGS_FILTER_MENU_STATE, self._filter_menu.save_state()
+        )
+
+    def restore_state(self, settings_manager):
         """
         Restore the widget state from the settings.
 
-        :param user_settings: The Toolkit settings object to restore the widget settings to.
-        :type user_settings: UserSettings
-        :param qsettings: The Qt settings for the App to restore the widget settings to. The Toolkit
-            settings has some limitations to storing byte array objects, so the Qt settings are required for
-            saving those unsupported data types.
+        :param settings_manager: The Toolkit settings object to restore the widget settings to.
+        :type settings_manager: UserSettings
         """
 
-        if user_settings:
-            self.view_mode = user_settings.retrieve(
-                self.SETTINGS_VIEW_MODE, self.VIEW_MODE_GROUPED
+        # Restore the filter menu state
+        menu_state = settings_manager.retrieve(self.SETTINGS_FILTER_MENU_STATE, None)
+        if not menu_state:
+            menu_state = {
+                "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE): {},
+                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE): {},
+            }
+        self._filter_menu.restore_state(menu_state)
+
+        self.view_mode = settings_manager.retrieve(
+            self.SETTINGS_VIEW_MODE, self.VIEW_MODE_GROUPED
+        )
+
+        show_only_errors = settings_manager.retrieve(
+            self.SETTINGS_SHOW_ONLY_ERRORS, False
+        )
+        self._toggle_errors(show_only_errors)
+
+        show_details = settings_manager.retrieve(
+            self.SETTINGS_DETAILS_VISIBILITY, False
+        )
+        self._show_details(show_details)
+
+        if self._rule_type_filter_on:
+            rule_type_id = settings_manager.retrieve(
+                self.SETTINGS_SELECTED_RULE_TYPE_ID,
+                ValidationRuleType.RULE_TYPE_NONE,
+            )
+            rule_type_item = self._rule_types_model.get_item_for_rule_type(rule_type_id)
+            if rule_type_item:
+                rule_type_index = rule_type_item.index()
+            else:
+                rule_type_index = self._rule_types_model.index(0, 0)
+            self._rule_types_view.selectionModel().select(
+                rule_type_index,
+                QtGui.QItemSelectionModel.ClearAndSelect
+                | QtGui.QItemSelectionModel.Current,
             )
 
-            show_only_errors = user_settings.retrieve(
-                self.SETTINGS_SHOW_ONLY_ERRORS, False
-            )
-            self._toggle_errors(show_only_errors)
-
-            show_details = user_settings.retrieve(
-                self.SETTINGS_DETAILS_VISIBILITY, False
-            )
-            self._show_details(show_details)
-
-            if self._rule_type_filter_on:
-                rule_type_id = user_settings.retrieve(
-                    self.SETTINGS_SELECTED_RULE_TYPE_ID,
-                    ValidationRuleType.RULE_TYPE_NONE,
-                )
-                rule_type_item = self._rule_types_model.get_item_for_rule_type(
-                    rule_type_id
-                )
-                if rule_type_item:
-                    rule_type_index = rule_type_item.index()
-                else:
-                    rule_type_index = self._rule_types_model.index(0, 0)
-                self._rule_types_view.selectionModel().select(
-                    rule_type_index,
-                    QtGui.QItemSelectionModel.ClearAndSelect
-                    | QtGui.QItemSelectionModel.Current,
-                )
-
-        if qsettings:
-            splitter_state = qsettings.value(self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE)
-            self._view_details_splitter.restoreState(splitter_state)
+        splitter_state = settings_manager.retrieve(
+            self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE, None
+        )
+        self._view_details_splitter.restoreState(splitter_state)
 
         # Must set the splitter collapsible property after the state is restored, or else this property is overwritten
         self._view_details_splitter.setChildrenCollapsible(False)
@@ -548,7 +553,7 @@ class ValidationWidget(SGQWidget):
         self._search_text_widget.setMaximumWidth(150)
 
         # Filter menu
-        self._filter_menu = FilterMenu(self)
+        self._filter_menu = FilterMenu(self, refresh_on_show=False)
         self._filter_menu.set_filter_roles(
             [
                 self._rules_model.RULE_ITEM_ROLE,
@@ -560,14 +565,7 @@ class ValidationWidget(SGQWidget):
                 "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
             ]
         )
-        self._filter_menu.set_visible_fields(
-            [
-                "{role}.data_type".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-                "{role}.required".format(role=ValidationRuleModel.RULE_ITEM_ROLE),
-            ]
-        )
         self._filter_menu.set_filter_model(self._rules_proxy_model)
-        self._filter_menu.initialize_menu()
 
         # Filter menu button
         self._filter_menu_button = FilterMenuButton()
@@ -875,8 +873,6 @@ class ValidationWidget(SGQWidget):
 
         else:
             assert False, "Unsupported view mode"
-
-        self._rules_model.initialize_data()
 
     def _show_details(self, show=None):
         """
@@ -1448,6 +1444,7 @@ class ValidationWidget(SGQWidget):
             self._errors_toggle.setChecked(show_errors)
 
         self._rules_proxy_model.turn_on_error_filter(on=show_errors)
+        self._filter_menu.refresh()
 
     ######################################################################################################
     # ViewItemDelegate callback functions
