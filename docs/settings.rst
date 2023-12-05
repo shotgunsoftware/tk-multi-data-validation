@@ -5,11 +5,18 @@ App Config Settings
 
 The Data Validation App settings are defined in the Toolkit App Config settings file ``tk-multi-data-validation.yml``. The app supports the following settings:
 
+    display_name:
+        The display name of the app as seen in the UI. Defaults to "Data Validation".
+
+    panel_mode:
+        Set to True to display the app in a panel, or False to display it in a dialog. Defaults to True.
+
     hook_data_validation:
         The hook to define the :ref:`validation-rule-set` and sanitize check function return values.
 
     rules:
         The list of :ref:`Validation Rules <validation-rule-item>` that the Data Validation App will display. Each item in the list must include an ``id``, which must correspond to a rule in the :ref:`validation-rule-set`. If there are rules in the validation rule set that are not included in this config setting, then those rules will not be displayed in the app. Optionally, items may define a ``data_type``, which categorizes the rule so it can be displayed in a grouped view.
+    
 
 An example of the settings file that is set up for Alias and VRED:
 
