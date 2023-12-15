@@ -43,10 +43,11 @@ def show_dialog(app, modal=False):
         # App dialog already showing, pop it to the front
         app_dialog.activateWindow()
     else:
+        display_name = app.get_setting("display_name")
         if modal:
-            _, widget = app.engine.show_modal("Data Validation", app, AppDialog)
+            _, widget = app.engine.show_modal(display_name, app, AppDialog)
         else:
-            widget = app.engine.show_dialog("Data Validation", app, AppDialog)
+            widget = app.engine.show_dialog(display_name, app, AppDialog)
 
         # Set the widget property so that we can detect if the dialog for this app
         # is already showing to avoid multiple dialogs open at one time.
