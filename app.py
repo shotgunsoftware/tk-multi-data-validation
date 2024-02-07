@@ -54,7 +54,7 @@ class DataValidation(sgtk.platform.Application):
             app_callback = self.create_dialog
             app_type = "dialog"
 
-        # Register a menu entry on the ShotGrid menu so that users can launch the panel.
+        # Register a menu entry on the Flow Production Tracking menu so that users can launch the panel.
         self.engine.register_command(
             f"{self._display_name}...",
             app_callback,

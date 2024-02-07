@@ -185,12 +185,12 @@ class ValidationRuleType(object):
 
     @property
     def sg_icon(self):
-        """Get the ShotGrid icon class name to create the icon for this validation rule type."""
+        """Get the Flow Production Tracking icon class name to create the icon for this validation rule type."""
         return self._sg_icon
 
     @property
     def sg_checkbox_icon(self):
-        """Get the ShotGrid icon class name to create the checkbox icon for this validation rule type."""
+        """Get the Flow Production Tracking icon class name to create the checkbox icon for this validation rule type."""
         return self._sg_checkbox_icon
 
     @property
