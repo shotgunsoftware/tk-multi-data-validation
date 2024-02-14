@@ -279,7 +279,7 @@ class ValidationWidget(SGQWidget):
             )
             settings_manager.store(self.SETTINGS_SELECTED_RULE_TYPE_ID, rule_type_id)
 
-        # Flow Production Tracking Toolkit settings cannot handle byte arrays, so just save it in the QSettings objects
+        # Flow Production Tracking settings cannot handle byte arrays, so just save it in the QSettings objects
         settings_manager.store(
             self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE,
             self._view_details_splitter.saveState(),
