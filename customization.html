@@ -1,57 +1,37 @@
 
 
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Customizing the Validation &mdash; tk-multi-data-validation v0.1.5 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customizing the Validation &mdash; tk-multi-data-validation v0.1.6 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="App Config Settings" href="settings.html" />
     <link rel="prev" title="Getting Started" href="getting_started.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-    <a href='http://developer.shotgridsoftware.com'>
+    <a href='https://help.autodesk.com/view/SGDEV/ENU/'>
     
         <img style='width: 191px;
                 height: 60px;
@@ -64,35 +44,20 @@
     
 
           
-            <a href="index.html" class="icon icon-home"> tk-multi-data-validation
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            tk-multi-data-validation
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
 
-          
-
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-            
-            
-              
-            
-            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="using_the_app.html">Using the Data Validation App</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
@@ -106,8 +71,6 @@
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
 </ul>
 
-            
-          
 
     <a href='genindex.html'>Alphabetic Index</a>
 
@@ -127,12 +90,12 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.1.5.<br>
+    <b>tk-multi-data-validation</b> v0.1.6.<br>
     
         This documentation is part of the ShotGrid Pipeline Toolkit.
     
     For more information, please visit
-    <a class=custom_post_menu href='https://developer.shotgridsoftware.com'>The ShotGrid developer portal.</a>.
+    <a class=custom_post_menu href='https://help.autodesk.com/view/SGDEV/ENU/'>The ShotGrid developer portal.</a>.
     The code associated with this documentation can be found
     <a class=custom_post_menu href='https://github.com/shotgunsoftware/tk-multi-data-validation'>here</a>.
 
@@ -150,66 +113,31 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">tk-multi-data-validation</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>Customizing the Validation</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Customizing the Validation</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="customizing-the-validation">
-<span id="validation-customization"></span><h1>Customizing the Validation<a class="headerlink" href="#customizing-the-validation" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="customizing-the-validation">
+<span id="validation-customization"></span><h1>Customizing the Validation<a class="headerlink" href="#customizing-the-validation" title="Permalink to this heading"></a></h1>
 <p>Before customizing the Data Validation App (DVA), it is assumed that the Engine hook has been set up as described <a class="reference internal" href="getting_started.html#engine-setup-hook"><span class="std std-ref">here</span></a>.</p>
 <p>To further customize the data validation for an Engine, we need to override the Engine hook:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Data Validation App config settings file (tk-multi-data-validation.yml)</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Data Validation App config settings file (tk-multi-data-validation.yml)</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span>
 <span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py:{config}/tk-multi-data-validation/my_custom_vred_data_validation.py&quot;</span>
@@ -218,7 +146,7 @@
 </div>
 <p>Notice that another hook file is appended to <code class="docutils literal notranslate"><span class="pre">hook_data_validation</span></code>. This is our custom hook file where we will add our modifications. The <code class="docutils literal notranslate"><span class="pre">my_custom_vred_data_validation.py</span></code> hook file is stored in your configuration hooks folder, for example: <code class="docutils literal notranslate"><span class="pre">tk-config-default2/hooks/tk-multi-data-validation/my_custom_vred_data_validation.py</span></code>. Let’s start implementing the custom hook:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Example: my_custom_data_validation.py hook file</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Example: my_custom_data_validation.py hook file</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">sgtk</span>
     <span class="n">HookBaseClass</span> <span class="o">=</span> <span class="n">sgtk</span><span class="o">.</span><span class="n">get_hook_baseclass</span><span class="p">()</span>
 
@@ -238,11 +166,11 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="adding-a-new-rule">
-<span id="customize-new-rule"></span><h2>Adding a New Rule<a class="headerlink" href="#adding-a-new-rule" title="Permalink to this headline">¶</a></h2>
+<section id="adding-a-new-rule">
+<span id="customize-new-rule"></span><h2>Adding a New Rule<a class="headerlink" href="#adding-a-new-rule" title="Permalink to this heading"></a></h2>
 <p>Now that the custom hook has been set up, we can add new <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> to the default set of rules. To add a new rule, we will modify the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> dictionary returned by the VRED Engine hook:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Example: Adding a new rule in my_custom_data_validation.py</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Example: Adding a new rule in my_custom_data_validation.py</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
@@ -270,7 +198,7 @@
 </div>
 <p>The new rule has been added to the validation rule set, and now the DVA has access to it. To tell the DVA to show the new rule in the GUI, we need to add it to the app config:</p>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Example: Update the app config tk-multi-data-validation.yml to show the new rule</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Example: Update the app config tk-multi-data-validation.yml to show the new rule</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span>
 <span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py:{config}/tk-multi-data-validation/my_custom_vred_data_validation.py&quot;</span>
@@ -280,12 +208,12 @@
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="removing-a-rule">
-<span id="customize-remove-rule"></span><h2>Removing a Rule<a class="headerlink" href="#removing-a-rule" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="removing-a-rule">
+<span id="customize-remove-rule"></span><h2>Removing a Rule<a class="headerlink" href="#removing-a-rule" title="Permalink to this heading"></a></h2>
 <p>A <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> can be removed by deleting rule dictionary items from the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>:</p>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Example: Removing the rule delete_hidden_nodes</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Example: Removing the rule delete_hidden_nodes</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
@@ -300,7 +228,7 @@
 </div>
 <p>Optionally, a rule can instead be removed by omitting the rule id in the <a class="reference internal" href="settings.html#data-validation-settings"><span class="std std-ref">App Config Settings</span></a>:</p>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Example: Remove delete_hidden_nodes rule using the config tk-multi-data-validation.yml</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Example: Remove delete_hidden_nodes rule using the config tk-multi-data-validation.yml</span><a class="headerlink" href="#id6" title="Permalink to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings.tk-multi-data-validation.vred</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">location</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;@apps.tk-multi-data-validation.location&quot;</span>
 <span class="w">  </span><span class="nt">hook_data_validation</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{engine}/tk-multi-data-validation/basic/data_validation.py:{config}/tk-multi-data-validation/my_custom_vred_data_validation.py&quot;</span>
@@ -309,12 +237,12 @@
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="modifying-an-existing-rule">
-<span id="customize-modify-rule"></span><h2>Modifying an Existing Rule<a class="headerlink" href="#modifying-an-existing-rule" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="modifying-an-existing-rule">
+<span id="customize-modify-rule"></span><h2>Modifying an Existing Rule<a class="headerlink" href="#modifying-an-existing-rule" title="Permalink to this heading"></a></h2>
 <p>An exisiting <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> can be modified by updating the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>:</p>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Modify rule <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code></span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">Modify rule <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code></span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
@@ -330,7 +258,7 @@
 </div>
 <p>If a callback function needs to be modified, the hook method can be overriden directly. For example, the VRED Engine hook defines the method <code class="docutils literal notranslate"><span class="pre">find_hidden_nodes</span></code> for tthe <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> rule check function. To modify the check function, we can override the hook method:</p>
 <div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-text">my_custom_data_validation.py hook file</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-text">my_custom_data_validation.py hook file</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span> <span class="nc">MyCustomVREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclass the VRED Engine hook class VREDDataValidationHook.&quot;&quot;&quot;</span>
 
@@ -356,55 +284,35 @@
 </div>
 </div>
 <p>The rule’s fix, action and item action callback functions can be overridden the same was as shown above for the check function.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="settings.html" class="btn btn-neutral float-right" title="App Config Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="settings.html" class="btn btn-neutral float-right" title="App Config Settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2023, Autodesk
+    <p>&#169; Copyright 2024, Autodesk.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
-  
-  
-    
-  
  
 
   <script type="text/javascript">
