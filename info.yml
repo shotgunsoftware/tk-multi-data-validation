@@ -44,7 +44,7 @@ configuration:
         allows_empty: True
 
 
-# The ShotGrid fields that this app needs in order to operate correctly
+# The Flow Production Tracking fields that this app needs in order to operate correctly
 requires_shotgun_fields:
 
 # More verbose description of this item

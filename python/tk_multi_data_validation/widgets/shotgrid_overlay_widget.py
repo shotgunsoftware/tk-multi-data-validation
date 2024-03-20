@@ -262,7 +262,7 @@ class ShotGridOverlayWidget(SGQWidget):
 
     def start_spin(self):
         """
-        Show the SG spinner widget.
+        Show the PTR spinner widget.
         """
 
         # Hide the other widgets
@@ -276,7 +276,7 @@ class ShotGridOverlayWidget(SGQWidget):
 
     def stop_spin(self):
         """
-        Stop the SG spinner widget.
+        Stop the PTR spinner widget.
 
         This method just hides the widget. To update the overlay widget, show_message must be
         called again with the data to show.
