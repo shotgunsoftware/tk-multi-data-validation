@@ -60,3 +60,4 @@ SGQMenu = sg_qwidgets.SGQMenu
 SGQSplitter = sg_qwidgets.SGQSplitter
 SGQListView = sg_qwidgets.SGQListView
 SGQFrame = sg_qwidgets.SGQFrame
+SGQProgressBar = sg_qwidgets.SGQProgressBar
