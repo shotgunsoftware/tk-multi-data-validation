@@ -86,8 +86,9 @@ class AbstractDataValidationHook(HookBaseClass):
         :param rules: The list of rules to resolve and then validate.
         :type rules: list<ValidationRule>
         """
-        manager.resolve_rules(rules)
-        manager.validate_rules(rules)
+        success = manager.resolve_rules(rules)
+        if success:
+            manager.validate_rules(rules)
         self.post_fix_action(rules)
 
     def resolve_all_rules(self, manager, rules):
