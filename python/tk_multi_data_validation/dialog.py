@@ -9,10 +9,9 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 import sgtk
-from sgtk.platform.qt import QtGui, QtCore
+from sgtk.platform.qt import QtGui
 
 from .api import ValidationManager
-from .api.data import ValidationRule
 from .widgets import ValidationWidget
 from .utils.validation_notifier import ValidationNotifier
 
@@ -153,6 +152,12 @@ class AppDialog(QtGui.QWidget):
         )
         self._manager.notifier.validate_all_finished.connect(
             self._validation_widget.validate_all_finished
+        )
+        self._manager.notifier.resolve_all_begin.connect(
+            self._validation_widget.fix_all_begin
+        )
+        self._manager.notifier.resolve_all_finished.connect(
+            self._validation_widget.fix_all_finished
         )
         self._manager.notifier.resolve_rule_begin.connect(
             self._validation_widget.fix_rule_begin

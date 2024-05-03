@@ -228,7 +228,7 @@ class ValidationManager(object):
         """
 
         if self.notifier:
-            self.notifier.validate_all_begin.emit()
+            self.notifier.validate_all_begin.emit(list(self.rules))
 
         try:
             # Reset the manager state before performing validation
@@ -265,7 +265,7 @@ class ValidationManager(object):
             rules = [rules]
 
         if emit_signals and self.notifier:
-            self.notifier.validate_all_begin.emit()
+            self.notifier.validate_all_begin.emit(rules)
 
         try:
             self._process_rules(
@@ -343,7 +343,7 @@ class ValidationManager(object):
         """
 
         if self.notifier:
-            self.notifier.resolve_all_begin.emit()
+            self.notifier.resolve_all_begin.emit(list(self.rules))
 
         try:
             success = True
@@ -433,7 +433,7 @@ class ValidationManager(object):
         """
 
         if emit_signals and self.notifier:
-            self.notifier.resolve_all_begin.emit()
+            self.notifier.resolve_all_begin.emit(rules)
 
         try:
             return self._process_rules(
