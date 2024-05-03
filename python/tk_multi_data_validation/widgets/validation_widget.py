@@ -33,6 +33,7 @@ from ..utils.framework_qtwidgets import (
     SGQSplitter,
     SGQMenu,
     SGQLabel,
+    SGQProgressBar,
     SGQIcon,
 )
 from ..utils.decorators import wait_cursor
@@ -111,6 +112,10 @@ class ValidationWidget(SGQWidget):
         self._validation_has_run = False
         # Flag indicating that we're in the middle of validating all rules
         self._is_validating_all = False
+        # Flag indicating that we're in the middle of fixing all rules
+        self._is_fixing_all = False
+        # The current list of rules in progress (to update the progress bar)
+        self.__progress_rules = []
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
@@ -606,12 +611,28 @@ class ValidationWidget(SGQWidget):
         )
 
         # -----------------------------------------------------
+        # Progress bar
+
+        self.__progress_bar = SGQProgressBar()
+        self.__progress_bar_text = SGQLabel("Click Validate or Fix All to start.")
+        self.__progress_bar_widget = SGQWidget(
+            self,
+            child_widgets=[
+                self.__progress_bar,
+                self.__progress_bar_text,
+            ],
+            layout_direction=QtGui.QBoxLayout.TopToBottom,
+        )
+        # self.__progress_bar_widget.hide()
+
+        # -----------------------------------------------------
         # Layouts and main widget
         #
 
         self._toolbar_widget.layout().setContentsMargins(10, 0, 10, 0)
         self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
         self._footer_widget.layout().setContentsMargins(10, 0, 10, 0)
+        self.__progress_bar_widget.layout().setContentsMargins(10, 10, 10, 0)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.add_widgets(
@@ -619,6 +640,7 @@ class ValidationWidget(SGQWidget):
                 self._toolbar_widget,
                 self._content_widget,
                 self._footer_widget,
+                self.__progress_bar_widget,
             ]
         )
 
@@ -1116,9 +1138,9 @@ class ValidationWidget(SGQWidget):
         to the custom callback, else call the default validate all operation.
         """
 
-        self.validate_all_begin()
+        active_rules = self.get_active_rules()
+        self.validate_all_begin(active_rules)
         try:
-            active_rules = self.get_active_rules()
             self.validate_all_callback(active_rules)
         finally:
             self.validate_all_finished()
@@ -1133,7 +1155,11 @@ class ValidationWidget(SGQWidget):
         """
 
         active_rules = self.get_active_rules()
-        self.fix_all_callback(active_rules)
+        self.fix_all_begin(active_rules)
+        try:
+            self.fix_all_callback(active_rules)
+        finally:
+            self.fix_all_finished()
 
     @wait_cursor
     def on_validate_rules(self, rules, refresh_details=False):
@@ -1194,8 +1220,7 @@ class ValidationWidget(SGQWidget):
         if not rule:
             return
 
-        # TODO any specific actions before begin check (ie. set loading)
-        # rule_item = self._rules_model.get_item_for_rule(rule)
+        self.update_progress(rule, False, f"Validating: {rule.name}")
 
     def validate_rule_finished(self, rule, update_rule_type=True):
         """
@@ -1206,6 +1231,8 @@ class ValidationWidget(SGQWidget):
         :param update_rule_type: True will update the rule type model data based on the updated rule.
         :type update_rule_type: bool
         """
+
+        self.update_progress(rule, True)
 
         if not rule or self._is_validating_all:
             # Do not process the individual rule after validation if there is not rule, or all rules are
@@ -1239,9 +1266,13 @@ class ValidationWidget(SGQWidget):
 
         self._refresh_details(rule)
 
-    def validate_all_begin(self):
+
+    def validate_all_begin(self, rules=None):
         """
         Call this method before all validation rules are checked.
+
+        :param rules: The list of rules that are about to be validated.
+        :type rules: List[ValidationRule]
         """
 
         if self._is_validating_all:
@@ -1249,11 +1280,10 @@ class ValidationWidget(SGQWidget):
             return
 
         self._is_validating_all = True
+        self.start_progress(rules, "Begin validating...")
 
     def validate_all_finished(self):
-        """
-        Call this method after all validation rules have been checked.
-        """
+        """Call this method after all validation rules have been checked."""
 
         if not self._is_validating_all:
             # Nothing to do, if validation did not happen.
@@ -1284,6 +1314,32 @@ class ValidationWidget(SGQWidget):
         # Ensure the details is refreshed
         self._refresh_details()
 
+        self.reset_progress("Validation complete.")
+
+    def fix_all_begin(self, rules=None):
+        """
+        Call this method before all validation rules are fixed.
+
+        :param rules: The list of rules that are about to be fixed.
+        :type rules: List[ValidationRule]
+        """
+
+        if self._is_fixing_all:
+            # Already fixing
+            return
+
+        self._is_fixing_all = True
+        self.start_progress(rules, "Begin fixing...")
+
+    def fix_all_finished(self):
+        """Call this method after all validation rules have been fixed."""
+
+        if not self._is_fixing_all:
+            return
+
+        self._is_fixing_all = False
+        self.reset_progress("Fix complete.")
+
     def fix_rule_begin(self, rule):
         """
         Call this method before a validaiton rule is fix function is executed.
@@ -1295,8 +1351,8 @@ class ValidationWidget(SGQWidget):
         if not rule:
             return
 
-        # TODO any specific actions before begin check (ie. set loading)
-        # rule_item = self._rules_model.get_item_for_rule(rule)
+        # Update the progress bar with the current rule that is getting fixed
+        self.update_progress(rule, False, f"Fixing: {rule.name}")
 
     def fix_rule_finished(self, rule):
         """
@@ -1308,6 +1364,9 @@ class ValidationWidget(SGQWidget):
 
         if not rule:
             return
+
+        # Update the progress bar after a rule has finished fixing
+        self.update_progress(rule, True)
 
         rule_item = self._rules_model.get_item_for_rule(rule)
         if not rule_item:
@@ -1518,6 +1577,69 @@ class ValidationWidget(SGQWidget):
         )
 
         self.on_fix_rules(rules)
+
+    # -----------------------------------------------------
+    # Progress bar callbacks
+
+    def start_progress(self, rules, text=None):
+        """
+        Start showing progress of the current operation.
+
+        :param rules: The list of rules that are being operated on.
+        :type rules: List[ValidationRule]
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if not rules:
+            return
+
+        # Set the current list of rules in progress
+        self.__progress_rules = rules
+        # Set up the progress bar widget and text
+        self.__progress_bar.setRange(0, len(rules))
+        self.__progress_bar.setValue(0)
+        if text is not None:
+            self.__progress_bar_text.setText(text)
+
+    def update_progress(self, rule, increment, text=None):
+        """
+        Update the progress of the current operation.
+
+        :param rule: The rule that is currently being operated on.
+        :type rule: ValidationRule
+        :param increment: True to increment the progress else False to keep the progress the same.
+        :type increment: bool
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if text is not None:
+            self.__progress_bar_text.setText(text or "")
+
+        if increment:
+            if rule not in self.__progress_rules:
+                # Extend the progress bar maximum value if the rule being operated on was
+                # not originally in scope (e.g. a dependency rule that was not in the original list)
+                self.__progress_bar.setMaximum(self.__progress_bar.maximum() + 1)
+            # Increment the progress bar value
+            self.__progress_bar.setValue(self.__progress_bar.value() + 1)
+
+    def reset_progress(self, text=None):
+        """
+        Reset the progress to the default state.
+
+        This should be called once an operation has ended.
+
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        # Reset the current list of rules in progress
+        self.__progress_rules = []
+        # Reset the progress bar value and text
+        self.__progress_bar.reset()
+        self.__progress_bar_text.setText(text or "")
 
 
 #############################################################################################################
