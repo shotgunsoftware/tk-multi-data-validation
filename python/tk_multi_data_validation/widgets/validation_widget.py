@@ -983,6 +983,73 @@ class ValidationWidget(SGQWidget):
         else:
             self._errors_label.hide()
 
+    def _start_progress(self, rules, text=None):
+        """
+        Start showing progress of the current operation.
+
+        :param rules: The list of rules that are being operated on.
+        :type rules: List[ValidationRule]
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if not rules:
+            return
+
+        if self.__progress_rules:
+            # Already in progress, append to the current progress
+            self.__progress_rules.extend(rules)
+            start_value = self.__progress_bar.value()
+        else:
+            # Set the current list of rules in progress
+            self.__progress_rules = rules
+            start_value = 0
+
+        # Set up the progress bar widget and text
+        self.__progress_bar.setRange(0, len(self.__progress_rules))
+        self.__progress_bar.setValue(start_value)
+        if text is not None:
+            self.__progress_bar_text.setText(text)
+
+    def _update_progress(self, rule, increment, text=None):
+        """
+        Update the progress of the current operation.
+
+        :param rule: The rule that is currently being operated on.
+        :type rule: ValidationRule
+        :param increment: True to increment the progress else False to keep the progress the same.
+        :type increment: bool
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if text is not None:
+            self.__progress_bar_text.setText(text or "")
+
+        if increment:
+            if rule not in self.__progress_rules:
+                # Extend the progress bar maximum value if the rule being operated on was
+                # not originally in scope (e.g. a dependency rule that was not in the original list)
+                self.__progress_bar.setMaximum(self.__progress_bar.maximum() + 1)
+            # Increment the progress bar value
+            self.__progress_bar.setValue(self.__progress_bar.value() + 1)
+
+    def _reset_progress(self, text=None):
+        """
+        Reset the progress to the default state.
+
+        This should be called once an operation has ended.
+
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        # Reset the current list of rules in progress
+        self.__progress_rules = []
+        # Reset the progress bar value and text
+        self.__progress_bar.reset()
+        self.__progress_bar_text.setText(text or "")
+
     def _show_context_menu(self, widget, pos, indexes=None):
         """
         Show a context menu for the selected items.
@@ -1220,7 +1287,7 @@ class ValidationWidget(SGQWidget):
         if not rule:
             return
 
-        self.update_progress(rule, False, f"Validating: {rule.name}")
+        self._update_progress(rule, False, f"Validating: {rule.name}")
 
     def validate_rule_finished(self, rule, update_rule_type=True):
         """
@@ -1232,7 +1299,7 @@ class ValidationWidget(SGQWidget):
         :type update_rule_type: bool
         """
 
-        self.update_progress(rule, True)
+        self._update_progress(rule, True)
 
         if not rule or self._is_validating_all:
             # Do not process the individual rule after validation if there is not rule, or all rules are
@@ -1279,7 +1346,7 @@ class ValidationWidget(SGQWidget):
             return
 
         self._is_validating_all = True
-        self.start_progress(rules, "Begin validating...")
+        self._start_progress(rules, "Begin validating...")
 
     def validate_all_finished(self):
         """Call this method after all validation rules have been checked."""
@@ -1313,7 +1380,7 @@ class ValidationWidget(SGQWidget):
         # Ensure the details is refreshed
         self._refresh_details()
 
-        self.reset_progress("Validation complete.")
+        self._reset_progress("Validation complete.")
 
     def fix_all_begin(self, rules=None):
         """
@@ -1328,7 +1395,7 @@ class ValidationWidget(SGQWidget):
             return
 
         self._is_fixing_all = True
-        self.start_progress(rules, "Begin fixing...")
+        self._start_progress(rules, "Begin fixing...")
 
     def fix_all_finished(self):
         """Call this method after all validation rules have been fixed."""
@@ -1337,7 +1404,7 @@ class ValidationWidget(SGQWidget):
             return
 
         self._is_fixing_all = False
-        self.reset_progress("Fix complete.")
+        self._reset_progress("Fix complete.")
 
     def fix_rule_begin(self, rule):
         """
@@ -1351,7 +1418,7 @@ class ValidationWidget(SGQWidget):
             return
 
         # Update the progress bar with the current rule that is getting fixed
-        self.update_progress(rule, False, f"Fixing: {rule.name}")
+        self._update_progress(rule, False, f"Fixing: {rule.name}")
 
     def fix_rule_finished(self, rule):
         """
@@ -1365,7 +1432,7 @@ class ValidationWidget(SGQWidget):
             return
 
         # Update the progress bar after a rule has finished fixing
-        self.update_progress(rule, True)
+        self._update_progress(rule, True)
 
         rule_item = self._rules_model.get_item_for_rule(rule)
         if not rule_item:
@@ -1577,75 +1644,6 @@ class ValidationWidget(SGQWidget):
 
         self.on_fix_rules(rules)
 
-    # -----------------------------------------------------
-    # Progress bar callbacks
-
-    def start_progress(self, rules, text=None):
-        """
-        Start showing progress of the current operation.
-
-        :param rules: The list of rules that are being operated on.
-        :type rules: List[ValidationRule]
-        :param text: Optional text to display with the progress bar.
-        :type text: str
-        """
-
-        if not rules:
-            return
-
-        if self.__progress_rules:
-            # Already in progress, append to the current progress
-            self.__progress_rules.extend(rules)
-            start_value = self.__progress_bar.value()
-        else:
-            # Set the current list of rules in progress
-            self.__progress_rules = rules
-            start_value = 0
-
-        # Set up the progress bar widget and text
-        self.__progress_bar.setRange(0, len(self.__progress_rules))
-        self.__progress_bar.setValue(start_value)
-        if text is not None:
-            self.__progress_bar_text.setText(text)
-
-    def update_progress(self, rule, increment, text=None):
-        """
-        Update the progress of the current operation.
-
-        :param rule: The rule that is currently being operated on.
-        :type rule: ValidationRule
-        :param increment: True to increment the progress else False to keep the progress the same.
-        :type increment: bool
-        :param text: Optional text to display with the progress bar.
-        :type text: str
-        """
-
-        if text is not None:
-            self.__progress_bar_text.setText(text or "")
-
-        if increment:
-            if rule not in self.__progress_rules:
-                # Extend the progress bar maximum value if the rule being operated on was
-                # not originally in scope (e.g. a dependency rule that was not in the original list)
-                self.__progress_bar.setMaximum(self.__progress_bar.maximum() + 1)
-            # Increment the progress bar value
-            self.__progress_bar.setValue(self.__progress_bar.value() + 1)
-
-    def reset_progress(self, text=None):
-        """
-        Reset the progress to the default state.
-
-        This should be called once an operation has ended.
-
-        :param text: Optional text to display with the progress bar.
-        :type text: str
-        """
-
-        # Reset the current list of rules in progress
-        self.__progress_rules = []
-        # Reset the progress bar value and text
-        self.__progress_bar.reset()
-        self.__progress_bar_text.setText(text or "")
 
 
 #############################################################################################################
