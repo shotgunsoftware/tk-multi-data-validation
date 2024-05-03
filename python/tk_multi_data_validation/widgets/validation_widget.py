@@ -116,6 +116,13 @@ class ValidationWidget(SGQWidget):
         self._is_fixing_all = False
         # The current list of rules in progress (to update the progress bar)
         self.__progress_rules = []
+        # The event listening state (list operating like a LIFO stack). We are listening when
+        # the state list is empty, otherwise each call to stop listening will append False.
+        # Initialize the listening state to not listening.
+        self.__listening_state = [False]
+        # The default warning status text
+        self.__default_warning_text = "Scene changed since last validated"
+        self.__warning_details = []
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
@@ -138,6 +145,14 @@ class ValidationWidget(SGQWidget):
 
         self.turn_on_rule_type_filter(self._rule_type_filter_on)
         self._show_details()
+
+        # -----------------------------------------------------
+        # Set up scene callbacks
+
+        scene_operations_hook_path = self._bundle.get_setting("hook_scene_operations")
+        self.__scene_operations_hook = self._bundle.create_hook_instance(
+            scene_operations_hook_path
+        )
 
         # -----------------------------------------------------
         # Initialize the widget data
@@ -441,6 +456,66 @@ class ValidationWidget(SGQWidget):
 
         return rules
 
+    def show_validation_warning(self, show=True, text=None):
+        """
+        Show the validation warning.
+
+        The validation warning indicates that the scene has changed since the last validation.
+        Showing the validation warning will display a warning icon and text describing the
+        warning.
+
+        :param show: True will show the validation warning, False will hide it.
+        :type show: bool
+        :param text: Additional warning details to display.
+        :type text: str
+        """
+
+        if not show:
+            self.__warning_widget.hide()
+            self.__warning_details = []
+        elif self._validation_has_run:
+            # Only set warning if the validation has already run
+            if not self.__warning_widget.isVisible():
+                self.__warning_widget.show()
+            if not self.__warning_details:
+                self.__warning_details.append("")
+            if text and text not in self.__warning_details:
+                self.__warning_details.append(text)
+            warning = self.__default_warning_text + "\n  - ".join(self.__warning_details)
+            self.__warning_label.setText(warning)
+
+    def reset(self):
+        """Reset the validation state of the widget."""
+
+        self._validation_has_run = False
+        self.show_validation_warning(False)
+        self.__progress_bar_text.setText("Click Validate or Fix All to start.")
+        self._rules_model.reset()
+
+    def listen_for_events(self, listen):
+        """
+        Listen for DCC specific events that require the app to update.
+
+        :param listen: True will listen for DCC events, else False will to not listen for events.
+        :type listen: bool
+        """
+
+        if listen:
+            if not self.__listening_state:
+                return  # Already listening
+            self.__listening_state.pop()
+            # Start listening if the state is empty (to handle nested calls)
+            if not self.__listening_state:
+                self.__scene_operations_hook.register_scene_events(
+                    self.reset,
+                    self.show_validation_warning,
+                )
+        else:
+            # Stop listening if currently listening
+            if not self.__listening_state:
+                self.__scene_operations_hook.unregister_scene_events()
+            self.__listening_state.append(False)
+
     ######################################################################################################
     # Protected methods
 
@@ -525,6 +600,17 @@ class ValidationWidget(SGQWidget):
         # -----------------------------------------------------
         # Top toolbar
 
+        # Validation status widget
+        self.__warning_label = SGQLabel(self.__default_warning_text)
+        self.__warning_widget = SGQWidget(
+            self,
+            child_widgets=[
+                SGQToolButton(self, SGQIcon.validation_warning()),
+                self.__warning_label,
+            ],
+        )
+        self.__warning_widget.hide()
+
         # List view mode button
         self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.list_view_mode())
         self._view_mode_list_button.setObjectName("view_mode_list_button")
@@ -580,6 +666,7 @@ class ValidationWidget(SGQWidget):
         self._toolbar_widget = SGQWidget(
             self,
             child_widgets=[
+                self.__warning_widget,
                 None,
                 self._view_mode_list_button,
                 self._view_mode_grouped_button,
@@ -623,7 +710,6 @@ class ValidationWidget(SGQWidget):
             ],
             layout_direction=QtGui.QBoxLayout.TopToBottom,
         )
-        # self.__progress_bar_widget.hide()
 
         # -----------------------------------------------------
         # Layouts and main widget
@@ -633,7 +719,10 @@ class ValidationWidget(SGQWidget):
         self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
         self._footer_widget.layout().setContentsMargins(10, 0, 10, 0)
         self.__progress_bar_widget.layout().setContentsMargins(10, 10, 10, 0)
+        self.__warning_widget.layout().setContentsMargins(0, 0, 0, 0)
+
         self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setSpacing(0)
 
         self.add_widgets(
             [
@@ -1345,6 +1434,9 @@ class ValidationWidget(SGQWidget):
             # Already validating
             return
 
+        # Pause event listening during the validate operation
+        self.listen_for_events(False)
+
         self._is_validating_all = True
         self._start_progress(rules, "Begin validating...")
 
@@ -1380,7 +1472,12 @@ class ValidationWidget(SGQWidget):
         # Ensure the details is refreshed
         self._refresh_details()
 
-        self._reset_progress("Validation complete.")
+        self._reset_progress("Completed validation")
+        # Reset any validation warnings now that validation is complete
+        self.show_validation_warning(False)
+
+        # Turn event listening back on
+        self.listen_for_events(True)
 
     def fix_all_begin(self, rules=None):
         """
@@ -1394,6 +1491,9 @@ class ValidationWidget(SGQWidget):
             # Already fixing
             return
 
+        # Pause event listening during the fix operation
+        self.listen_for_events(False)
+
         self._is_fixing_all = True
         self._start_progress(rules, "Begin fixing...")
 
@@ -1404,7 +1504,11 @@ class ValidationWidget(SGQWidget):
             return
 
         self._is_fixing_all = False
-        self._reset_progress("Fix complete.")
+        self._reset_progress("Completed all fixes")
+        self.show_validation_warning(False)
+
+        # Turn event listening back on
+        self.listen_for_events(True)
 
     def fix_rule_begin(self, rule):
         """
@@ -1643,7 +1747,6 @@ class ValidationWidget(SGQWidget):
         )
 
         self.on_fix_rules(rules)
-
 
 
 #############################################################################################################

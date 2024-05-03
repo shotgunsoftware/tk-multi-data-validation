@@ -79,6 +79,7 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
         )
+        self._validation_widget.listen_for_events(True)
 
         # -----------------------------------------------------
         # Log metric for app usage

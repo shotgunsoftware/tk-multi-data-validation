@@ -539,7 +539,7 @@ class ValidationRule(object):
         :rtype: list | bool | None
         """
 
-        # Reset teh check runtime exception
+        # Reset the check runtime exception
         self._check_runtime_exception = None
 
         # Do not run the check function when it has a failed dependency, and not forcing.
@@ -648,6 +648,16 @@ class ValidationRule(object):
             fix_result = False
 
         return fix_result
+
+    def reset(self):
+        """Reset the state of the rule to its initial state."""
+
+        self._valid = None
+        self._error_items = None
+        self._fix_executed = False
+        self._check_runtime_exception = None
+        self._fix_runtime_exception = None
+        self._failed_dependency = None
 
     #########################################################################################################
     # Protected methods

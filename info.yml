@@ -30,6 +30,12 @@ configuration:
         description: "Customize the display of the Data Validation App."
         default_value: "{self}/ui_config.py"
 
+    hook_scene_operations:
+        type: hook
+        default_value: "{self}/scene_operations.py"
+        description: Override the default abstract hook, if desired, to update the data validation
+                     UI based on the DCC scene events.
+
     rules:
         description: "List of validation rules for the App to enforce. Each validation item requires
                      a unique key to identify the validation rule, and it is optional to specify
