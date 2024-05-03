@@ -1266,7 +1266,6 @@ class ValidationWidget(SGQWidget):
 
         self._refresh_details(rule)
 
-
     def validate_all_begin(self, rules=None):
         """
         Call this method before all validation rules are checked.
