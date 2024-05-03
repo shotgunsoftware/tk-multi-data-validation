@@ -1593,11 +1593,18 @@ class ValidationWidget(SGQWidget):
         if not rules:
             return
 
-        # Set the current list of rules in progress
-        self.__progress_rules = rules
+        if self.__progress_rules:
+            # Already in progress, append to the current progress
+            self.__progress_rules.extend(rules)
+            start_value = self.__progress_bar.value()
+        else:
+            # Set the current list of rules in progress
+            self.__progress_rules = rules
+            start_value = 0
+
         # Set up the progress bar widget and text
-        self.__progress_bar.setRange(0, len(rules))
-        self.__progress_bar.setValue(0)
+        self.__progress_bar.setRange(0, len(self.__progress_rules))
+        self.__progress_bar.setValue(start_value)
         if text is not None:
             self.__progress_bar_text.setText(text)
 
