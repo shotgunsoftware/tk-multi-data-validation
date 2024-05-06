@@ -481,7 +481,9 @@ class ValidationWidget(SGQWidget):
                 self.__warning_details.append("")
             if text and text not in self.__warning_details:
                 self.__warning_details.append(text)
-            warning = self.__default_warning_text + "\n  - ".join(self.__warning_details)
+            warning = self.__default_warning_text + "\n  - ".join(
+                self.__warning_details
+            )
             self.__warning_label.setText(warning)
 
     def reset(self):
