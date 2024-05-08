@@ -161,6 +161,19 @@ class ValidationWidget(SGQWidget):
         self._view_overlay_widget.show_message("No validation data")
 
     #########################################################################################################
+    # Static methods
+
+    @wait_cursor
+    def __execute_menu_action(self, action, callback, kwargs):
+        """Execute the menu action and show the busy cursor."""
+
+        self.details_about_to_execute_action.emit(action)
+        try:
+            return callback(**kwargs)
+        finally:
+            self.details_execute_action_finished.emit(action)
+
+    #########################################################################################################
     # Properties
 
     @property
@@ -1177,7 +1190,11 @@ class ValidationWidget(SGQWidget):
             )
 
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, k=kwargs: fn(**k))
+            action.triggered.connect(
+                lambda fn=callback, k=kwargs: self.__execute_menu_action(
+                    rule_action, fn, k
+                )
+            )
             actions.append(action)
 
         # Add action to show details for the item that the context menu is shown for.
