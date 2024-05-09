@@ -45,6 +45,19 @@ class AppDialog(QtGui.QWidget):
         self._bundle = sgtk.platform.current_bundle()
 
         # -----------------------------------------------------
+        # Set up scene callbacks
+
+        scene_operations_hook_path = self._bundle.get_setting("hook_scene_operations")
+        self.__scene_operations_hook = self._bundle.create_hook_instance(
+            scene_operations_hook_path
+        )
+
+        # The event listening state (list operating like a LIFO stack). We are listening when
+        # the state list is empty, otherwise each call to stop listening will append False.
+        # Initialize the listening state to not listening.
+        self.__listening_state = [False]
+
+        # -----------------------------------------------------
         # Create validation manager
 
         self._manager = ValidationManager(notifier=ValidationNotifier(), has_ui=True)
@@ -79,7 +92,7 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
         )
-        self._validation_widget.listen_for_events(True)
+        self._listen_for_events(True)
 
         # -----------------------------------------------------
         # Log metric for app usage
@@ -166,6 +179,57 @@ class AppDialog(QtGui.QWidget):
         self._manager.notifier.resolve_rule_finished.connect(
             self._validation_widget.fix_rule_finished
         )
+
+        # ------------------------------------------------------------
+        # ValidationWidget signals connected to this dialog
+
+        self._validation_widget.start_event_listening.connect(
+            lambda: self._listen_for_events(True)
+        )
+        self._validation_widget.stop_event_listening.connect(
+            lambda: self._listen_for_events(False)
+        )
+
+    def _listen_for_events(self, listen):
+        """
+        Listen for DCC specific events that require the app to update.
+
+        :param listen: True will listen for DCC events, else False will to not listen for events.
+        :type listen: bool
+        """
+
+        if listen:
+            if not self.__listening_state:
+                return  # Already listening
+            self.__listening_state.pop()
+            # Start listening if the state is empty (to handle nested calls)
+            if not self.__listening_state:
+                self.__scene_operations_hook.register_scene_events(
+                    self.scene_reset_callback,
+                    self.scene_change_callback,
+                )
+        else:
+            # Stop listening if currently listening
+            if not self.__listening_state:
+                self.__scene_operations_hook.unregister_scene_events()
+            self.__listening_state.append(False)
+
+    ######################################################################################################
+    # Public methods
+
+    def scene_reset_callback(self):
+        """Callback for when the scene is reset."""
+
+        # Reload the validation rules and set them in the widget
+        self._manager.load_rules()
+        self._validation_widget.set_validation_rules(
+            self._manager.rules, self._manager.rule_types
+        )
+
+    def scene_change_callback(self, text=None):
+        """Callback for when the scene changes."""
+
+        self._validation_widget.show_validation_warning(text=text)
 
     ######################################################################################################
     # Override Qt methods

@@ -79,6 +79,9 @@ class ValidationWidget(SGQWidget):
     # (this is useful to # show a busy indicator, if the operation takes some time)
     details_about_to_execute_action = QtCore.Signal(dict)
     details_execute_action_finished = QtCore.Signal(dict)
+    # Emit signals to start/stop listening to DCC events
+    start_event_listening = QtCore.Signal()
+    stop_event_listening = QtCore.Signal()
 
     def __init__(self, parent, group_rules_by=None, pre_validate_before_actions=True):
         """
@@ -116,10 +119,6 @@ class ValidationWidget(SGQWidget):
         self._is_fixing_all = False
         # The current list of rules in progress (to update the progress bar)
         self.__progress_rules = []
-        # The event listening state (list operating like a LIFO stack). We are listening when
-        # the state list is empty, otherwise each call to stop listening will append False.
-        # Initialize the listening state to not listening.
-        self.__listening_state = [False]
         # The default warning status text
         self.__default_warning_text = "Scene changed since last validated"
         self.__warning_details = []
@@ -127,6 +126,7 @@ class ValidationWidget(SGQWidget):
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
         # is being used to manage the validation data, then override these callbacks with the
+
         # ValidationManager specific validate and fix functions.
         self._validate_all_callback = self._validate_rules
         self._validate_rules_callback = self._validate_rules
@@ -145,14 +145,6 @@ class ValidationWidget(SGQWidget):
 
         self.turn_on_rule_type_filter(self._rule_type_filter_on)
         self._show_details()
-
-        # -----------------------------------------------------
-        # Set up scene callbacks
-
-        scene_operations_hook_path = self._bundle.get_setting("hook_scene_operations")
-        self.__scene_operations_hook = self._bundle.create_hook_instance(
-            scene_operations_hook_path
-        )
 
         # -----------------------------------------------------
         # Initialize the widget data
@@ -422,6 +414,9 @@ class ValidationWidget(SGQWidget):
         :type validation_rule_types: list<ValidationRuleType>
         """
 
+        # Reset the widget UI before setting the new data
+        self.reset()
+
         if self._rule_type_filter_on:
             rule_types = validation_rule_types or []
             if not rule_types:
@@ -505,31 +500,6 @@ class ValidationWidget(SGQWidget):
         self._validation_has_run = False
         self.show_validation_warning(False)
         self.__progress_bar_text.setText("Click Validate or Fix All to start.")
-        self._rules_model.reset()
-
-    def listen_for_events(self, listen):
-        """
-        Listen for DCC specific events that require the app to update.
-
-        :param listen: True will listen for DCC events, else False will to not listen for events.
-        :type listen: bool
-        """
-
-        if listen:
-            if not self.__listening_state:
-                return  # Already listening
-            self.__listening_state.pop()
-            # Start listening if the state is empty (to handle nested calls)
-            if not self.__listening_state:
-                self.__scene_operations_hook.register_scene_events(
-                    self.reset,
-                    self.show_validation_warning,
-                )
-        else:
-            # Stop listening if currently listening
-            if not self.__listening_state:
-                self.__scene_operations_hook.unregister_scene_events()
-            self.__listening_state.append(False)
 
     ######################################################################################################
     # Protected methods
@@ -1454,7 +1424,7 @@ class ValidationWidget(SGQWidget):
             return
 
         # Pause event listening during the validate operation
-        self.listen_for_events(False)
+        self.stop_event_listening.emit()
 
         self._is_validating_all = True
         self._start_progress(rules, "Begin validating...")
@@ -1496,7 +1466,7 @@ class ValidationWidget(SGQWidget):
         self.show_validation_warning(False)
 
         # Turn event listening back on
-        self.listen_for_events(True)
+        self.start_event_listening.emit()
 
     def fix_all_begin(self, rules=None):
         """
@@ -1511,7 +1481,7 @@ class ValidationWidget(SGQWidget):
             return
 
         # Pause event listening during the fix operation
-        self.listen_for_events(False)
+        self.stop_event_listening.emit()
 
         self._is_fixing_all = True
         self._start_progress(rules, "Begin fixing...")
@@ -1527,7 +1497,7 @@ class ValidationWidget(SGQWidget):
         self.show_validation_warning(False)
 
         # Turn event listening back on
-        self.listen_for_events(True)
+        self.start_event_listening.emit()
 
     def fix_rule_begin(self, rule):
         """
