@@ -228,7 +228,7 @@ class ValidationManager(object):
         """
 
         if self.notifier:
-            self.notifier.validate_all_begin.emit()
+            self.notifier.validate_all_begin.emit(list(self.rules))
 
         try:
             # Reset the manager state before performing validation
@@ -265,7 +265,7 @@ class ValidationManager(object):
             rules = [rules]
 
         if emit_signals and self.notifier:
-            self.notifier.validate_all_begin.emit()
+            self.notifier.validate_all_begin.emit(rules)
 
         try:
             self._process_rules(
@@ -343,7 +343,7 @@ class ValidationManager(object):
         """
 
         if self.notifier:
-            self.notifier.resolve_all_begin.emit()
+            self.notifier.resolve_all_begin.emit(list(self.rules))
 
         try:
             success = True
@@ -433,10 +433,10 @@ class ValidationManager(object):
         """
 
         if emit_signals and self.notifier:
-            self.notifier.resolve_all_begin.emit()
+            self.notifier.resolve_all_begin.emit(rules)
 
         try:
-            self._process_rules(
+            return self._process_rules(
                 rules,
                 fetch_dependencies,
                 emit_signals,
@@ -538,10 +538,13 @@ class ValidationManager(object):
         :param process_rule_callback: The function called to each rule that is processed. This is a
             function that takes a `ValidationRule` object as its first argument.
         :type process_rule_callback: function(rule: ValidationRule) -> bool
+
+        :return: True if rules were processed else False
+        :rtype: bool
         """
 
         if not rules:
-            return
+            return False
 
         # The set of rule ids passed to resolve - this set gets populated the first the rules are iterated
         # through to check then check if the necessary dependencies are available to resolve first. Any
@@ -673,7 +676,7 @@ class ValidationManager(object):
                     # The user canceled the operation
                     if emit_signals and self.notifier:
                         self.notifier.resolve_all_finished.emit()
-                    return
+                    return False
 
         # Third, now process the queue of rules, which have dependencies. For each rule, if all
         # dependencies are # processed or ignored, then resolve it and add it to the processed
@@ -733,3 +736,5 @@ class ValidationManager(object):
                 # dependency has failed, it will be reset to None.
                 rule.set_failed_dependency(dependency_failed)
                 __process_rule(rule)
+
+        return True

@@ -1066,3 +1066,24 @@ class ValidationRuleModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         valid = all_types - errors - incomplete
         return (valid, errors, incomplete)
+
+    def reset(self):
+        """Reset the current validation state of the model."""
+
+        self.beginResetModel()
+
+        rows = self.rowCount()
+        for row in range(rows):
+            model_item = self.item(row)
+            rule = model_item.data(ValidationRuleModel.RULE_ITEM_ROLE)
+            if rule:
+                rule.reset()
+
+            child_rows = model_item.rowCount()
+            for child_row in range(child_rows):
+                child_item = model_item.child(child_row)
+                rule = child_item.data(ValidationRuleModel.RULE_ITEM_ROLE)
+                if rule:
+                    rule.reset()
+
+        self.endResetModel()

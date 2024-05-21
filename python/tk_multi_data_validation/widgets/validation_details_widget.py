@@ -24,6 +24,7 @@ from ..utils.framework_qtwidgets import (
     SGQMenu,
 )
 from .shotgrid_overlay_widget import ShotGridOverlayWidget
+from ..utils.decorators import wait_cursor
 
 
 class ValidationDetailsWidget(SGQWidget):
@@ -415,6 +416,7 @@ class ValidationDetailsWidget(SGQWidget):
         action = self._get_details_item_first_action(index)
         return self._execute_item_action(action)
 
+    @wait_cursor
     def _execute_action(self, action):
         """
         Execute the action.
@@ -446,11 +448,14 @@ class ValidationDetailsWidget(SGQWidget):
         )
 
         self.about_to_execute_action.emit(action)
-        result = callback_fn(**kwargs)
-        self.execute_action_finished.emit(action)
+        try:
+            result = callback_fn(**kwargs)
+        finally:
+            self.execute_action_finished.emit(action)
 
         return result
 
+    @wait_cursor
     def _execute_item_action(self, action):
         """
         Execute the item action.
@@ -477,8 +482,10 @@ class ValidationDetailsWidget(SGQWidget):
         kwargs = action.get("kwargs", {})
 
         self.about_to_execute_action.emit(action)
-        result = callback_fn(**kwargs)
-        self.execute_action_finished.emit(action)
+        try:
+            result = callback_fn(**kwargs)
+        finally:
+            self.execute_action_finished.emit(action)
 
         return result
 

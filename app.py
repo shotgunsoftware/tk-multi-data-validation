@@ -17,6 +17,25 @@ class DataValidation(sgtk.platform.Application):
     top-level data validation App interface.
     """
 
+    @property
+    def context_change_allowed(self):
+        """
+        Specifies that context changes are allowed.
+        """
+        return True
+
+    def post_context_change(self, old_context, new_context):
+        """
+        Runs after a context change has occurred.
+
+        :param old_context: The previous context.
+        :param new_context: The current context.
+        """
+
+        dialog = self._current_dialog or self._current_panel
+        if dialog:
+            dialog.scene_reset_callback()
+
     def init_app(self):
         """
         Called as the application is being initialized

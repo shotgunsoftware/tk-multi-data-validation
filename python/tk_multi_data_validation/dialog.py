@@ -9,10 +9,9 @@
 # not expressly granted therein are reserved by Autodesk, Inc.
 
 import sgtk
-from sgtk.platform.qt import QtGui, QtCore
+from sgtk.platform.qt import QtGui
 
 from .api import ValidationManager
-from .api.data import ValidationRule
 from .widgets import ValidationWidget
 from .utils.validation_notifier import ValidationNotifier
 
@@ -45,9 +44,18 @@ class AppDialog(QtGui.QWidget):
 
         self._bundle = sgtk.platform.current_bundle()
 
-        # Information about the busy popup. Set 'showing' to True when the popup is showing, else False.
-        # Set the title and details to what the current busy popup is showing.
-        self._busy_info = {"id": None, "showing": False, "title": "", "details": ""}
+        # -----------------------------------------------------
+        # Set up scene callbacks
+
+        scene_operations_hook_path = self._bundle.get_setting("hook_scene_operations")
+        self.__scene_operations_hook = self._bundle.create_hook_instance(
+            scene_operations_hook_path
+        )
+
+        # The event listening state (list operating like a LIFO stack). We are listening when
+        # the state list is empty, otherwise each call to stop listening will append False.
+        # Initialize the listening state to not listening.
+        self.__listening_state = [False]
 
         # -----------------------------------------------------
         # Create validation manager
@@ -84,6 +92,7 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
         )
+        self._listen_for_events(True)
 
         # -----------------------------------------------------
         # Log metric for app usage
@@ -143,47 +152,6 @@ class AppDialog(QtGui.QWidget):
         """
 
         # ------------------------------------------------------------
-        # ValidationManager signals connected to this dialog
-
-        self._manager.notifier.validate_all_begin.connect(
-            lambda: self.show_busy_popup(
-                self.VALIDATE_ID,
-                "Validating Scene Data...",
-                "This may take a few minutes. Thanks for waiting.",
-            )
-        )
-        self._manager.notifier.validate_all_finished.connect(
-            lambda: self.hide_busy_popup(self.VALIDATE_ID)
-        )
-
-        self._manager.notifier.validate_rule_begin.connect(
-            lambda rule: self.show_busy_popup(
-                "{}_{}".format(self.VALIDATE_ID, rule.id),
-                "Validating {}...".format(rule.name),
-                "This may take a few minutes. Thanks for waiting.",
-            )
-        )
-        self._manager.notifier.validate_rule_finished.connect(
-            lambda rule: self.hide_busy_popup("{}_{}".format(self.VALIDATE_ID, rule.id))
-        )
-
-        self._manager.notifier.resolve_all_begin.connect(
-            lambda: self.show_busy_popup(
-                self.RESOLVE_ID,
-                "Processing Scene Data...",
-                "This may take a few minutes. Thanks for waiting.",
-            )
-        )
-        self._manager.notifier.resolve_all_finished.connect(
-            lambda: self.hide_busy_popup(self.RESOLVE_ID)
-        )
-
-        self._manager.notifier.about_to_open_msg_box.connect(
-            lambda: self.hide_busy_popup(self._busy_info["id"], clear_info=False)
-        )
-        self._manager.notifier.msg_box_closed.connect(self.show_busy_popup)
-
-        # ------------------------------------------------------------
         # ValidationManager signals connected to the ValidationWidget
 
         # Connect signals from manager and widget
@@ -199,6 +167,12 @@ class AppDialog(QtGui.QWidget):
         self._manager.notifier.validate_all_finished.connect(
             self._validation_widget.validate_all_finished
         )
+        self._manager.notifier.resolve_all_begin.connect(
+            self._validation_widget.fix_all_begin
+        )
+        self._manager.notifier.resolve_all_finished.connect(
+            self._validation_widget.fix_all_finished
+        )
         self._manager.notifier.resolve_rule_begin.connect(
             self._validation_widget.fix_rule_begin
         )
@@ -207,20 +181,55 @@ class AppDialog(QtGui.QWidget):
         )
 
         # ------------------------------------------------------------
-        # ValidationWidget signals
+        # ValidationWidget signals connected to this dialog
 
-        self._validation_widget.details_about_to_execute_action.connect(
-            lambda action: self.show_busy_popup(
-                "exec_action_{}".format(action.get("name")),
-                "Executing Action...",
-                action.get("name", "Please hold on."),
-            )
+        self._validation_widget.start_event_listening.connect(
+            lambda: self._listen_for_events(True)
         )
-        self._validation_widget.details_execute_action_finished.connect(
-            lambda action: self.hide_busy_popup(
-                "exec_action_{}".format(action.get("name"))
-            )
+        self._validation_widget.stop_event_listening.connect(
+            lambda: self._listen_for_events(False)
         )
+
+    def _listen_for_events(self, listen):
+        """
+        Listen for DCC specific events that require the app to update.
+
+        :param listen: True will listen for DCC events, else False will to not listen for events.
+        :type listen: bool
+        """
+
+        if listen:
+            if not self.__listening_state:
+                return  # Already listening
+            self.__listening_state.pop()
+            # Start listening if the state is empty (to handle nested calls)
+            if not self.__listening_state:
+                self.__scene_operations_hook.register_scene_events(
+                    self.scene_reset_callback,
+                    self.scene_change_callback,
+                )
+        else:
+            # Stop listening if currently listening
+            if not self.__listening_state:
+                self.__scene_operations_hook.unregister_scene_events()
+            self.__listening_state.append(False)
+
+    ######################################################################################################
+    # Public methods
+
+    def scene_reset_callback(self):
+        """Callback for when the scene is reset."""
+
+        # Reload the validation rules and set them in the widget
+        self._manager.load_rules()
+        self._validation_widget.set_validation_rules(
+            self._manager.rules, self._manager.rule_types
+        )
+
+    def scene_change_callback(self, text=None):
+        """Callback for when the scene changes."""
+
+        self._validation_widget.show_validation_warning(text=text)
 
     ######################################################################################################
     # Override Qt methods
@@ -240,69 +249,3 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.save_state(self._settings_manager)
 
         return QtGui.QWidget.closeEvent(self, event)
-
-    ######################################################################################################
-    # Public methods
-
-    def show_busy_popup(self, busy_id=None, title=None, details=None):
-        """
-        Show the busy popup message dialog.
-
-        This can be used to display a "loading" popup message for when the validation is performing an
-        operation that takes some time.
-
-        :param busy_id: The unique identifier to set the busy info.
-        :type busy_id: str
-        :param title: The title for the popup message. Set to None to use the current busy info title.
-        :type title: str
-        :param title: The details for the popup message. Set to None to use the current busy info details.
-        :type title: str
-        """
-
-        if self._busy_info["showing"]:
-            return
-
-        engine = self._bundle.engine
-        if not engine:
-            return
-
-        if busy_id:
-            self._busy_info["id"] = busy_id
-
-        if title:
-            self._busy_info["title"] = title
-
-        if details:
-            self._busy_info["details"] = details
-
-        engine.show_busy(self._busy_info["title"], self._busy_info["details"])
-        self._busy_info["showing"] = True
-
-    def hide_busy_popup(self, busy_id, clear_info=True):
-        """
-        Hide the busy popup message dialog.
-
-        :param busy_id: The unique identifier to set the busy info.
-        :type busy_id: str
-        :param clear_info: Set to True will reset the busy information. Set to False to keep the busy
-            information to restore the next time `show_busy_popup` in called without specifying a title
-            or details.
-        :type clear_info: bool
-        """
-
-        if not self._busy_info["showing"] or busy_id != self._busy_info["id"]:
-            return
-
-        engine = self._bundle.engine
-        if not engine:
-            return
-
-        engine.clear_busy()
-        self._busy_info["showing"] = False
-
-        # Clear the busy info if specified. Do not clear if the popup is the popup needs to be resumed at a
-        # later time (e.g. pause pop up for user interaction and resume after)
-        if clear_info:
-            self._busy_info["id"] = None
-            self._busy_info["title"] = ""
-            self._busy_info["details"] = ""

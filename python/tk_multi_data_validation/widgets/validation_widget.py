@@ -33,6 +33,7 @@ from ..utils.framework_qtwidgets import (
     SGQSplitter,
     SGQMenu,
     SGQLabel,
+    SGQProgressBar,
     SGQIcon,
 )
 from ..utils.decorators import wait_cursor
@@ -78,6 +79,9 @@ class ValidationWidget(SGQWidget):
     # (this is useful to # show a busy indicator, if the operation takes some time)
     details_about_to_execute_action = QtCore.Signal(dict)
     details_execute_action_finished = QtCore.Signal(dict)
+    # Emit signals to start/stop listening to DCC events
+    start_event_listening = QtCore.Signal()
+    stop_event_listening = QtCore.Signal()
 
     def __init__(self, parent, group_rules_by=None, pre_validate_before_actions=True):
         """
@@ -111,10 +115,18 @@ class ValidationWidget(SGQWidget):
         self._validation_has_run = False
         # Flag indicating that we're in the middle of validating all rules
         self._is_validating_all = False
+        # Flag indicating that we're in the middle of fixing all rules
+        self._is_fixing_all = False
+        # The current list of rules in progress (to update the progress bar)
+        self.__progress_rules = []
+        # The default warning status text
+        self.__default_warning_text = "Scene changed since last validated"
+        self.__warning_details = []
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
         # is being used to manage the validation data, then override these callbacks with the
+
         # ValidationManager specific validate and fix functions.
         self._validate_all_callback = self._validate_rules
         self._validate_rules_callback = self._validate_rules
@@ -139,6 +151,19 @@ class ValidationWidget(SGQWidget):
 
         # Set an empty data message until the it is initialized
         self._view_overlay_widget.show_message("No validation data")
+
+    #########################################################################################################
+    # Static methods
+
+    @wait_cursor
+    def __execute_menu_action(self, action, callback, kwargs):
+        """Execute the menu action and show the busy cursor."""
+
+        self.details_about_to_execute_action.emit(action)
+        try:
+            return callback(**kwargs)
+        finally:
+            self.details_execute_action_finished.emit(action)
 
     #########################################################################################################
     # Properties
@@ -389,6 +414,9 @@ class ValidationWidget(SGQWidget):
         :type validation_rule_types: list<ValidationRuleType>
         """
 
+        # Reset the widget UI before setting the new data
+        self.reset()
+
         if self._rule_type_filter_on:
             rule_types = validation_rule_types or []
             if not rule_types:
@@ -435,6 +463,43 @@ class ValidationWidget(SGQWidget):
                         rules.append(rule)
 
         return rules
+
+    def show_validation_warning(self, show=True, text=None):
+        """
+        Show the validation warning.
+
+        The validation warning indicates that the scene has changed since the last validation.
+        Showing the validation warning will display a warning icon and text describing the
+        warning.
+
+        :param show: True will show the validation warning, False will hide it.
+        :type show: bool
+        :param text: Additional warning details to display.
+        :type text: str
+        """
+
+        if not show:
+            self.__warning_widget.hide()
+            self.__warning_details = []
+        elif self._validation_has_run:
+            # Only set warning if the validation has already run
+            if not self.__warning_widget.isVisible():
+                self.__warning_widget.show()
+            if not self.__warning_details:
+                self.__warning_details.append("")
+            if text and text not in self.__warning_details:
+                self.__warning_details.append(text)
+            warning = self.__default_warning_text + "\n  - ".join(
+                self.__warning_details
+            )
+            self.__warning_label.setText(warning)
+
+    def reset(self):
+        """Reset the validation state of the widget."""
+
+        self._validation_has_run = False
+        self.show_validation_warning(False)
+        self.__progress_bar_text.setText("Click Validate or Fix All to start.")
 
     ######################################################################################################
     # Protected methods
@@ -520,6 +585,17 @@ class ValidationWidget(SGQWidget):
         # -----------------------------------------------------
         # Top toolbar
 
+        # Validation status widget
+        self.__warning_label = SGQLabel(self.__default_warning_text)
+        self.__warning_widget = SGQWidget(
+            self,
+            child_widgets=[
+                SGQToolButton(self, SGQIcon.validation_warning()),
+                self.__warning_label,
+            ],
+        )
+        self.__warning_widget.hide()
+
         # List view mode button
         self._view_mode_list_button = SGQToolButton(self, icon=SGQIcon.list_view_mode())
         self._view_mode_list_button.setObjectName("view_mode_list_button")
@@ -575,6 +651,7 @@ class ValidationWidget(SGQWidget):
         self._toolbar_widget = SGQWidget(
             self,
             child_widgets=[
+                self.__warning_widget,
                 None,
                 self._view_mode_list_button,
                 self._view_mode_grouped_button,
@@ -606,19 +683,38 @@ class ValidationWidget(SGQWidget):
         )
 
         # -----------------------------------------------------
+        # Progress bar
+
+        self.__progress_bar = SGQProgressBar()
+        self.__progress_bar_text = SGQLabel("Click Validate or Fix All to start.")
+        self.__progress_bar_widget = SGQWidget(
+            self,
+            child_widgets=[
+                self.__progress_bar,
+                self.__progress_bar_text,
+            ],
+            layout_direction=QtGui.QBoxLayout.TopToBottom,
+        )
+
+        # -----------------------------------------------------
         # Layouts and main widget
         #
 
         self._toolbar_widget.layout().setContentsMargins(10, 0, 10, 0)
         self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
         self._footer_widget.layout().setContentsMargins(10, 0, 10, 0)
+        self.__progress_bar_widget.layout().setContentsMargins(10, 10, 10, 0)
+        self.__warning_widget.layout().setContentsMargins(0, 0, 0, 0)
+
         self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setSpacing(0)
 
         self.add_widgets(
             [
                 self._toolbar_widget,
                 self._content_widget,
                 self._footer_widget,
+                self.__progress_bar_widget,
             ]
         )
 
@@ -961,6 +1057,73 @@ class ValidationWidget(SGQWidget):
         else:
             self._errors_label.hide()
 
+    def _start_progress(self, rules, text=None):
+        """
+        Start showing progress of the current operation.
+
+        :param rules: The list of rules that are being operated on.
+        :type rules: List[ValidationRule]
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if not rules:
+            return
+
+        if self.__progress_rules:
+            # Already in progress, append to the current progress
+            self.__progress_rules.extend(rules)
+            start_value = self.__progress_bar.value()
+        else:
+            # Set the current list of rules in progress
+            self.__progress_rules = rules
+            start_value = 0
+
+        # Set up the progress bar widget and text
+        self.__progress_bar.setRange(0, len(self.__progress_rules))
+        self.__progress_bar.setValue(start_value)
+        if text is not None:
+            self.__progress_bar_text.setText(text)
+
+    def _update_progress(self, rule, increment, text=None):
+        """
+        Update the progress of the current operation.
+
+        :param rule: The rule that is currently being operated on.
+        :type rule: ValidationRule
+        :param increment: True to increment the progress else False to keep the progress the same.
+        :type increment: bool
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        if text is not None:
+            self.__progress_bar_text.setText(text or "")
+
+        if increment:
+            if rule not in self.__progress_rules:
+                # Extend the progress bar maximum value if the rule being operated on was
+                # not originally in scope (e.g. a dependency rule that was not in the original list)
+                self.__progress_bar.setMaximum(self.__progress_bar.maximum() + 1)
+            # Increment the progress bar value
+            self.__progress_bar.setValue(self.__progress_bar.value() + 1)
+
+    def _reset_progress(self, text=None):
+        """
+        Reset the progress to the default state.
+
+        This should be called once an operation has ended.
+
+        :param text: Optional text to display with the progress bar.
+        :type text: str
+        """
+
+        # Reset the current list of rules in progress
+        self.__progress_rules = []
+        # Reset the progress bar value and text
+        self.__progress_bar.reset()
+        self.__progress_bar_text.setText(text or "")
+
     def _show_context_menu(self, widget, pos, indexes=None):
         """
         Show a context menu for the selected items.
@@ -997,7 +1160,11 @@ class ValidationWidget(SGQWidget):
             )
 
             action = QtGui.QAction(rule_action["name"])
-            action.triggered.connect(lambda fn=callback, k=kwargs: fn(**k))
+            action.triggered.connect(
+                lambda fn=callback, k=kwargs: self.__execute_menu_action(
+                    rule_action, fn, k
+                )
+            )
             actions.append(action)
 
         # Add action to show details for the item that the context menu is shown for.
@@ -1116,9 +1283,9 @@ class ValidationWidget(SGQWidget):
         to the custom callback, else call the default validate all operation.
         """
 
-        self.validate_all_begin()
+        active_rules = self.get_active_rules()
+        self.validate_all_begin(active_rules)
         try:
-            active_rules = self.get_active_rules()
             self.validate_all_callback(active_rules)
         finally:
             self.validate_all_finished()
@@ -1133,7 +1300,11 @@ class ValidationWidget(SGQWidget):
         """
 
         active_rules = self.get_active_rules()
-        self.fix_all_callback(active_rules)
+        self.fix_all_begin(active_rules)
+        try:
+            self.fix_all_callback(active_rules)
+        finally:
+            self.fix_all_finished()
 
     @wait_cursor
     def on_validate_rules(self, rules, refresh_details=False):
@@ -1194,8 +1365,7 @@ class ValidationWidget(SGQWidget):
         if not rule:
             return
 
-        # TODO any specific actions before begin check (ie. set loading)
-        # rule_item = self._rules_model.get_item_for_rule(rule)
+        self._update_progress(rule, False, f"Validating: {rule.name}")
 
     def validate_rule_finished(self, rule, update_rule_type=True):
         """
@@ -1206,6 +1376,8 @@ class ValidationWidget(SGQWidget):
         :param update_rule_type: True will update the rule type model data based on the updated rule.
         :type update_rule_type: bool
         """
+
+        self._update_progress(rule, True)
 
         if not rule or self._is_validating_all:
             # Do not process the individual rule after validation if there is not rule, or all rules are
@@ -1239,21 +1411,26 @@ class ValidationWidget(SGQWidget):
 
         self._refresh_details(rule)
 
-    def validate_all_begin(self):
+    def validate_all_begin(self, rules=None):
         """
         Call this method before all validation rules are checked.
+
+        :param rules: The list of rules that are about to be validated.
+        :type rules: List[ValidationRule]
         """
 
         if self._is_validating_all:
             # Already validating
             return
 
+        # Pause event listening during the validate operation
+        self.stop_event_listening.emit()
+
         self._is_validating_all = True
+        self._start_progress(rules, "Begin validating...")
 
     def validate_all_finished(self):
-        """
-        Call this method after all validation rules have been checked.
-        """
+        """Call this method after all validation rules have been checked."""
 
         if not self._is_validating_all:
             # Nothing to do, if validation did not happen.
@@ -1284,6 +1461,44 @@ class ValidationWidget(SGQWidget):
         # Ensure the details is refreshed
         self._refresh_details()
 
+        self._reset_progress("Completed validation")
+        # Reset any validation warnings now that validation is complete
+        self.show_validation_warning(False)
+
+        # Turn event listening back on
+        self.start_event_listening.emit()
+
+    def fix_all_begin(self, rules=None):
+        """
+        Call this method before all validation rules are fixed.
+
+        :param rules: The list of rules that are about to be fixed.
+        :type rules: List[ValidationRule]
+        """
+
+        if self._is_fixing_all:
+            # Already fixing
+            return
+
+        # Pause event listening during the fix operation
+        self.stop_event_listening.emit()
+
+        self._is_fixing_all = True
+        self._start_progress(rules, "Begin fixing...")
+
+    def fix_all_finished(self):
+        """Call this method after all validation rules have been fixed."""
+
+        if not self._is_fixing_all:
+            return
+
+        self._is_fixing_all = False
+        self._reset_progress("Completed all fixes")
+        self.show_validation_warning(False)
+
+        # Turn event listening back on
+        self.start_event_listening.emit()
+
     def fix_rule_begin(self, rule):
         """
         Call this method before a validaiton rule is fix function is executed.
@@ -1295,8 +1510,8 @@ class ValidationWidget(SGQWidget):
         if not rule:
             return
 
-        # TODO any specific actions before begin check (ie. set loading)
-        # rule_item = self._rules_model.get_item_for_rule(rule)
+        # Update the progress bar with the current rule that is getting fixed
+        self._update_progress(rule, False, f"Fixing: {rule.name}")
 
     def fix_rule_finished(self, rule):
         """
@@ -1308,6 +1523,9 @@ class ValidationWidget(SGQWidget):
 
         if not rule:
             return
+
+        # Update the progress bar after a rule has finished fixing
+        self._update_progress(rule, True)
 
         rule_item = self._rules_model.get_item_for_rule(rule)
         if not rule_item:
