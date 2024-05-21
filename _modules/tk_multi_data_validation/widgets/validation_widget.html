@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tk_multi_data_validation.widgets.validation_widget &mdash; tk-multi-data-validation v0.2.0 documentation</title>
+  <title>tk_multi_data_validation.widgets.validation_widget &mdash; tk-multi-data-validation v0.3.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.2.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.0.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -161,6 +161,7 @@
     <span class="n">SGQSplitter</span><span class="p">,</span>
     <span class="n">SGQMenu</span><span class="p">,</span>
     <span class="n">SGQLabel</span><span class="p">,</span>
+    <span class="n">SGQProgressBar</span><span class="p">,</span>
     <span class="n">SGQIcon</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..utils.decorators</span> <span class="kn">import</span> <span class="n">wait_cursor</span>
@@ -206,6 +207,9 @@
     <span class="c1"># (this is useful to # show a busy indicator, if the operation takes some time)</span>
     <span class="n">details_about_to_execute_action</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">details_execute_action_finished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="c1"># Emit signals to start/stop listening to DCC events</span>
+    <span class="n">start_event_listening</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+    <span class="n">stop_event_listening</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">group_rules_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pre_validate_before_actions</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -239,10 +243,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validation_has_run</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># Flag indicating that we&#39;re in the middle of validating all rules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Flag indicating that we&#39;re in the middle of fixing all rules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_fixing_all</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># The current list of rules in progress (to update the progress bar)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># The default warning status text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__default_warning_text</span> <span class="o">=</span> <span class="s2">&quot;Scene changed since last validated&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># Custom callbacks for validate and fix all operations. See properties for more details.</span>
         <span class="c1"># The default methods to validate and fix all will be initialized. If a ValidationManager</span>
         <span class="c1"># is being used to manage the validation data, then override these callbacks with the</span>
+
         <span class="c1"># ValidationManager specific validate and fix functions.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_all_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_rules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_rules_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_rules</span>
@@ -267,6 +279,19 @@
 
         <span class="c1"># Set an empty data message until the it is initialized</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_view_overlay_widget</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;No validation data&quot;</span><span class="p">)</span>
+
+    <span class="c1">#########################################################################################################</span>
+    <span class="c1"># Static methods</span>
+
+    <span class="nd">@wait_cursor</span>
+    <span class="k">def</span> <span class="nf">__execute_menu_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the menu action and show the busy cursor.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">details_about_to_execute_action</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">details_execute_action_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
     <span class="c1">#########################################################################################################</span>
     <span class="c1"># Properties</span>
@@ -517,6 +542,9 @@
 <span class="sd">        :type validation_rule_types: list&lt;ValidationRuleType&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="c1"># Reset the widget UI before setting the new data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_type_filter_on</span><span class="p">:</span>
             <span class="n">rule_types</span> <span class="o">=</span> <span class="n">validation_rule_types</span> <span class="ow">or</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">rule_types</span><span class="p">:</span>
@@ -563,6 +591,43 @@
                         <span class="n">rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rules</span></div>
+
+<div class="viewcode-block" id="ValidationWidget.show_validation_warning"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.show_validation_warning">[docs]</a>    <span class="k">def</span> <span class="nf">show_validation_warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show the validation warning.</span>
+
+<span class="sd">        The validation warning indicates that the scene has changed since the last validation.</span>
+<span class="sd">        Showing the validation warning will display a warning icon and text describing the</span>
+<span class="sd">        warning.</span>
+
+<span class="sd">        :param show: True will show the validation warning, False will hide it.</span>
+<span class="sd">        :type show: bool</span>
+<span class="sd">        :param text: Additional warning details to display.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">show</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_has_run</span><span class="p">:</span>
+            <span class="c1"># Only set warning if the validation has already run</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">warning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__default_warning_text</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  - &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_details</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__warning_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationWidget.reset"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the validation state of the widget.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validation_has_run</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_validation_warning</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Click Validate or Fix All to start.&quot;</span><span class="p">)</span></div>
 
     <span class="c1">######################################################################################################</span>
     <span class="c1"># Protected methods</span>
@@ -648,6 +713,17 @@
         <span class="c1"># -----------------------------------------------------</span>
         <span class="c1"># Top toolbar</span>
 
+        <span class="c1"># Validation status widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warning_label</span> <span class="o">=</span> <span class="n">SGQLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__default_warning_text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span> <span class="o">=</span> <span class="n">SGQWidget</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">child_widgets</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">SGQToolButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SGQIcon</span><span class="o">.</span><span class="n">validation_warning</span><span class="p">()),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_label</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
         <span class="c1"># List view mode button</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_view_mode_list_button</span> <span class="o">=</span> <span class="n">SGQToolButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">SGQIcon</span><span class="o">.</span><span class="n">list_view_mode</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_view_mode_list_button</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;view_mode_list_button&quot;</span><span class="p">)</span>
@@ -703,6 +779,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_widget</span> <span class="o">=</span> <span class="n">SGQWidget</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">child_widgets</span><span class="o">=</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="p">,</span>
                 <span class="kc">None</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_view_mode_list_button</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_view_mode_grouped_button</span><span class="p">,</span>
@@ -734,19 +811,38 @@
         <span class="p">)</span>
 
         <span class="c1"># -----------------------------------------------------</span>
+        <span class="c1"># Progress bar</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span> <span class="o">=</span> <span class="n">SGQProgressBar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span> <span class="o">=</span> <span class="n">SGQLabel</span><span class="p">(</span><span class="s2">&quot;Click Validate or Fix All to start.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_widget</span> <span class="o">=</span> <span class="n">SGQWidget</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">child_widgets</span><span class="o">=</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">layout_direction</span><span class="o">=</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># -----------------------------------------------------</span>
         <span class="c1"># Layouts and main widget</span>
         <span class="c1">#</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_widget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_content_widget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_footer_widget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_widget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__warning_widget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_widgets</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_widget</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_content_widget</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_footer_widget</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_widget</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="p">)</span>
 
@@ -1089,6 +1185,73 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_errors_label</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">_start_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start showing progress of the current operation.</span>
+
+<span class="sd">        :param rules: The list of rules that are being operated on.</span>
+<span class="sd">        :type rules: List[ValidationRule]</span>
+<span class="sd">        :param text: Optional text to display with the progress bar.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rules</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span><span class="p">:</span>
+            <span class="c1"># Already in progress, append to the current progress</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+            <span class="n">start_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Set the current list of rules in progress</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span> <span class="o">=</span> <span class="n">rules</span>
+            <span class="n">start_value</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Set up the progress bar widget and text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">start_value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the progress of the current operation.</span>
+
+<span class="sd">        :param rule: The rule that is currently being operated on.</span>
+<span class="sd">        :type rule: ValidationRule</span>
+<span class="sd">        :param increment: True to increment the progress else False to keep the progress the same.</span>
+<span class="sd">        :type increment: bool</span>
+<span class="sd">        :param text: Optional text to display with the progress bar.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">increment</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rule</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span><span class="p">:</span>
+                <span class="c1"># Extend the progress bar maximum value if the rule being operated on was</span>
+                <span class="c1"># not originally in scope (e.g. a dependency rule that was not in the original list)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">maximum</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># Increment the progress bar value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reset_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reset the progress to the default state.</span>
+
+<span class="sd">        This should be called once an operation has ended.</span>
+
+<span class="sd">        :param text: Optional text to display with the progress bar.</span>
+<span class="sd">        :type text: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Reset the current list of rules in progress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_rules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Reset the progress bar value and text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__progress_bar_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_show_context_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show a context menu for the selected items.</span>
@@ -1125,7 +1288,11 @@
             <span class="p">)</span>
 
             <span class="n">action</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="n">rule_action</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
-            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fn</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="n">k</span><span class="p">))</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">fn</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">kwargs</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute_menu_action</span><span class="p">(</span>
+                    <span class="n">rule_action</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">k</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
         <span class="c1"># Add action to show details for the item that the context menu is shown for.</span>
@@ -1244,9 +1411,9 @@
 <span class="sd">        to the custom callback, else call the default validate all operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="p">()</span>
+        <span class="n">active_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_rules</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="p">(</span><span class="n">active_rules</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">active_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_rules</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_all_callback</span><span class="p">(</span><span class="n">active_rules</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="p">()</span></div>
@@ -1261,7 +1428,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">active_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_rules</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fix_all_callback</span><span class="p">(</span><span class="n">active_rules</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fix_all_begin</span><span class="p">(</span><span class="n">active_rules</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fix_all_callback</span><span class="p">(</span><span class="n">active_rules</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fix_all_finished</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.on_validate_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.on_validate_rules">[docs]</a>    <span class="nd">@wait_cursor</span>
     <span class="k">def</span> <span class="nf">on_validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">refresh_details</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1320,10 +1491,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
-            <span class="k">return</span></div>
+            <span class="k">return</span>
 
-        <span class="c1"># TODO any specific actions before begin check (ie. set loading)</span>
-        <span class="c1"># rule_item = self._rules_model.get_item_for_rule(rule)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_progress</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Validating: </span><span class="si">{</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.validate_rule_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_rule_finished">[docs]</a>    <span class="k">def</span> <span class="nf">validate_rule_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">update_rule_type</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1334,6 +1504,8 @@
 <span class="sd">        :param update_rule_type: True will update the rule type model data based on the updated rule.</span>
 <span class="sd">        :type update_rule_type: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_progress</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span><span class="p">:</span>
             <span class="c1"># Do not process the individual rule after validation if there is not rule, or all rules are</span>
@@ -1367,21 +1539,26 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_details</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ValidationWidget.validate_all_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_all_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationWidget.validate_all_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">[docs]</a>    <span class="k">def</span> <span class="nf">validate_all_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call this method before all validation rules are checked.</span>
+
+<span class="sd">        :param rules: The list of rules that are about to be validated.</span>
+<span class="sd">        :type rules: List[ValidationRule]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span><span class="p">:</span>
             <span class="c1"># Already validating</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="c1"># Pause event listening during the validate operation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_event_listening</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_progress</span><span class="p">(</span><span class="n">rules</span><span class="p">,</span> <span class="s2">&quot;Begin validating...&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.validate_all_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished">[docs]</a>    <span class="k">def</span> <span class="nf">validate_all_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Call this method after all validation rules have been checked.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call this method after all validation rules have been checked.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_validating_all</span><span class="p">:</span>
             <span class="c1"># Nothing to do, if validation did not happen.</span>
@@ -1410,7 +1587,45 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_errors</span><span class="p">()</span>
 
         <span class="c1"># Ensure the details is refreshed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_details</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_details</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_progress</span><span class="p">(</span><span class="s2">&quot;Completed validation&quot;</span><span class="p">)</span>
+        <span class="c1"># Reset any validation warnings now that validation is complete</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_validation_warning</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Turn event listening back on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_event_listening</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ValidationWidget.fix_all_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_all_begin">[docs]</a>    <span class="k">def</span> <span class="nf">fix_all_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call this method before all validation rules are fixed.</span>
+
+<span class="sd">        :param rules: The list of rules that are about to be fixed.</span>
+<span class="sd">        :type rules: List[ValidationRule]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_fixing_all</span><span class="p">:</span>
+            <span class="c1"># Already fixing</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pause event listening during the fix operation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_event_listening</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_fixing_all</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_progress</span><span class="p">(</span><span class="n">rules</span><span class="p">,</span> <span class="s2">&quot;Begin fixing...&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ValidationWidget.fix_all_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_all_finished">[docs]</a>    <span class="k">def</span> <span class="nf">fix_all_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call this method after all validation rules have been fixed.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_fixing_all</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_fixing_all</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_progress</span><span class="p">(</span><span class="s2">&quot;Completed all fixes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_validation_warning</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Turn event listening back on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_event_listening</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.fix_rule_begin"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_begin">[docs]</a>    <span class="k">def</span> <span class="nf">fix_rule_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1421,10 +1636,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
-            <span class="k">return</span></div>
+            <span class="k">return</span>
 
-        <span class="c1"># TODO any specific actions before begin check (ie. set loading)</span>
-        <span class="c1"># rule_item = self._rules_model.get_item_for_rule(rule)</span>
+        <span class="c1"># Update the progress bar with the current rule that is getting fixed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_progress</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Fixing: </span><span class="si">{</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ValidationWidget.fix_rule_finished"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.widgets.ValidationWidget.fix_rule_finished">[docs]</a>    <span class="k">def</span> <span class="nf">fix_rule_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1436,6 +1651,9 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rule</span><span class="p">:</span>
             <span class="k">return</span>
+
+        <span class="c1"># Update the progress bar after a rule has finished fixing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_progress</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="n">rule_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rules_model</span><span class="o">.</span><span class="n">get_item_for_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rule_item</span><span class="p">:</span>

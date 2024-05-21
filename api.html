@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; tk-multi-data-validation v0.2.0 documentation</title>
+  <title>API &mdash; tk-multi-data-validation v0.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -104,7 +104,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.2.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.0.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -998,6 +998,12 @@ dependency. Default is False.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.api.data.ValidationRule.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/api/data/validation_rule.html#ValidationRule.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the state of the rule to its initial state.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1171,6 +1177,29 @@ operations, like “Validate” and “Fix All”, may only be applied to active
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.show_validation_warning">
+<span class="sig-name descname"><span class="pre">show_validation_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.show_validation_warning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.show_validation_warning" title="Permalink to this definition"></a></dt>
+<dd><p>Show the validation warning.</p>
+<p>The validation warning indicates that the scene has changed since the last validation.
+Showing the validation warning will display a warning icon and text describing the
+warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True will show the validation warning, False will hide it.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Additional warning details to display.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the validation state of the widget.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.on_validate_all">
 <span class="sig-name descname"><span class="pre">on_validate_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.on_validate_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.on_validate_all" title="Permalink to this definition"></a></dt>
 <dd><p>Callback triggered when the validation all button has been triggered.</p>
@@ -1238,14 +1267,36 @@ the custom callback, else call the default fix all operation.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin">
-<span class="sig-name descname"><span class="pre">validate_all_begin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">validate_all_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_begin" title="Permalink to this definition"></a></dt>
 <dd><p>Call this method before all validation rules are checked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rules</strong> (<em>List</em><em>[</em><a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a><em>]</em>) – The list of rules that are about to be validated.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished">
 <span class="sig-name descname"><span class="pre">validate_all_finished</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.validate_all_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.validate_all_finished" title="Permalink to this definition"></a></dt>
 <dd><p>Call this method after all validation rules have been checked.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.fix_all_begin">
+<span class="sig-name descname"><span class="pre">fix_all_begin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_all_begin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_all_begin" title="Permalink to this definition"></a></dt>
+<dd><p>Call this method before all validation rules are fixed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rules</strong> (<em>List</em><em>[</em><a class="reference internal" href="#tk_multi_data_validation.api.data.ValidationRule" title="tk_multi_data_validation.api.data.ValidationRule"><em>ValidationRule</em></a><em>]</em>) – The list of rules that are about to be fixed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.fix_all_finished">
+<span class="sig-name descname"><span class="pre">fix_all_finished</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.fix_all_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.fix_all_finished" title="Permalink to this definition"></a></dt>
+<dd><p>Call this method after all validation rules have been fixed.</p>
 </dd></dl>
 
 <dl class="py method">

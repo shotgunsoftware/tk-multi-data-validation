@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.2.0 documentation</title>
+  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.3.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.2.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.0.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -356,7 +356,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Reset the manager state before performing validation</span>
@@ -393,7 +393,7 @@
             <span class="n">rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">rules</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_rules</span><span class="p">(</span>
@@ -471,7 +471,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
@@ -561,10 +561,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_process_rules</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_rules</span><span class="p">(</span>
                 <span class="n">rules</span><span class="p">,</span>
                 <span class="n">fetch_dependencies</span><span class="p">,</span>
                 <span class="n">emit_signals</span><span class="p">,</span>
@@ -666,10 +666,13 @@
 <span class="sd">        :param process_rule_callback: The function called to each rule that is processed. This is a</span>
 <span class="sd">            function that takes a `ValidationRule` object as its first argument.</span>
 <span class="sd">        :type process_rule_callback: function(rule: ValidationRule) -&gt; bool</span>
+
+<span class="sd">        :return: True if rules were processed else False</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rules</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># The set of rule ids passed to resolve - this set gets populated the first the rules are iterated</span>
         <span class="c1"># through to check then check if the necessary dependencies are available to resolve first. Any</span>
@@ -801,7 +804,7 @@
                     <span class="c1"># The user canceled the operation</span>
                     <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-                    <span class="k">return</span>
+                    <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># Third, now process the queue of rules, which have dependencies. For each rule, if all</span>
         <span class="c1"># dependencies are # processed or ignored, then resolve it and add it to the processed</span>
@@ -860,7 +863,9 @@
                 <span class="c1"># Set the failed dependency for this rule before processing it. If no</span>
                 <span class="c1"># dependency has failed, it will be reset to None.</span>
                 <span class="n">rule</span><span class="o">.</span><span class="n">set_failed_dependency</span><span class="p">(</span><span class="n">dependency_failed</span><span class="p">)</span>
-                <span class="n">__process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span></div>
+                <span class="n">__process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hooks.data_validation &mdash; tk-multi-data-validation v0.2.0 documentation</title>
+  <title>hooks.data_validation &mdash; tk-multi-data-validation v0.3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.2.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.0.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -214,8 +214,9 @@
 <span class="sd">        :param rules: The list of rules to resolve and then validate.</span>
 <span class="sd">        :type rules: list&lt;ValidationRule&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">resolve_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
-        <span class="n">manager</span><span class="o">.</span><span class="n">validate_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">resolve_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">validate_rules</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_fix_action</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AbstractDataValidationHook.resolve_all_rules"><a class="viewcode-back" href="../../hooks.html#hooks.data_validation.AbstractDataValidationHook.resolve_all_rules">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_all_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
