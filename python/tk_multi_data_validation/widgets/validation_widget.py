@@ -66,6 +66,7 @@ class ValidationWidget(SGQWidget):
         prefix=SETTINGS_PREFIX
     )
     SETTINGS_FILTER_MENU_STATE = "filter_menu_state"
+    SETTINGS_AUTO_REFRESH = "auto_refresh_state"
 
     #
     # List of view modes
@@ -82,6 +83,8 @@ class ValidationWidget(SGQWidget):
     # Emit signals to start/stop listening to DCC events
     start_event_listening = QtCore.Signal()
     stop_event_listening = QtCore.Signal()
+    # Emit signal to reset the app state
+    reset_event = QtCore.Signal()
 
     def __init__(self, parent, group_rules_by=None, pre_validate_before_actions=True):
         """
@@ -122,6 +125,10 @@ class ValidationWidget(SGQWidget):
         # The default warning status text
         self.__default_warning_text = "Scene changed since last validated"
         self.__warning_details = []
+        # Flag indicating if the auto-refresh is on. Auto-refresh will listen
+        # for scene changes to reset the validation state when needed or display
+        # warning messages.
+        self.__auto_refresh = True
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
@@ -288,6 +295,7 @@ class ValidationWidget(SGQWidget):
         :type settings_manager: UserSettings
         """
 
+        settings_manager.store(self.SETTINGS_AUTO_REFRESH, self.__auto_refresh)
         settings_manager.store(self.SETTINGS_VIEW_MODE, self._view_mode)
         settings_manager.store(
             self.SETTINGS_SHOW_ONLY_ERRORS, self._errors_toggle.isChecked()
@@ -361,6 +369,10 @@ class ValidationWidget(SGQWidget):
                 QtGui.QItemSelectionModel.ClearAndSelect
                 | QtGui.QItemSelectionModel.Current,
             )
+        
+        auto_refresh = settings_manager.retrieve(self.SETTINGS_AUTO_REFRESH, self.__auto_refresh)
+        self._auto_refresh_option_action.setChecked(auto_refresh)
+        self._on_toggle_auto_refresh(auto_refresh)
 
         splitter_state = settings_manager.retrieve(
             self.SETTINGS_VIEW_DETAILS_SPLITTER_STATE, None
@@ -585,6 +597,29 @@ class ValidationWidget(SGQWidget):
         # -----------------------------------------------------
         # Top toolbar
 
+        # Set up the refresh button menu
+        reset_action = QtGui.QAction(SGQIcon.refresh(), "Reset", self)
+        reset_action.setToolTip("Reset the validation state")
+        reset_action.triggered.connect(self.reset_event)
+        self._auto_refresh_option_action = QtGui.QAction("Turn On Auto-Refresh", self)
+        self._auto_refresh_option_action.setCheckable(True)
+        self._auto_refresh_option_action.setToolTip("Auto-refresh will listen for scene changes to reset the validation state when needed or display warning messages.")
+        self._auto_refresh_option_action.triggered.connect(self._on_toggle_auto_refresh)
+        reset_menu_btn = QtGui.QMenu(self)
+        reset_menu_btn.addActions(
+            [
+                reset_action,
+                self._auto_refresh_option_action,
+            ]
+        )
+        self.reset_btn = SGQToolButton()
+        self.reset_btn.setObjectName("reset_btn")
+        self.reset_btn.setIcon(SGQIcon.refresh())
+        self.reset_btn.setCheckable(True)
+        self.reset_btn.setMenu(reset_menu_btn)
+        self.reset_btn.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+        self.reset_btn.clicked.connect(self._on_reset_clicked)
+
         # Validation status widget
         self.__warning_label = SGQLabel(self.__default_warning_text)
         self.__warning_widget = SGQWidget(
@@ -651,6 +686,7 @@ class ValidationWidget(SGQWidget):
         self._toolbar_widget = SGQWidget(
             self,
             child_widgets=[
+                self.reset_btn,
                 self.__warning_widget,
                 None,
                 self._view_mode_list_button,
@@ -1424,7 +1460,8 @@ class ValidationWidget(SGQWidget):
             return
 
         # Pause event listening during the validate operation
-        self.stop_event_listening.emit()
+        if self.__auto_refresh:
+            self.stop_event_listening.emit()
 
         self._is_validating_all = True
         self._start_progress(rules, "Begin validating...")
@@ -1466,7 +1503,8 @@ class ValidationWidget(SGQWidget):
         self.show_validation_warning(False)
 
         # Turn event listening back on
-        self.start_event_listening.emit()
+        if self.__auto_refresh:
+            self.start_event_listening.emit()
 
     def fix_all_begin(self, rules=None):
         """
@@ -1481,7 +1519,8 @@ class ValidationWidget(SGQWidget):
             return
 
         # Pause event listening during the fix operation
-        self.stop_event_listening.emit()
+        if self.__auto_refresh:
+            self.stop_event_listening.emit()
 
         self._is_fixing_all = True
         self._start_progress(rules, "Begin fixing...")
@@ -1497,7 +1536,8 @@ class ValidationWidget(SGQWidget):
         self.show_validation_warning(False)
 
         # Turn event listening back on
-        self.start_event_listening.emit()
+        if self.__auto_refresh:
+            self.start_event_listening.emit()
 
     def fix_rule_begin(self, rule):
         """
@@ -1649,6 +1689,30 @@ class ValidationWidget(SGQWidget):
 
         indexes = self._rules_view.selectionModel().selectedIndexes()
         self._set_details(indexes)
+
+    def _on_reset_clicked(self, checked=False):
+        """Slot triggered when the reset button has been clicked."""
+
+        # Keep the button state in sync with the auto-refresh state
+        self.reset_btn.setChecked(self.__auto_refresh)
+        self.reset_event.emit()
+
+    def _on_toggle_auto_refresh(self, checked):
+        """
+        Slot triggered when the auto-refresh option value changed from the reset menu.
+
+        :param checked: True if auto-refresh is checked, else False.
+        :type checked: bool
+        """
+
+        self.__auto_refresh = checked
+        self.reset_btn.setChecked(self.__auto_refresh)
+
+        # Start/stop listening for DCC change events
+        if self.__auto_refresh:
+            self.start_event_listening.emit()
+        else:
+            self.stop_event_listening.emit()
 
     def _toggle_errors(self, show_errors=None):
         """
