@@ -55,7 +55,7 @@ class AppDialog(QtGui.QWidget):
         # The event listening state (list operating like a LIFO stack). We are listening when
         # the state list is empty, otherwise each call to stop listening will append False.
         # Initialize the listening state to not listening.
-        self.__listening_state = [False]
+        self.__listening_state = [None]
 
         # -----------------------------------------------------
         # Create validation manager
@@ -92,7 +92,6 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.set_validation_rules(
             self._manager.rules, self._manager.rule_types
         )
-        self._listen_for_events(True)
 
         # -----------------------------------------------------
         # Log metric for app usage
@@ -189,6 +188,7 @@ class AppDialog(QtGui.QWidget):
         self._validation_widget.stop_event_listening.connect(
             lambda: self._listen_for_events(False)
         )
+        self._validation_widget.reset_event.connect(self.scene_reset_callback)
 
     def _listen_for_events(self, listen):
         """
@@ -212,6 +212,9 @@ class AppDialog(QtGui.QWidget):
             # Stop listening if currently listening
             if not self.__listening_state:
                 self.__scene_operations_hook.unregister_scene_events()
+            elif self.__listening_state[-1] is not False:
+                # Clear the initial listening state
+                self.__listening_state.pop()
             self.__listening_state.append(False)
 
     ######################################################################################################

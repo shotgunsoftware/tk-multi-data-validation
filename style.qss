@@ -38,3 +38,7 @@ SGQFrame
 {
   background-color: #1B1B1B;
 }
+
+SGQToolButton#reset_btn {
+  padding-right: 18px;
+}
