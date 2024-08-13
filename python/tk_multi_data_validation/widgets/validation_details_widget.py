@@ -8,7 +8,9 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
-import sgtk
+from __future__ import annotations
+from typing import Union, List
+
 from sgtk.platform.qt import QtCore, QtGui
 
 from ..api.data.validation_rule import ValidationRule
@@ -260,7 +262,7 @@ class ValidationDetailsWidget(SGQWidget):
         self._details_item_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._details_item_view.setMouseTracking(True)
         self._details_item_view.setSelectionMode(
-            QtGui.QAbstractItemView.SingleSelection
+            QtGui.QAbstractItemView.ExtendedSelection
         )
         self._details_item_view.setModel(self._details_item_model)
         self._details_view_item_delegate = self._create_delegate()
@@ -342,27 +344,32 @@ class ValidationDetailsWidget(SGQWidget):
             return
 
         indexes = selection_model.selectedIndexes()
-        if not indexes or len(indexes) > 1:
+        if not indexes:
             return
 
-        index = indexes[0]
-        rule_model_item = index.model().itemFromIndex(index)
-        rule_actions = self._get_details_item_actions(rule_model_item)
-
-        actions = []
-        for rule_action in rule_actions:
-            action = QtGui.QAction(rule_action["name"])
+        rule_actions = self._get_details_item_actions(indexes)
+        menu_actions = []
+        for item_action in rule_actions:
+            action = QtGui.QAction(item_action["name"])
             action.triggered.connect(
-                lambda checked=False, a=rule_action: self._execute_item_action(a)
+                lambda checked=False, a=item_action: self._execute_item_action(a)
             )
-            actions.append(action)
+            menu_actions.append(action)
 
         menu = SGQMenu(self)
-        menu.addActions(actions)
+        menu.addActions(menu_actions)
         pos = widget.mapToGlobal(pos)
         menu.exec_(pos)
 
-    def _get_details_item_actions(self, index_or_item):
+    def _get_details_item_actions(
+        self,
+        index_or_item: Union[
+            QtCore.QModelIndex,
+            QtGui.QStandardItem,
+            List[QtCore.QModelIndex],
+            List[QtCore.QStandardItem],
+        ],
+    ) -> List[dict]:
         """
         Get the list of actions for the details item.
 
@@ -376,15 +383,25 @@ class ValidationDetailsWidget(SGQWidget):
         if not self._rule or not index_or_item:
             return []
 
-        item_id = index_or_item.data(ValidationRuleDetailsModel.DETAILS_ITEM_ID_ROLE)
-        if not item_id:
-            return
+        if not isinstance(index_or_item, list):
+            index_or_item = [index_or_item]
 
-        actions = []
-        for action in self._rule.item_actions:
-            action["kwargs"] = {"errors": [item_id]}
-            actions.append(action)
-        return actions
+        actions_by_name = {}
+        for i in index_or_item:
+            item_id = i.data(ValidationRuleDetailsModel.DETAILS_ITEM_ID_ROLE)
+            if not item_id:
+                continue
+            for action in self._rule.item_actions:
+                action_name = action.get("name")
+                if not action_name:
+                    continue
+                if action_name in actions_by_name:
+                    actions_by_name[action_name]["kwargs"]["errors"].append(item_id)
+                else:
+                    actions_by_name[action_name] = dict(action)
+                    actions_by_name[action_name]["kwargs"] = {"errors": [item_id]}
+
+        return list(actions_by_name.values())
 
     def _get_details_item_first_action(self, index):
         """
@@ -401,7 +418,6 @@ class ValidationDetailsWidget(SGQWidget):
         actions = self._get_details_item_actions(index)
         if not actions:
             return {}
-
         return actions[0]
 
     def _execute_details_item_first_action(self, index):
