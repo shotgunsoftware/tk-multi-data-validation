@@ -128,7 +128,7 @@ class ValidationWidget(SGQWidget):
         # Flag indicating if the auto-refresh is on. Auto-refresh will listen
         # for scene changes to reset the validation state when needed or display
         # warning messages.
-        self.__auto_refresh = True
+        self.__auto_refresh = False
 
         # Custom callbacks for validate and fix all operations. See properties for more details.
         # The default methods to validate and fix all will be initialized. If a ValidationManager
