@@ -701,7 +701,10 @@ class ValidationRule(object):
 
         # Get the key-word arguments and set the errors to pass to the fix function
         kwargs = self.get_kwargs()
-        kwargs["errors"] = self.errors
+        if pre_validate:
+            # Only pass the errors list if pre_validate is True. Otherwise, the
+            # error list could be stale
+            kwargs["errors"] = self.errors
 
         try:
             fix_result = self.fix_func(**kwargs)
