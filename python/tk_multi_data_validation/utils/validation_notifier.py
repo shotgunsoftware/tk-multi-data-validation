@@ -27,3 +27,4 @@ class ValidationNotifier(QtCore.QObject):
     resolve_all_finished = QtCore.Signal()
     about_to_open_msg_box = QtCore.Signal()
     msg_box_closed = QtCore.Signal()
+    validation_error = QtCore.Signal(Exception)
