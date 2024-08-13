@@ -234,6 +234,11 @@ class ValidationManager(object):
             # Reset the manager state before performing validation
             self.reset()
             self.validate_rules(self.rules, emit_signals=False)
+        except Exception as validate_error:
+            if self.notifier:
+                self.notifier.validation_error.emit(validate_error)
+            else:
+                raise validate_error
         finally:
             if self.notifier:
                 self.notifier.validate_all_finished.emit()
@@ -271,6 +276,11 @@ class ValidationManager(object):
             self._process_rules(
                 rules, fetch_dependencies, emit_signals, self.validate_rule
             )
+        except Exception as validate_error:
+            if emit_signals and self.notifier:
+                self.notifier.validation_error.emit(validate_error)
+            else:
+                raise validate_error
         finally:
             if emit_signals and self.notifier:
                 self.notifier.validate_all_finished.emit()
@@ -442,6 +452,11 @@ class ValidationManager(object):
                 emit_signals,
                 lambda rule: self.resolve_rule(rule, pre_validate=pre_validate),
             )
+        except Exception as resolve_error:
+            if emit_signals and self.notifier:
+                self.notifier.validation_error.emit(resolve_error)
+            else:
+                raise resolve_error
         finally:
             if emit_signals and self.notifier:
                 self.notifier.resolve_all_finished.emit()
@@ -469,14 +484,6 @@ class ValidationManager(object):
                 success = True
             else:
                 success = False
-
-        except Exception as resolve_error:
-            self._logger.error(
-                "Failed to resolve rule {id}\n{error}".format(id=rule.id),
-                error=resolve_error,
-            )
-            success = False
-
         finally:
             if emit_signals and self.notifier:
                 self.notifier.resolve_rule_finished.emit(rule)
