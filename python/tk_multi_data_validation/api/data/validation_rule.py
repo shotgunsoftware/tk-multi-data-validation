@@ -432,19 +432,59 @@ class ValidationRule(object):
 
         messages = []
 
-        if self._check_runtime_exception:
+        if isinstance(self._check_runtime_exception, ConnectionError) or isinstance(
+            self._fix_runtime_exception, ConnectionError
+        ):
+            messages.append("Server busy. Please wait a moment and try again.")
+            if self._check_runtime_exception:
+                messages.append(
+                    f"{self._check_runtime_exception.__class__.__name__}: {self._check_runtime_exception}"
+                )
+            if self._fix_runtime_exception:
+                messages.append(
+                    f"{self._fix_runtime_exception.__class__.__name__}: {self._fix_runtime_exception}"
+                )
+        elif isinstance(self._check_runtime_exception, TimeoutError) or isinstance(
+            self._fix_runtime_exception, TimeoutError
+        ):
             messages.append(
-                "Validation Error: {}".format(self._check_runtime_exception)
+                """
+                Timeout occured while waiting for results. The operation
+                will finish, but you will need to re-validate to see the
+                results.
+            """
             )
+            messages.append(
+                """
+                For expensive operations, you may want to break up the
+                operation into smaller batches by selecting items from
+                the details panel and executing the operation on the
+                selected items.
+            """
+            )
+            if self._check_runtime_exception:
+                messages.append(
+                    f"{self._check_runtime_exception.__class__.__name__}: {self._check_runtime_exception}"
+                )
+            if self._fix_runtime_exception:
+                messages.append(
+                    f"{self._fix_runtime_exception.__class__.__name__}: {self._fix_runtime_exception}"
+                )
+        else:
+            if self._check_runtime_exception:
+                messages.append(f"Validation Error: {self._check_runtime_exception}")
 
-        if self._fix_runtime_exception:
-            messages.append("Fix Error: {}".format(self._fix_runtime_exception))
+            if self._fix_runtime_exception:
+                messages.append(f"Fix Error: {self._fix_runtime_exception}")
 
-        if not self._check_runtime_exception and not self._fix_executed:
-            # Only include the validation error message if both check and fix functions
-            # executed successfully.
-            if self.error_message:
-                messages.append(self.error_message)
+            if not self._check_runtime_exception and not self._fix_executed:
+                # Only include the validation error message if both check and fix functions
+                # executed successfully.
+                if self.error_message:
+                    messages.append(self.error_message)
+
+            if not self.errors and self.error_count > 0:
+                messages.append(f"Found ({self.error_count:,}) errors.")
 
         return messages
 
@@ -568,6 +608,14 @@ class ValidationRule(object):
                 try:
                     raw_result = self.check_func(**kwargs)
                     result = self._process_check_result(raw_result)
+                except (TimeoutError, ConnectionError) as fatal_error:
+                    self._check_runtime_exception = fatal_error
+                    self._valid = False
+                    self._error_items = None
+                    self._error_count = 0
+                    result = None
+                    # Raise fatal errors to stop any further validation
+                    raise fatal_error
                 except Exception as runtime_error:
                     self._check_runtime_exception = runtime_error
                     self._valid = False
@@ -659,6 +707,11 @@ class ValidationRule(object):
             fix_result = self.fix_func(**kwargs)
             # The fix function was executed - set the flag to True
             self._fix_executed = True
+        except (TimeoutError, ConnectionError) as fatal_error:
+            self._fix_runtime_exception = fatal_error
+            fix_result = False
+            # Raise fatal errors to stop any further fix operations
+            raise fatal_error
         except Exception as runtime_error:
             self._fix_runtime_exception = runtime_error
             fix_result = False
