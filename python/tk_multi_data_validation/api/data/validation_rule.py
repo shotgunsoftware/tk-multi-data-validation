@@ -131,6 +131,7 @@ class ValidationRule(object):
         self._valid = None
         # The error items found the last time the rule's check function was executed.
         self._error_items = None
+        self._error_count = 0
         # Flag indicating that the rule fix method was executed at least once
         self._fix_executed = False
         # Runtime exceptions caught - used to display error messages
@@ -340,6 +341,17 @@ class ValidationRule(object):
         return self._error_items
 
     @property
+    def error_count(self):
+        """
+        Get the number of errors found by the rule's check function the last
+        time it was executed.
+
+        Validation checks may opt to return the error count instead of the error
+        items for performance reasons.
+        """
+        return self._error_count
+
+    @property
     def fix_executed(self):
         """Get the flag indicating if the rule's fix method was executed at least once."""
         return self._fix_executed
@@ -547,6 +559,7 @@ class ValidationRule(object):
             # Set the rule state to indicate that the check function not run
             self._valid = None
             self._error_items = None
+            self._error_count = 0
             result = None
         else:
             # Run the check function
@@ -559,16 +572,19 @@ class ValidationRule(object):
                     self._check_runtime_exception = runtime_error
                     self._valid = False
                     self._error_items = None
+                    self._error_count = 0
                     result = None
             elif self.manual:
                 # This is a manual check. It is considered valid if the user has checked it off.
                 self._valid = self.manual_checked
                 self._error_items = None
+                self._error_count = 0
                 result = None
             else:
                 # This rule does not have a check function but it does have a fix
                 self._valid = True
                 self._error_items = None
+                self._error_count = 0
                 result = None
 
         return result
@@ -654,6 +670,7 @@ class ValidationRule(object):
 
         self._valid = None
         self._error_items = None
+        self._error_count = 0
         self._fix_executed = False
         self._check_runtime_exception = None
         self._fix_runtime_exception = None
@@ -695,6 +712,10 @@ class ValidationRule(object):
 
             self._valid = sanitized_result["is_valid"]
             self._error_items = sanitized_result["errors"]
+            if self._error_items:
+                self._error_count = len(self._error_items)
+            else:
+                self._error_count = sanitized_result.get("error_count", 0)
 
         elif isinstance(sanitized_result, object):
             for field in required_fields:
@@ -707,6 +728,10 @@ class ValidationRule(object):
 
             self._valid = sanitized_result.is_valid
             self._error_items = sanitized_result.errors
+            if self._error_items:
+                self._error_count = len(self._error_items)
+            elif hasattr(sanitized_result, "error_count"):
+                self._error_count = sanitized_result.error_count
 
         else:
             raise TypeError(
