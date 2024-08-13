@@ -326,6 +326,7 @@ class ValidationManager(object):
 
         return rule.valid
 
+    @sgtk.LogManager.log_timing
     def resolve(self, pre_validate=True, post_validate=False, retry_until_success=True):
         """
         Resolve the current data violations found by the validate method.
