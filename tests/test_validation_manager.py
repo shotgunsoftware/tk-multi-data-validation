@@ -23,7 +23,6 @@ api_dir = os.path.abspath(os.path.join(app_dir, "api"))
 data_dir = os.path.abspath(os.path.join(api_dir, "data"))
 sys.path.extend([base_dir, app_dir, api_dir, data_dir])
 from tk_multi_data_validation.api import ValidationManager
-from tk_multi_data_validation.api.data import ValidationRule
 
 
 RULE_IDS = [
