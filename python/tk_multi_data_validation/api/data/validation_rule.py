@@ -608,20 +608,15 @@ class ValidationRule(object):
                 try:
                     raw_result = self.check_func(**kwargs)
                     result = self._process_check_result(raw_result)
-                except (TimeoutError, ConnectionError) as fatal_error:
-                    self._check_runtime_exception = fatal_error
-                    self._valid = False
-                    self._error_items = None
-                    self._error_count = 0
-                    result = None
-                    # Raise fatal errors to stop any further validation
-                    raise fatal_error
                 except Exception as runtime_error:
                     self._check_runtime_exception = runtime_error
                     self._valid = False
                     self._error_items = None
                     self._error_count = 0
                     result = None
+                    # Raise exception if it is fatal
+                    if isinstance(runtime_error, (ConnectionError, TimeoutError)):
+                        raise runtime_error
             elif self.manual:
                 # This is a manual check. It is considered valid if the user has checked it off.
                 self._valid = self.manual_checked
@@ -710,14 +705,12 @@ class ValidationRule(object):
             fix_result = self.fix_func(**kwargs)
             # The fix function was executed - set the flag to True
             self._fix_executed = True
-        except (TimeoutError, ConnectionError) as fatal_error:
-            self._fix_runtime_exception = fatal_error
-            fix_result = False
-            # Raise fatal errors to stop any further fix operations
-            raise fatal_error
         except Exception as runtime_error:
             self._fix_runtime_exception = runtime_error
             fix_result = False
+            # Raise exception if it is fatal
+            if isinstance(runtime_error, (ConnectionError, TimeoutError)):
+                raise runtime_error
 
         return fix_result
 
