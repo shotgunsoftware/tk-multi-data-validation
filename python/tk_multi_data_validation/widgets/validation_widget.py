@@ -369,8 +369,10 @@ class ValidationWidget(SGQWidget):
                 QtGui.QItemSelectionModel.ClearAndSelect
                 | QtGui.QItemSelectionModel.Current,
             )
-        
-        auto_refresh = settings_manager.retrieve(self.SETTINGS_AUTO_REFRESH, self.__auto_refresh)
+
+        auto_refresh = settings_manager.retrieve(
+            self.SETTINGS_AUTO_REFRESH, self.__auto_refresh
+        )
         self._auto_refresh_option_action.setChecked(auto_refresh)
         self._on_toggle_auto_refresh(auto_refresh)
 
@@ -628,7 +630,9 @@ class ValidationWidget(SGQWidget):
         reset_action.triggered.connect(self.reset_event)
         self._auto_refresh_option_action = QtGui.QAction("Turn On Auto-Refresh", self)
         self._auto_refresh_option_action.setCheckable(True)
-        self._auto_refresh_option_action.setToolTip("Auto-refresh will listen for scene changes to reset the validation state when needed or display warning messages.")
+        self._auto_refresh_option_action.setToolTip(
+            "Auto-refresh will listen for scene changes to reset the validation state when needed or display warning messages."
+        )
         self._auto_refresh_option_action.triggered.connect(self._on_toggle_auto_refresh)
         reset_menu_btn = QtGui.QMenu(self)
         reset_menu_btn.addActions(
