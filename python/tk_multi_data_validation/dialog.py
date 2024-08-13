@@ -178,6 +178,11 @@ class AppDialog(QtGui.QWidget):
         self._manager.notifier.resolve_rule_finished.connect(
             self._validation_widget.fix_rule_finished
         )
+        self._manager.notifier.validation_error.connect(
+            lambda exception: self._validation_widget.show_validation_error(
+                text=f"{exception.__class__.__name__}: {exception}"
+            )
+        )
 
         # ------------------------------------------------------------
         # ValidationWidget signals connected to this dialog
