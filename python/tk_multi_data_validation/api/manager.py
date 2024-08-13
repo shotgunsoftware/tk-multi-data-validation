@@ -227,6 +227,8 @@ class ValidationManager(object):
         :rtype: bool
         """
 
+        success = True
+
         if self.notifier:
             self.notifier.validate_all_begin.emit(list(self.rules))
 
@@ -234,16 +236,18 @@ class ValidationManager(object):
             # Reset the manager state before performing validation
             self.reset()
             self.validate_rules(self.rules, emit_signals=False)
+            success = not self.__errors
         except Exception as validate_error:
             if self.notifier:
                 self.notifier.validation_error.emit(validate_error)
+                success = False
             else:
                 raise validate_error
         finally:
             if self.notifier:
                 self.notifier.validate_all_finished.emit()
 
-        return not self.__errors
+        return success
 
     @sgtk.LogManager.log_timing
     def validate_rules(self, rules, fetch_dependencies=True, emit_signals=True):
@@ -416,7 +420,12 @@ class ValidationManager(object):
                 self._logger.debug(
                     "Failed to resolve after max retry attempts. There may be a rule dependecy cycle."
                 )
-
+        except Exception as resolve_error:
+            if self.notifier:
+                self.notifier.validation_error.emit(resolve_error)
+                success = False
+            else:
+                raise resolve_error
         finally:
             if self.notifier:
                 self.notifier.resolve_all_finished.emit()
