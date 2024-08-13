@@ -640,7 +640,10 @@ def test_manager_validate_detect_dependency_cycle(manager_with_dependency_cycle)
     success = manager_with_dependency_cycle.validate()
     assert not success
     manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
-    assert isinstance(manager_with_dependency_cycle.notifier.validation_error.emit.call_args[0][0], RecursionError)
+    assert isinstance(
+        manager_with_dependency_cycle.notifier.validation_error.emit.call_args[0][0],
+        RecursionError,
+    )
     manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
     dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
