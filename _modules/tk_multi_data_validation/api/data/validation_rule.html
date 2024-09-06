@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.3.0 documentation</title>
+  <title>tk_multi_data_validation.api.data.validation_rule &mdash; tk-multi-data-validation v0.3.1 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.3.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.1.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -259,6 +259,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># The error items found the last time the rule&#39;s check function was executed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Flag indicating that the rule fix method was executed at least once</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># Runtime exceptions caught - used to display error messages</span>
@@ -468,6 +469,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of errors found by the rule&#39;s check function the last</span>
+<span class="sd">        time it was executed.</span>
+
+<span class="sd">        Validation checks may opt to return the error count instead of the error</span>
+<span class="sd">        items for performance reasons.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fix_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the flag indicating if the rule&#39;s fix method was executed at least once.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span>
@@ -548,19 +560,59 @@
 
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">,</span> <span class="ne">ConnectionError</span>
+        <span class="p">):</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Server busy. Please wait a moment and try again.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">,</span> <span class="ne">TimeoutError</span>
+        <span class="p">):</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="s2">&quot;Validation Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">)</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Timeout occured while waiting for results. The operation</span>
+<span class="sd">                will finish, but you will need to re-validate to see the</span>
+<span class="sd">                results.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                For expensive operations, you may want to break up the</span>
+<span class="sd">                operation into smaller batches by selecting items from</span>
+<span class="sd">                the details panel and executing the operation on the</span>
+<span class="sd">                selected items.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation Error: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">:</span>
-            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Fix Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fix Error: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span><span class="p">:</span>
-            <span class="c1"># Only include the validation error message if both check and fix functions</span>
-            <span class="c1"># executed successfully.</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">:</span>
-                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span><span class="p">:</span>
+                <span class="c1"># Only include the validation error message if both check and fix functions</span>
+                <span class="c1"># executed successfully.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error_count</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">) errors.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">messages</span></div>
 
@@ -675,6 +727,7 @@
             <span class="c1"># Set the rule state to indicate that the check function not run</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Run the check function</span>
@@ -687,16 +740,22 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="o">=</span> <span class="n">runtime_error</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="c1"># Raise exception if it is fatal</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">runtime_error</span><span class="p">,</span> <span class="p">(</span><span class="ne">ConnectionError</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)):</span>
+                        <span class="k">raise</span> <span class="n">runtime_error</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual</span><span class="p">:</span>
                 <span class="c1"># This is a manual check. It is considered valid if the user has checked it off.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_checked</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># This rule does not have a check function but it does have a fix</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
@@ -765,7 +824,10 @@
 
         <span class="c1"># Get the key-word arguments and set the errors to pass to the fix function</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kwargs</span><span class="p">()</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span>
+        <span class="k">if</span> <span class="n">pre_validate</span><span class="p">:</span>
+            <span class="c1"># Only pass the errors list if pre_validate is True. Otherwise, the</span>
+            <span class="c1"># error list could be stale</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">fix_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -774,6 +836,9 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">runtime_error</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span> <span class="o">=</span> <span class="n">runtime_error</span>
             <span class="n">fix_result</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Raise exception if it is fatal</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">runtime_error</span><span class="p">,</span> <span class="p">(</span><span class="ne">ConnectionError</span><span class="p">,</span> <span class="ne">TimeoutError</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">runtime_error</span>
 
         <span class="k">return</span> <span class="n">fix_result</span></div>
 
@@ -782,6 +847,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fix_executed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fix_runtime_exception</span> <span class="o">=</span> <span class="kc">None</span>
@@ -823,6 +889,10 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="p">[</span><span class="s2">&quot;is_valid&quot;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sanitized_result</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
@@ -835,6 +905,10 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">is_valid</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">errors</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_error_items</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sanitized_result</span><span class="p">,</span> <span class="s2">&quot;error_count&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_error_count</span> <span class="o">=</span> <span class="n">sanitized_result</span><span class="o">.</span><span class="n">error_count</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>

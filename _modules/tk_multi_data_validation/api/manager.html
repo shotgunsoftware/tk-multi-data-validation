@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.3.0 documentation</title>
+  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.3.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.3.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.1.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -355,6 +355,8 @@
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_begin</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">))</span>
 
@@ -362,11 +364,18 @@
             <span class="c1"># Reset the manager state before performing validation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">validate_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validation_error</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">validate_error</span><span class="p">)</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">validate_error</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span></div>
+        <span class="k">return</span> <span class="n">success</span></div>
 
 <div class="viewcode-block" id="ValidationManager.validate_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rules">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
     <span class="k">def</span> <span class="nf">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -399,6 +408,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_rules</span><span class="p">(</span>
                 <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="p">,</span> <span class="n">emit_signals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_rule</span>
             <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">validate_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validation_error</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">validate_error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">validate_error</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
@@ -444,7 +458,8 @@
 
         <span class="k">return</span> <span class="n">rule</span><span class="o">.</span><span class="n">valid</span></div>
 
-<div class="viewcode-block" id="ValidationManager.resolve"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve">[docs]</a>    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retry_until_success</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.resolve"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
+    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retry_until_success</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve the current data violations found by the validate method.</span>
 
@@ -533,7 +548,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Failed to resolve after max retry attempts. There may be a rule dependecy cycle.&quot;</span>
                 <span class="p">)</span>
-
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">resolve_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validation_error</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">resolve_error</span><span class="p">)</span>
+                <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">resolve_error</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
@@ -570,6 +590,11 @@
                 <span class="n">emit_signals</span><span class="p">,</span>
                 <span class="k">lambda</span> <span class="n">rule</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="n">pre_validate</span><span class="p">),</span>
             <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">resolve_error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validation_error</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">resolve_error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">resolve_error</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
@@ -597,14 +622,6 @@
                 <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">resolve_error</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;Failed to resolve rule </span><span class="si">{id}</span><span class="se">\n</span><span class="si">{error}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-                <span class="n">error</span><span class="o">=</span><span class="n">resolve_error</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
-
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_rule_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>

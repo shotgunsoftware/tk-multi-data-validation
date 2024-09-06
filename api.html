@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; tk-multi-data-validation v0.3.0 documentation</title>
+  <title>API &mdash; tk-multi-data-validation v0.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -104,7 +104,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.3.0.<br>
+    <b>tk-multi-data-validation</b> v0.3.1.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -789,6 +789,15 @@ it was executed.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="tk_multi_data_validation.api.data.ValidationRule.error_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_count</span></span><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.error_count" title="Permalink to this definition"></a></dt>
+<dd><p>Get the number of errors found by the rule’s check function the last
+time it was executed.</p>
+<p>Validation checks may opt to return the error count instead of the error
+items for performance reasons.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="tk_multi_data_validation.api.data.ValidationRule.fix_executed">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fix_executed</span></span><a class="headerlink" href="#tk_multi_data_validation.api.data.ValidationRule.fix_executed" title="Permalink to this definition"></a></dt>
 <dd><p>Get the flag indicating if the rule’s fix method was executed at least once.</p>
@@ -1172,6 +1181,23 @@ operations, like “Validate” and “Fix All”, may only be applied to active
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list&lt;ValidationRule&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tk_multi_data_validation.widgets.ValidationWidget.show_validation_error">
+<span class="sig-name descname"><span class="pre">show_validation_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tk_multi_data_validation/widgets/validation_widget.html#ValidationWidget.show_validation_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tk_multi_data_validation.widgets.ValidationWidget.show_validation_error" title="Permalink to this definition"></a></dt>
+<dd><p>Show the validation warning.</p>
+<p>The validation warning indicates that the scene has changed since the last validation.
+Showing the validation warning will display a warning icon and text describing the
+warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True will show the validation warning, False will hide it.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Additional warning details to display.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
