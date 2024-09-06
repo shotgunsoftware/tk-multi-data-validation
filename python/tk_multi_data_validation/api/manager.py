@@ -227,6 +227,8 @@ class ValidationManager(object):
         :rtype: bool
         """
 
+        success = True
+
         if self.notifier:
             self.notifier.validate_all_begin.emit(list(self.rules))
 
@@ -234,11 +236,18 @@ class ValidationManager(object):
             # Reset the manager state before performing validation
             self.reset()
             self.validate_rules(self.rules, emit_signals=False)
+            success = not self.__errors
+        except Exception as validate_error:
+            if self.notifier:
+                self.notifier.validation_error.emit(validate_error)
+                success = False
+            else:
+                raise validate_error
         finally:
             if self.notifier:
                 self.notifier.validate_all_finished.emit()
 
-        return not self.__errors
+        return success
 
     @sgtk.LogManager.log_timing
     def validate_rules(self, rules, fetch_dependencies=True, emit_signals=True):
@@ -271,6 +280,11 @@ class ValidationManager(object):
             self._process_rules(
                 rules, fetch_dependencies, emit_signals, self.validate_rule
             )
+        except Exception as validate_error:
+            if emit_signals and self.notifier:
+                self.notifier.validation_error.emit(validate_error)
+            else:
+                raise validate_error
         finally:
             if emit_signals and self.notifier:
                 self.notifier.validate_all_finished.emit()
@@ -316,6 +330,7 @@ class ValidationManager(object):
 
         return rule.valid
 
+    @sgtk.LogManager.log_timing
     def resolve(self, pre_validate=True, post_validate=False, retry_until_success=True):
         """
         Resolve the current data violations found by the validate method.
@@ -405,7 +420,12 @@ class ValidationManager(object):
                 self._logger.debug(
                     "Failed to resolve after max retry attempts. There may be a rule dependecy cycle."
                 )
-
+        except Exception as resolve_error:
+            if self.notifier:
+                self.notifier.validation_error.emit(resolve_error)
+                success = False
+            else:
+                raise resolve_error
         finally:
             if self.notifier:
                 self.notifier.resolve_all_finished.emit()
@@ -442,6 +462,11 @@ class ValidationManager(object):
                 emit_signals,
                 lambda rule: self.resolve_rule(rule, pre_validate=pre_validate),
             )
+        except Exception as resolve_error:
+            if emit_signals and self.notifier:
+                self.notifier.validation_error.emit(resolve_error)
+            else:
+                raise resolve_error
         finally:
             if emit_signals and self.notifier:
                 self.notifier.resolve_all_finished.emit()
@@ -469,14 +494,6 @@ class ValidationManager(object):
                 success = True
             else:
                 success = False
-
-        except Exception as resolve_error:
-            self._logger.error(
-                "Failed to resolve rule {id}\n{error}".format(id=rule.id),
-                error=resolve_error,
-            )
-            success = False
-
         finally:
             if emit_signals and self.notifier:
                 self.notifier.resolve_rule_finished.emit(rule)

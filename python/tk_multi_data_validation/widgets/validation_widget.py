@@ -478,6 +478,31 @@ class ValidationWidget(SGQWidget):
 
         return rules
 
+    def show_validation_error(self, show=True, text=None):
+        """
+        Show the validation warning.
+
+        The validation warning indicates that the scene has changed since the last validation.
+        Showing the validation warning will display a warning icon and text describing the
+        warning.
+
+        :param show: True will show the validation warning, False will hide it.
+        :type show: bool
+        :param text: Additional warning details to display.
+        :type text: str
+        """
+
+        if not show or text is None:
+            self._error_msg_label.setText("")
+            self._error_msg_widget.hide()
+        else:
+            current_text = self._error_msg_label.text()
+            error_text = f"<span style='color:#EB5555;'><b>{text}</b></span>"
+            if current_text:
+                error_text = f"{current_text}<br>{error_text}"
+            self._error_msg_label.setText(error_text)
+            self._error_msg_widget.show()
+
     def show_validation_warning(self, show=True, text=None):
         """
         Show the validation warning.
@@ -701,6 +726,23 @@ class ValidationWidget(SGQWidget):
             ],
         )
 
+        self._error_msg_label = SGQLabel(self)
+        self._error_msg_label.setWordWrap(True)
+        self._error_msg_label.setSizePolicy(
+            QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Maximum)
+        )
+        self._error_msg_label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self._error_msg_widget = SGQWidget(
+            self,
+            child_widgets=[
+                self._error_msg_label,
+            ],
+        )
+        self._error_msg_label.setSizePolicy(
+            QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Maximum)
+        )
+        self._error_msg_widget.hide()
+
         # -----------------------------------------------------
         # Bottom toolbar
         #
@@ -740,6 +782,7 @@ class ValidationWidget(SGQWidget):
         # Layouts and main widget
         #
 
+        self._error_msg_widget.layout().setContentsMargins(10, 0, 10, 10)
         self._toolbar_widget.layout().setContentsMargins(10, 0, 10, 0)
         self._content_widget.layout().setContentsMargins(0, 0, 0, 0)
         self._footer_widget.layout().setContentsMargins(10, 0, 10, 0)
@@ -751,6 +794,7 @@ class ValidationWidget(SGQWidget):
 
         self.add_widgets(
             [
+                self._error_msg_widget,
                 self._toolbar_widget,
                 self._content_widget,
                 self._footer_widget,
@@ -1468,6 +1512,7 @@ class ValidationWidget(SGQWidget):
             self.stop_event_listening.emit()
 
         self._is_validating_all = True
+        self.show_validation_error(show=False)
         self._start_progress(rules, "Begin validating...")
 
     def validate_all_finished(self):
@@ -1527,6 +1572,7 @@ class ValidationWidget(SGQWidget):
             self.stop_event_listening.emit()
 
         self._is_fixing_all = True
+        self.show_validation_error(show=False)
         self._start_progress(rules, "Begin fixing...")
 
     def fix_all_finished(self):

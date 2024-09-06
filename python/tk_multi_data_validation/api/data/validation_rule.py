@@ -131,6 +131,7 @@ class ValidationRule(object):
         self._valid = None
         # The error items found the last time the rule's check function was executed.
         self._error_items = None
+        self._error_count = 0
         # Flag indicating that the rule fix method was executed at least once
         self._fix_executed = False
         # Runtime exceptions caught - used to display error messages
@@ -340,6 +341,17 @@ class ValidationRule(object):
         return self._error_items
 
     @property
+    def error_count(self):
+        """
+        Get the number of errors found by the rule's check function the last
+        time it was executed.
+
+        Validation checks may opt to return the error count instead of the error
+        items for performance reasons.
+        """
+        return self._error_count
+
+    @property
     def fix_executed(self):
         """Get the flag indicating if the rule's fix method was executed at least once."""
         return self._fix_executed
@@ -420,19 +432,59 @@ class ValidationRule(object):
 
         messages = []
 
-        if self._check_runtime_exception:
+        if isinstance(self._check_runtime_exception, ConnectionError) or isinstance(
+            self._fix_runtime_exception, ConnectionError
+        ):
+            messages.append("Server busy. Please wait a moment and try again.")
+            if self._check_runtime_exception:
+                messages.append(
+                    f"{self._check_runtime_exception.__class__.__name__}: {self._check_runtime_exception}"
+                )
+            if self._fix_runtime_exception:
+                messages.append(
+                    f"{self._fix_runtime_exception.__class__.__name__}: {self._fix_runtime_exception}"
+                )
+        elif isinstance(self._check_runtime_exception, TimeoutError) or isinstance(
+            self._fix_runtime_exception, TimeoutError
+        ):
             messages.append(
-                "Validation Error: {}".format(self._check_runtime_exception)
+                """
+                Timeout occured while waiting for results. The operation
+                will finish, but you will need to re-validate to see the
+                results.
+            """
             )
+            messages.append(
+                """
+                For expensive operations, you may want to break up the
+                operation into smaller batches by selecting items from
+                the details panel and executing the operation on the
+                selected items.
+            """
+            )
+            if self._check_runtime_exception:
+                messages.append(
+                    f"{self._check_runtime_exception.__class__.__name__}: {self._check_runtime_exception}"
+                )
+            if self._fix_runtime_exception:
+                messages.append(
+                    f"{self._fix_runtime_exception.__class__.__name__}: {self._fix_runtime_exception}"
+                )
+        else:
+            if self._check_runtime_exception:
+                messages.append(f"Validation Error: {self._check_runtime_exception}")
 
-        if self._fix_runtime_exception:
-            messages.append("Fix Error: {}".format(self._fix_runtime_exception))
+            if self._fix_runtime_exception:
+                messages.append(f"Fix Error: {self._fix_runtime_exception}")
 
-        if not self._check_runtime_exception and not self._fix_executed:
-            # Only include the validation error message if both check and fix functions
-            # executed successfully.
-            if self.error_message:
-                messages.append(self.error_message)
+            if not self._check_runtime_exception and not self._fix_executed:
+                # Only include the validation error message if both check and fix functions
+                # executed successfully.
+                if self.error_message:
+                    messages.append(self.error_message)
+
+            if not self.errors and self.error_count > 0:
+                messages.append(f"Found ({self.error_count:,}) errors.")
 
         return messages
 
@@ -547,6 +599,7 @@ class ValidationRule(object):
             # Set the rule state to indicate that the check function not run
             self._valid = None
             self._error_items = None
+            self._error_count = 0
             result = None
         else:
             # Run the check function
@@ -559,16 +612,22 @@ class ValidationRule(object):
                     self._check_runtime_exception = runtime_error
                     self._valid = False
                     self._error_items = None
+                    self._error_count = 0
                     result = None
+                    # Raise exception if it is fatal
+                    if isinstance(runtime_error, (ConnectionError, TimeoutError)):
+                        raise runtime_error
             elif self.manual:
                 # This is a manual check. It is considered valid if the user has checked it off.
                 self._valid = self.manual_checked
                 self._error_items = None
+                self._error_count = 0
                 result = None
             else:
                 # This rule does not have a check function but it does have a fix
                 self._valid = True
                 self._error_items = None
+                self._error_count = 0
                 result = None
 
         return result
@@ -637,7 +696,10 @@ class ValidationRule(object):
 
         # Get the key-word arguments and set the errors to pass to the fix function
         kwargs = self.get_kwargs()
-        kwargs["errors"] = self.errors
+        if pre_validate:
+            # Only pass the errors list if pre_validate is True. Otherwise, the
+            # error list could be stale
+            kwargs["errors"] = self.errors
 
         try:
             fix_result = self.fix_func(**kwargs)
@@ -646,6 +708,9 @@ class ValidationRule(object):
         except Exception as runtime_error:
             self._fix_runtime_exception = runtime_error
             fix_result = False
+            # Raise exception if it is fatal
+            if isinstance(runtime_error, (ConnectionError, TimeoutError)):
+                raise runtime_error
 
         return fix_result
 
@@ -654,6 +719,7 @@ class ValidationRule(object):
 
         self._valid = None
         self._error_items = None
+        self._error_count = 0
         self._fix_executed = False
         self._check_runtime_exception = None
         self._fix_runtime_exception = None
@@ -695,6 +761,10 @@ class ValidationRule(object):
 
             self._valid = sanitized_result["is_valid"]
             self._error_items = sanitized_result["errors"]
+            if self._error_items:
+                self._error_count = len(self._error_items)
+            else:
+                self._error_count = sanitized_result.get("error_count", 0)
 
         elif isinstance(sanitized_result, object):
             for field in required_fields:
@@ -707,6 +777,10 @@ class ValidationRule(object):
 
             self._valid = sanitized_result.is_valid
             self._error_items = sanitized_result.errors
+            if self._error_items:
+                self._error_count = len(self._error_items)
+            elif hasattr(sanitized_result, "error_count"):
+                self._error_count = sanitized_result.error_count
 
         else:
             raise TypeError(

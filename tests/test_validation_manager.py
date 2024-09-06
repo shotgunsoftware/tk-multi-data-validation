@@ -23,7 +23,6 @@ api_dir = os.path.abspath(os.path.join(app_dir, "api"))
 data_dir = os.path.abspath(os.path.join(api_dir, "data"))
 sys.path.extend([base_dir, app_dir, api_dir, data_dir])
 from tk_multi_data_validation.api import ValidationManager
-from tk_multi_data_validation.api.data import ValidationRule
 
 
 RULE_IDS = [
@@ -92,6 +91,9 @@ def notifier():
     class MockResolveRuleFinishedSignal:
         emit = MagicMock()
 
+    class MockValidationError:
+        emit = MagicMock()
+
     # Set up the mock notifier
     mock_notifier = MagicMock()
     mock_notifier.validate_all_begin = MockValidateAllBeginSignal()
@@ -102,6 +104,7 @@ def notifier():
     mock_notifier.resolve_all_finished = MockResolveAllFinishedSignal()
     mock_notifier.resolve_rule_begin = MockResolveRuleBeginSignal()
     mock_notifier.resolve_rule_finished = MockResolveRuleFinishedSignal()
+    mock_notifier.validation_error = MockValidationError()
 
     return mock_notifier
 
@@ -634,16 +637,24 @@ def test_manager_validate_detect_dependency_cycle(manager_with_dependency_cycle)
     Test the validate method to catch if there is a dependency cycle.
     """
 
-    with pytest.raises(RecursionError):
-        manager_with_dependency_cycle.validate()
+    success = manager_with_dependency_cycle.validate()
+    assert not success
+    manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
+    assert isinstance(
+        manager_with_dependency_cycle.notifier.validation_error.emit.call_args[0][0],
+        RecursionError,
+    )
+    manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
     dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
     dep_2 = manager_with_dependency_cycle.get_rule("bad_dep_2")
     dep_3 = manager_with_dependency_cycle.get_rule("bad_dep_3")
     rules = [dep_1, dep_2, dep_3]
 
-    with pytest.raises(RecursionError):
-        manager_with_dependency_cycle.validate_rules(rules)
+    success = manager_with_dependency_cycle.validate_rules(rules)
+    assert not success
+    manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
+    manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
     # OK if the cyclic dependency not included
     rules = [dep_2, dep_3]
@@ -656,11 +667,15 @@ def test_manager_resolve_detect_dependency_cycle(manager_with_dependency_cycle):
     Test the resolve method to catch if there is a dependency cycle.
     """
 
-    with pytest.raises(RecursionError):
-        manager_with_dependency_cycle.resolve(pre_validate=True)
+    success = manager_with_dependency_cycle.resolve(pre_validate=True)
+    assert not success
+    manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
+    manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
-    with pytest.raises(RecursionError):
-        manager_with_dependency_cycle.resolve(pre_validate=False)
+    success = manager_with_dependency_cycle.resolve(pre_validate=False)
+    assert not success
+    manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
+    manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
     dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
     dep_1 = manager_with_dependency_cycle.get_rule("bad_dep_1")
@@ -668,8 +683,10 @@ def test_manager_resolve_detect_dependency_cycle(manager_with_dependency_cycle):
     dep_3 = manager_with_dependency_cycle.get_rule("bad_dep_3")
     rules = [dep_1, dep_2, dep_3]
 
-    with pytest.raises(RecursionError):
-        manager_with_dependency_cycle.resolve_rules(rules)
+    success = manager_with_dependency_cycle.resolve_rules(rules)
+    assert not success
+    manager_with_dependency_cycle.notifier.validation_error.emit.assert_called_once()
+    manager_with_dependency_cycle.notifier.validation_error.emit.reset_mock()
 
     # OK if the cyclic dependency not included
     rules = [dep_2, dep_3]
