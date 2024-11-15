@@ -8,6 +8,7 @@
 # agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Autodesk, Inc.
 
+from __future__ import annotations
 from typing import Union, List
 
 from sgtk.platform.qt import QtCore, QtGui
