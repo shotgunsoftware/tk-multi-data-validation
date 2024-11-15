@@ -99,9 +99,7 @@ class ValidationWidget(SGQWidget):
         :type pre_validate_before_actions: bool
         """
 
-        super().__init__(
-            parent, layout_direction=QtGui.QBoxLayout.TopToBottom
-        )
+        super().__init__(parent, layout_direction=QtGui.QBoxLayout.TopToBottom)
 
         self._bundle = sgtk.platform.current_bundle()
 
