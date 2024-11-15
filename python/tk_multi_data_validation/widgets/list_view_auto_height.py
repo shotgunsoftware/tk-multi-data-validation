@@ -28,7 +28,7 @@ class ListViewAutoHeight(SGQListView):
         :type height_padding: int
         """
 
-        super(ListViewAutoHeight, self).__init__(parent)
+        super().__init__(parent)
 
         self._height_padding = height_padding
 

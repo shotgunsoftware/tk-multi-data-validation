@@ -29,7 +29,7 @@ Notice that another hook file is appended to ``hook_data_validation``. This is o
                 """Override the VRED Engine hook method to modify the Validation Rule Set."""
 
                 # This will call the base VRED Engine hook to get the default rule set
-                vred_rule_set = super(MyCustomVREDDataValidationHook, self).get_validation_data()
+                vred_rule_set = super().get_validation_data()
 
                 # Modify the rule set as desired. Examples will be provided later on.
 
@@ -49,7 +49,7 @@ Now that the custom hook has been set up, we can add new :ref:`validation-rule-i
         def get_validation_data(self):
             """Override the VRED Engine hook method to tweak the VRED Validation Rule Set."""
 
-            vred_rule_set = super(MyCustomVREDDataValidationHook, self).get_validation_data()
+            vred_rule_set = super().get_validation_data()
 
             # Create a simple new rule
             my_new_rule = {
@@ -94,7 +94,7 @@ A :ref:`validation-rule-item` can be removed by deleting rule dictionary items f
         def get_validation_data(self):
             """Override the VRED Engine hook method to tweak the VRED Validation Rule Set."""
 
-            vred_rule_set = super(MyCustomVREDDataValidationHook, self).get_validation_data()
+            vred_rule_set = super().get_validation_data()
 
             # Remove the rule with id 'delete_hidden_nodes' by deleting the dict item
             del vred_rule_set["delete_hidden_nodes"]
@@ -125,7 +125,7 @@ An exisiting :ref:`validation-rule-item` can be modified by updating the :ref:`v
         def get_validation_data(self):
             """Override the VRED Engine hook method to tweak the VRED Validation Rule Set."""
 
-            vred_rule_set = super(MyCustomVREDDataValidationHook, self).get_validation_data()
+            vred_rule_set = super().get_validation_data()
 
             # Update the ``delete_hidden_nodes`` rule name and error message
             vred_rule_set["delete_hidden_nodes"]["name"] = "Delete all the Nodes!!!"
@@ -149,7 +149,7 @@ If a callback function needs to be modified, the hook method can be overriden di
                 """
 
                 # Call the base VRED Engine hook method to find all hidden nodes
-                nodes = super(MyCustomVREDDataValidationHook, self).find_hidden_nodes()
+                nodes = super().find_hidden_nodes()
 
                 # Filter out the list of nodes to only include geometry nodes.
                 my_geometry_nodes = []

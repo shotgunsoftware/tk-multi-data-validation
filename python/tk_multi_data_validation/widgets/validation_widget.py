@@ -99,7 +99,7 @@ class ValidationWidget(SGQWidget):
         :type pre_validate_before_actions: bool
         """
 
-        super(ValidationWidget, self).__init__(
+        super().__init__(
             parent, layout_direction=QtGui.QBoxLayout.TopToBottom
         )
 
