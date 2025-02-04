@@ -27,7 +27,7 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         :type kwargs: dict
         """
 
-        super(ValidationRuleProxyModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         #
         # Additional FiltItem objects (to the `_filter_items` list) that are apply to the model data when to
@@ -156,7 +156,7 @@ class ValidationRuleProxyModel(FilterItemTreeProxyModel):
         """
 
         # Call the base class method to check against the `_filter_items` list of filters
-        base_model_accepts = super(ValidationRuleProxyModel, self)._is_row_accepted(
+        base_model_accepts = super()._is_row_accepted(
             src_row, src_parent_idx, parent_accepted
         )
         if not base_model_accepts:

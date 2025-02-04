@@ -233,7 +233,7 @@ class ValidationRuleTypeModel(QtGui.QStandardItemModel, ViewItemRolesMixin):
 
         self._rule_types = []
 
-        super(ValidationRuleTypeModel, self).clear()
+        super().clear()
 
     def initialize_data(self, rule_types=None):
         """

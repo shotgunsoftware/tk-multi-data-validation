@@ -631,7 +631,6 @@ def test_manager_validate_rules_and_ignore_dependencies(manager_with_dependencie
     assert not dep_7.has_failed_dependency()
 
 
-@pytest.mark.skipif(sys.version_info.major < 3, reason="requires python 3 or higher")
 def test_manager_validate_detect_dependency_cycle(manager_with_dependency_cycle):
     """
     Test the validate method to catch if there is a dependency cycle.
@@ -661,7 +660,6 @@ def test_manager_validate_detect_dependency_cycle(manager_with_dependency_cycle)
     manager_with_dependency_cycle.validate_rules(rules, fetch_dependencies=False)
 
 
-@pytest.mark.skipif(sys.version_info.major < 3, reason="requires python 3 or higher")
 def test_manager_resolve_detect_dependency_cycle(manager_with_dependency_cycle):
     """
     Test the resolve method to catch if there is a dependency cycle.

@@ -32,9 +32,7 @@ class ShotGridOverlayWidget(SGQWidget):
         Initialize the ShotGridOverlayWidget.
         """
 
-        super(ShotGridOverlayWidget, self).__init__(
-            parent, layout_direction=QtGui.QBoxLayout.TopToBottom
-        )
+        super().__init__(parent, layout_direction=QtGui.QBoxLayout.TopToBottom)
 
         # Set the default image size to None - no scaling will be applied.
         self._image_size = None
@@ -202,7 +200,7 @@ class ShotGridOverlayWidget(SGQWidget):
         Subclass the base method to show the overlay widget.
         """
 
-        super(ShotGridOverlayWidget, self).show()
+        super().show()
 
         # Ensure to resize the overlay according to its parent widget size.
         self._on_parent_resized()
