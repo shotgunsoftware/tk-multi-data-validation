@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.3.1 documentation</title>
+  <title>tk_multi_data_validation.api.manager &mdash; tk-multi-data-validation v0.3.2 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -82,7 +82,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.3.1.<br>
+    <b>tk-multi-data-validation</b> v0.3.2.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -136,15 +136,15 @@
 <span class="c1"># agreement to the ShotGrid Pipeline Toolkit Source Code License. All rights</span>
 <span class="c1"># not expressly granted therein are reserved by Autodesk, Inc.</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 
-<span class="kn">import</span> <span class="nn">sgtk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sgtk</span>
 
-<span class="kn">from</span> <span class="nn">..api.data.validation_rule</span> <span class="kn">import</span> <span class="n">ValidationRule</span>
-<span class="kn">from</span> <span class="nn">..api.data.validation_rule_type</span> <span class="kn">import</span> <span class="n">ValidationRuleType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..api.data.validation_rule</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationRule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..api.data.validation_rule_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationRuleType</span>
 
 
-<div class="viewcode-block" id="ValidationManager"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager">[docs]</a><span class="k">class</span> <span class="nc">ValidationManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ValidationManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Manager class for data validation.</span>
 
@@ -157,7 +157,7 @@
 <span class="sd">    It also coordinates the execution of validation rule check and fix functions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bundle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">rule_settings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -226,31 +226,31 @@
     <span class="c1"># Properties</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">notifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the notifier for the validation manager.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notifier</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of validtaion rules obtained from the validation data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or set the rule types.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types</span>
 
     <span class="nd">@rule_types</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rule_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rule_types</span> <span class="o">=</span> <span class="n">type_data</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of rules which did not pass the last time their respective validate function was executed.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get or set the function called to check if the validation should be applied to the given rule.</span>
 
@@ -260,18 +260,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span>
 
     <span class="nd">@accept_rule_fn</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_rule_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_accept_rule_fn</span> <span class="o">=</span> <span class="n">fn</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">has_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the flag indicating if this manager is running with a User Interface.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_ui</span>
 
     <span class="c1">#########################################################################################################</span>
     <span class="c1"># Public functions</span>
 
-    <span class="k">def</span> <span class="nf">load_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -321,7 +321,7 @@
             <span class="n">rule</span> <span class="o">=</span> <span class="n">ValidationRule</span><span class="p">(</span><span class="n">rule_data</span><span class="p">,</span> <span class="n">bundle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bundle</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
 
-<div class="viewcode-block" id="ValidationManager.get_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.get_rule">[docs]</a>    <span class="k">def</span> <span class="nf">get_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.get_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.get_rule">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the validation rule object for the id.</span>
 
@@ -334,7 +334,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rules_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rule_id</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ValidationManager.reset"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.reset"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.reset">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the manager state.</span>
 
@@ -343,7 +343,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__errors</span> <span class="o">=</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="ValidationManager.validate"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.validate"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate the data by executing all validation rule check functions.</span>
 
@@ -378,7 +378,7 @@
         <span class="k">return</span> <span class="n">success</span></div>
 
 <div class="viewcode-block" id="ValidationManager.validate_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rules">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
-    <span class="k">def</span> <span class="nf">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate the given list of rules.</span>
 
@@ -417,7 +417,7 @@
             <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">validate_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ValidationManager.validate_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rule">[docs]</a>    <span class="k">def</span> <span class="nf">validate_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.validate_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.validate_rule">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate the data with the given rule.</span>
 
@@ -459,7 +459,7 @@
         <span class="k">return</span> <span class="n">rule</span><span class="o">.</span><span class="n">valid</span></div>
 
 <div class="viewcode-block" id="ValidationManager.resolve"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
-    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retry_until_success</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post_validate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retry_until_success</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve the current data violations found by the validate method.</span>
 
@@ -561,7 +561,7 @@
         <span class="k">return</span> <span class="n">success</span></div>
 
 <div class="viewcode-block" id="ValidationManager.resolve_rules"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve_rules">[docs]</a>    <span class="nd">@sgtk</span><span class="o">.</span><span class="n">LogManager</span><span class="o">.</span><span class="n">log_timing</span>
-    <span class="k">def</span> <span class="nf">resolve_rules</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_rules</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -599,7 +599,7 @@
             <span class="k">if</span> <span class="n">emit_signals</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">resolve_all_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ValidationManager.resolve_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve_rule">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationManager.resolve_rule"><a class="viewcode-back" href="../../../api.html#tk_multi_data_validation.api.ValidationManager.resolve_rule">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">resolve_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">pre_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">emit_signals</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resolve the validation rule.</span>
 
@@ -628,7 +628,7 @@
 
         <span class="k">return</span> <span class="n">success</span></div>
 
-    <span class="k">def</span> <span class="nf">_process_rules</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_rules</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">fetch_dependencies</span><span class="p">,</span> <span class="n">emit_signals</span><span class="p">,</span> <span class="n">process_rule_callback</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -707,7 +707,7 @@
         <span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="n">queue_count</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="nf">__process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">__process_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Process the rule by executing the process callback.</span>
 
@@ -723,7 +723,7 @@
                 <span class="n">failed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="n">processed</span><span class="p">[</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">rule</span>
 
-        <span class="k">def</span> <span class="nf">__process</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">__process</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Helper function to process a rule.</span>
 
@@ -798,7 +798,7 @@
                     <span class="c1"># NOTE for now this is simplified by asking to fetch all or not - if requested this could ask</span>
                     <span class="c1"># to only individual dependencies</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_ui</span><span class="p">:</span>
-                        <span class="kn">from</span> <span class="nn">sgtk.platform.qt</span> <span class="kn">import</span> <span class="n">QtGui</span>
+                        <span class="kn">from</span><span class="w"> </span><span class="nn">sgtk.platform.qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtGui</span>
 
                         <span class="n">answer</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
                             <span class="kc">None</span><span class="p">,</span>
@@ -892,7 +892,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Autodesk.</p>
+    <p>&#169; Copyright 2025, Autodesk.</p>
   </div>
 
    

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Customizing the Validation &mdash; tk-multi-data-validation v0.3.1 documentation</title>
+  <title>Customizing the Validation &mdash; tk-multi-data-validation v0.3.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -90,7 +90,7 @@
                              text-decoration: underline; }
     </style>
 
-    <b>tk-multi-data-validation</b> v0.3.1.<br>
+    <b>tk-multi-data-validation</b> v0.3.2.<br>
     
         This documentation is part of the Flow Production Tracking.
     
@@ -147,13 +147,13 @@
 <p>Notice that another hook file is appended to <code class="docutils literal notranslate"><span class="pre">hook_data_validation</span></code>. This is our custom hook file where we will add our modifications. The <code class="docutils literal notranslate"><span class="pre">my_custom_vred_data_validation.py</span></code> hook file is stored in your configuration hooks folder, for example: <code class="docutils literal notranslate"><span class="pre">tk-config-default2/hooks/tk-multi-data-validation/my_custom_vred_data_validation.py</span></code>. Let’s start implementing the custom hook:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Example: my_custom_data_validation.py hook file</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">sgtk</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="kn">import</span><span class="w"> </span><span class="nn">sgtk</span>
     <span class="n">HookBaseClass</span> <span class="o">=</span> <span class="n">sgtk</span><span class="o">.</span><span class="n">get_hook_baseclass</span><span class="p">()</span>
 
-    <span class="k">class</span> <span class="nc">MyCustomVREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">MyCustomVREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclass the VRED Engine hook class VREDDataValidationHook.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to modify the Validation Rule Set.&quot;&quot;&quot;</span>
 
             <span class="c1"># This will call the base VRED Engine hook to get the default rule set</span>
@@ -171,7 +171,7 @@
 <p>Now that the custom hook has been set up, we can add new <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> to the default set of rules. To add a new rule, we will modify the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a> dictionary returned by the VRED Engine hook:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Example: Adding a new rule in my_custom_data_validation.py</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
         <span class="n">vred_rule_set</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyCustomVREDDataValidationHook</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_validation_data</span><span class="p">()</span>
@@ -188,10 +188,10 @@
 
         <span class="k">return</span> <span class="n">vred_rule_set</span>
 
-    <span class="k">def</span> <span class="nf">my_new_rule_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">my_new_rule_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Implement the new rule check function here.&quot;&quot;&quot;</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">my_new_rule_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">my_new_rule_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;&quot;&quot;Implement the new rule fix function here.&quot;</span>
 </pre></div>
 </div>
@@ -214,7 +214,7 @@
 <p>A <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> can be removed by deleting rule dictionary items from the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>:</p>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Example: Removing the rule delete_hidden_nodes</span><a class="headerlink" href="#id5" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
         <span class="n">vred_rule_set</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyCustomVREDDataValidationHook</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_validation_data</span><span class="p">()</span>
@@ -243,7 +243,7 @@
 <p>An exisiting <a class="reference internal" href="glossary.html#validation-rule-item"><span class="std std-ref">Validation Rule</span></a> can be modified by updating the <a class="reference internal" href="glossary.html#validation-rule-set"><span class="std std-ref">Validation Rule Set</span></a>:</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Modify rule <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code></span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the VRED Engine hook method to tweak the VRED Validation Rule Set.&quot;&quot;&quot;</span>
 
         <span class="n">vred_rule_set</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyCustomVREDDataValidationHook</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_validation_data</span><span class="p">()</span>
@@ -259,10 +259,10 @@
 <p>If a callback function needs to be modified, the hook method can be overriden directly. For example, the VRED Engine hook defines the method <code class="docutils literal notranslate"><span class="pre">find_hidden_nodes</span></code> for tthe <code class="docutils literal notranslate"><span class="pre">delete_hidden_nodes</span></code> rule check function. To modify the check function, we can override the hook method:</p>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">my_custom_data_validation.py hook file</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span> <span class="nc">MyCustomVREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">class</span><span class="w"> </span><span class="nc">MyCustomVREDDataValidationHook</span><span class="p">(</span><span class="n">HookBaseClass</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclass the VRED Engine hook class VREDDataValidationHook.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">find_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">find_hidden_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Override the VRED Engine hook method.</span>
 
@@ -298,7 +298,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Autodesk.</p>
+    <p>&#169; Copyright 2025, Autodesk.</p>
   </div>
 
    
