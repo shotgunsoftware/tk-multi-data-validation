@@ -185,9 +185,9 @@ class ValidationManager(object):
                     # Cannot include a dependency if there is not data for it.
                     continue
 
-                rule_data.setdefault("dependencies", {})[
-                    dependency_id
-                ] = dependency_data.get("name")
+                rule_data.setdefault("dependencies", {})[dependency_id] = (
+                    dependency_data.get("name")
+                )
 
             rule_data.update(rule_item)
             rule = ValidationRule(rule_data, bundle=self._bundle)
