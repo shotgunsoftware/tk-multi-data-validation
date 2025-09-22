@@ -673,7 +673,7 @@ class ValidationManager(object):
                         from sgtk.platform.qt import QtGui
 
                         answer = QtGui.QMessageBox.question(
-                            None,
+                            self._bundle.engine._get_dialog_parent(),
                             "Dependencies",
                             "Dependencies must be resolved first. Click OK to continue, or Cancel to abort.",
                             QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel,
