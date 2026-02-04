@@ -447,21 +447,17 @@ class ValidationRule(object):
         elif isinstance(self._check_runtime_exception, TimeoutError) or isinstance(
             self._fix_runtime_exception, TimeoutError
         ):
-            messages.append(
-                """
+            messages.append("""
                 Timeout occured while waiting for results. The operation
                 will finish, but you will need to re-validate to see the
                 results.
-            """
-            )
-            messages.append(
-                """
+            """)
+            messages.append("""
                 For expensive operations, you may want to break up the
                 operation into smaller batches by selecting items from
                 the details panel and executing the operation on the
                 selected items.
-            """
-            )
+            """)
             if self._check_runtime_exception:
                 messages.append(
                     f"{self._check_runtime_exception.__class__.__name__}: {self._check_runtime_exception}"
