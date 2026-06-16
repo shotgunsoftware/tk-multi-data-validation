@@ -61,6 +61,7 @@ description: "Tools to validate and resolve data violations in your DCC."
 requires_shotgun_version: "v8.20.0"
 requires_core_version: "v0.20.6"
 requires_engine_version:
+minimum_python_version: "3.9"
 
 # Supported Engines
 supported_engines:
